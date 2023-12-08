@@ -1498,6 +1498,7 @@ const emit = defineEmits(["loadingPage"]);
 // globals
 const route = useRoute();
 const router = useRouter();
+const runtimeConfig = useRuntimeConfig();
 
 // variables
 const scrollIntoViewCheck = ref(false);
@@ -1537,7 +1538,7 @@ const social_links = ref({
   youtube: null,
 });
 const meta = ref({
-  title: route.params.creator_username,
+  title: route.params.creatorUsernme,
   image: "",
   description: "",
 });
@@ -2069,82 +2070,98 @@ function parseSocialLinks(external_links, social_account) {
 }
 
 async function getInfluencerByUsername(username) {
+  console.log("fetching creator");
   emit("loadingPage", true);
-  try {
-    let response = await this.axios({
+
+  var { data, pending, error } = await useFetch(
+    runtimeConfig.public.entityURL + "/api/app/influencer/username/" + username,
+    {
       method: "GET",
-      url: this.$entityURL + "/api/app/influencer/username/" + username,
-      withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
-    });
-
-    if (response.data.payload) {
-      creator.value = response.data.payload;
-      if (!creator.value.profile_image) {
-        creator.value["profile_image"] = {
-          src: this.$defaultProfileImage(),
-        };
-      }
-      tracking.trackingLandingEvent("creator_store_landing");
-
-      // storing count in a reactive variable to re-render whenever the count changes
-      creator.valueFollowers = response.data.payload.followers_count;
-      this.meta.title = creator.value.name;
-      this.meta.description = creator.value.bio;
-      this.meta.image = creator.value.profile_image.src;
-
-      if (response.data.payload.is_followed_by_user) {
-        user.value_following = response.data.payload.is_followed_by_user;
-      } else {
-        user.value_following = false;
-      }
-      this.getPebbles();
-      this.getCatalogIds();
-
-      // Checking if last position exists
-      if (this.$store.state.collectionScrollPosition) {
-        scrollToPosition();
-      } else {
-        this.getCollections();
-      }
-
-      // uncomment
-      // if (moment("2 Dec, 2022 00:00:00+05:30").format() <= moment().format()) {
-      //   botd.value = false;
-      //   botd.valueImage = null;
-      // } else {
-      //   botd.value = true;
-      //   checkDevice();
-      // }
-
-      // Calling BOTD API
-      if (this.$store.state.bwbInfo) {
-        botd.value = this.$store.state.bwbInfo;
-        checkDevice();
-      } else {
-        getBOTD();
-      }
-    } else {
-      this.noUserFound = true;
-      emit("loadingPage", false);
-      router.push({
-        name: "main-404",
-      });
     }
-  } catch (err) {
-    console.log(err);
-    this.noUserFound = true;
-    emit("loadingPage", false);
-    router.push({
-      name: "main-404",
-    });
-  } finally {
-    setTimeout(() => {
-      emit("loadingPage", false);
-    }, 200);
+  );
+  console.log(data);
+  if (error.value != "") {
+    const message = error?.value?.statusMessage;
+    if (message) alert(message);
   }
+
+  // try {
+  //   let response = await axios({
+  //     method: "GET",
+  //     withCredentials: true,
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+
+  //   if (response.data.payload) {
+  //     creator.value = response.data.payload;
+  //     if (!creator.value.profile_image) {
+  //       creator.value["profile_image"] = {
+  //         src: this.$defaultProfileImage(),
+  //       };
+  //     }
+  //     tracking.trackingLandingEvent("creator_store_landing");
+
+  //     // storing count in a reactive variable to re-render whenever the count changes
+  //     creator.valueFollowers = response.data.payload.followers_count;
+  //     this.meta.title = creator.value.name;
+  //     this.meta.description = creator.value.bio;
+  //     this.meta.image = creator.value.profile_image.src;
+
+  //     if (response.data.payload.is_followed_by_user) {
+  //       user.value_following = response.data.payload.is_followed_by_user;
+  //     } else {
+  //       user.value_following = false;
+  //     }
+  //     this.getPebbles();
+  //     this.getCatalogIds();
+
+  //     // Checking if last position exists
+  //     if (this.$store.state.collectionScrollPosition) {
+  //       scrollToPosition();
+  //     } else {
+  //       this.getCollections();
+  //     }
+
+  //     // uncomment
+  //     // if (moment("2 Dec, 2022 00:00:00+05:30").format() <= moment().format()) {
+  //     //   botd.value = false;
+  //     //   botd.valueImage = null;
+  //     // } else {
+  //     //   botd.value = true;
+  //     //   checkDevice();
+  //     // }
+
+  //     // Calling BOTD API
+  //     if (this.$store.state.bwbInfo) {
+  //       botd.value = this.$store.state.bwbInfo;
+  //       checkDevice();
+  //     } else {
+  //       getBOTD();
+  //     }
+  //   } else {
+  //     this.noUserFound = true;
+  //     emit("loadingPage", false);
+  //     router.push({
+  //       name: "main-404",
+  //     });
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  //   this.noUserFound = true;
+  //   emit("loadingPage", false);
+  //   router.push({
+  //     name: "main-404",
+  //   });
+  // } finally {
+  //   setTimeout(() => {
+  //     emit("loadingPage", false);
+  //   }, 200);
+  // }
 }
 async function getInfluencerInfo(id) {
   try {
@@ -2165,7 +2182,7 @@ async function getInfluencerInfo(id) {
     this.meta.title = creator.value.name;
     this.meta.description = creator.value.bio;
     this.meta.image = creator.value.profile_image.src;
-    user.valuename = response.data.payload.username;
+    username.value = response.data.payload.username;
     //
     if (response.data.payload.is_followed_by_user) {
       user.value_following = response.data.payload.is_followed_by_user;
@@ -2338,10 +2355,10 @@ function toggleDrawer() {
 }
 function goToSearch() {
   tracking.trackingClickEvent("user_navigated_to_search");
-  if (route.params.creator_username) {
+  if (route.params.creatorUsernme) {
     router.push({
       name: "hypdExplore",
-      params: { creator_username: route.params.creator_username },
+      params: { creator_username: route.params.creatorUsernme },
       query: { query: "" },
     });
   } else {
@@ -2395,8 +2412,8 @@ onBeforeMount(() => {
     getPebbleById(route.params.id);
   } else {
     play.value = true;
-    getInfluencerByUsername(route.params.creator_username);
-    username.value = route.params.creator_username;
+    getInfluencerByUsername(route.params.creatorUsernme);
+    username.value = route.params.creatorUsernme;
   }
 
   startTimer.value = setInterval(() => {
