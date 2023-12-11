@@ -9,6 +9,9 @@
     "preview": "nuxt preview",
     "postinstall": "nuxt prepare"
   },
+  "dependencies": {
+    "vue3-carousel": "^0.3.1"
+  },
   "devDependencies": {
     "@nuxt/devtools": "latest",
     "nuxt": "^3.8.2",

@@ -7,9 +7,21 @@ export default defineNuxtConfig({
     },
   },
   devServer: {
-    "port": 8080,
+    port: 8080,
   },
   srcDir: "src",
+  runtimeConfig: {
+    public:
+      process.env.NODE_ENV != "production"
+        ? {
+            catalogURL: "https://catalogv2.getshitdone.in",
+            entityURL: "https://entity.getshitdone.in",
+          }
+        : {
+            catalogURL: "https://catalog2.hypd.store",
+            entityURL: "https://entity.hypd.store",
+          },
+  },
   app: {
     head: {
       title: "HYPD Store | #getHYPD",
