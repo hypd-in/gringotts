@@ -9,6 +9,7 @@ export default defineNuxtConfig({
   devServer: {
     port: 8080,
   },
+  ssr: true,
   srcDir: "src",
   runtimeConfig: {
     public:
