@@ -11,6 +11,12 @@ export default defineNuxtConfig({
   },
   ssr: true,
   srcDir: "src",
+  modules: [
+    '@pinia/nuxt',
+  ],
+  pinia: {
+    storesDirs: ['../src/stores/**'],
+  },
   runtimeConfig: {
     public:
       process.env.NODE_ENV != "production"
