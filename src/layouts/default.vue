@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-    Default Layout (Header)
+    Default Layout (Header) EDITED 
     </div>
     <slot />
   </div>
