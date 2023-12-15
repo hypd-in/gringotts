@@ -1,15 +1,15 @@
 export default defineNuxtConfig({
+  modules: ["@pinia/nuxt"],
   devtools: {
     enabled: true,
-
     timeline: {
       enabled: true,
     },
   },
+  ssr: true,
   devServer: {
     port: 8080,
   },
-  ssr: true,
   srcDir: "src",
   runtimeConfig: {
     public:

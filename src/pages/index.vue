@@ -1,6 +1,7 @@
 <template>
   <div>
     Index (/)
+    <NuxtLink to="/akarshitkamra">Akarshit</NuxtLink>
   </div>
 </template>
 
