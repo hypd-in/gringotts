@@ -1,18 +1,21 @@
-// import { defineStore } from "pinia";
+import { defineStore } from "pinia";
 
-// export const useProductStore = defineStore("product", () => {
-//   const info = ref({});
+export const useStore = defineStore("store", () => {
+  const user = ref({});
+  const exploreAnimation = ref(false);
 
-//   function saveProductInfo({ commit }, productInfo) {
-//     commit("saveProductInfo", productInfo);
-//   }
-//   function updateProductInfo({ commit }, newInfo) {
-//     commit("updateProductInfo", newInfo);
-//   }
+  function saveUserInfo(userInfo) {
+    user.value = { ...userInfo };
+  }
 
-//   return {
-//     info,
-//     saveProductInfo,
-//     updateProductInfo,
-//   };
-// });
+  function toggleExploreAnimation(value) {
+    exploreAnimation.value = value;
+  }
+
+  return {
+    user,
+    exploreAnimation,
+    saveUserInfo,
+    toggleExploreAnimation,
+  };
+});

@@ -22,12 +22,12 @@
 </template>
 
 <script setup>
-import { addItemToWishlist, removeItemFromWishlist } from "@/API/APIs";
+// import { addItemToWishlist, removeItemFromWishlist } from "@/API/APIs";
 import Button from "@/components/SubmitButton.vue";
-import { addItemToCart } from "@/customMethods/cartMethods";
-import { trackingAddToCart } from "@/eventTracking";
-import store from "@/store";
-import product from "@/store/modules/product";
+// import { addItemToCart } from "@/customMethods/cartMethods";
+// import { trackingAddToCart } from "@/eventTracking";
+// import store from "@/store";
+// import product from "@/store/modules/product";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
@@ -35,7 +35,8 @@ const route = useRoute();
 const emit = defineEmits(["getVariant"]);
 
 const isWishlisted = computed(() => {
-  return !!store.state.wishlistedItems[store.state.product.info?.id];
+  // return !!store.state.wishlistedItems[store.state.product.info?.id];
+  return false;
 });
 const wishlistIcon = computed(() => {
   if (isWishlisted.value) {
@@ -52,101 +53,101 @@ const selectedVariantId = computed(() => {
   return store.getters["product/selectedVariant"]?.id;
 });
 const addToCartText = computed(() => {
-  if (!!store.getters?.cartItems[selectedVariantId.value]) {
-    return "Go to cart";
-  } else {
+  // if (!!store.getters?.cartItems[selectedVariantId.value]) {
+  //   return "Go to cart";
+  // } else {
     return "Add to cart";
-  }
+  // }
 });
 
 async function toggleWishlist() {
-  if (!isWishlisted.value) {
-    var itemInfo = {
-      ...store.state.product.info,
-      source: {
-        id: store.state.creator?.info?.id,
-        type: "creator_store",
-      },
-    };
-    await addItemToWishlist(itemInfo);
-  } else {
-    await removeItemFromWishlist(store.state.product.info);
-  }
+  // if (!isWishlisted.value) {
+  //   var itemInfo = {
+  //     ...store.state.product.info,
+  //     source: {
+  //       id: store.state.creator?.info?.id,
+  //       type: "creator_store",
+  //     },
+  //   };
+  //   await addItemToWishlist(itemInfo);
+  // } else {
+  //   await removeItemFromWishlist(store.state.product.info);
+  // }
 }
 async function addToCart() {
-  if (!store.state.product.info.selected_variant?.id) {
-    emit("getVariant");
-    return;
-  } else if (
-    !!store.state?.cartItems[store.state.product?.info?.selected_variant?.id]
-  ) {
-    goToCart();
-  }
-  var itemInfo = {
-    variant_id: store.state.product.info.selected_variant?.id,
-    catalog_id: store.state.product.info.id,
-    quantity: 1,
-  };
-  if (store.state.creator.info?.id) {
-    itemInfo["source"] = {
-      id: store.state.creator.info.id,
-      type: "creator_store",
-    };
-  }
-  if (store.state.user?.id) {
-    itemInfo["id"] = store.state.user.id;
-    addingToCart.value = true;
-    await addItemToCart(itemInfo);
-    addingToCart.value = false;
-  } else {
-    if (localStorage.getItem("cart_items") != null) {
-      var cartItems = JSON.parse(localStorage.getItem("cart_items"));
-      cartItems.push(itemInfo);
-      localStorage.removeItem("cart_items");
-      localStorage.setItem("cart_items", JSON.stringify(cartItems));
-    } else {
-      var cartItems = [];
-      cartItems.push(itemInfo);
-      localStorage.setItem("cart_items", JSON.stringify(cartItems));
-    }
-    store.dispatch("addItemToCart", {
-      ...itemInfo,
-      ...store.state.product?.info,
-    });
-  }
-  trackingAddToCart(
-    store.state.product.info,
-    store.state.creator.info,
-    store.state.product.info.selected_variant?.id
-  );
+  // if (!store.state.product.info.selected_variant?.id) {
+  //   emit("getVariant");
+  //   return;
+  // } else if (
+  //   !!store.state?.cartItems[store.state.product?.info?.selected_variant?.id]
+  // ) {
+  //   goToCart();
+  // }
+  // var itemInfo = {
+  //   variant_id: store.state.product.info.selected_variant?.id,
+  //   catalog_id: store.state.product.info.id,
+  //   quantity: 1,
+  // };
+  // if (store.state.creator.info?.id) {
+  //   itemInfo["source"] = {
+  //     id: store.state.creator.info.id,
+  //     type: "creator_store",
+  //   };
+  // }
+  // if (store.state.user?.id) {
+  //   itemInfo["id"] = store.state.user.id;
+  //   addingToCart.value = true;
+  //   await addItemToCart(itemInfo);
+  //   addingToCart.value = false;
+  // } else {
+  //   if (localStorage.getItem("cart_items") != null) {
+  //     var cartItems = JSON.parse(localStorage.getItem("cart_items"));
+  //     cartItems.push(itemInfo);
+  //     localStorage.removeItem("cart_items");
+  //     localStorage.setItem("cart_items", JSON.stringify(cartItems));
+  //   } else {
+  //     var cartItems = [];
+  //     cartItems.push(itemInfo);
+  //     localStorage.setItem("cart_items", JSON.stringify(cartItems));
+  //   }
+  //   store.dispatch("addItemToCart", {
+  //     ...itemInfo,
+  //     ...store.state.product?.info,
+  //   });
+  // }
+  // trackingAddToCart(
+  //   store.state.product.info,
+  //   store.state.creator.info,
+  //   store.state.product.info.selected_variant?.id
+  // );
 }
 
 function buyNow() {
-  if (!store.state.product.info?.selected_variant?.id) {
-    emit("getVariant");
-    return;
-  }
-  router.push({
-    name: "CartItems",
-    query: {
-      isExpress: true,
-      pid: store.state.product.info?.id,
-      vid: store.state.product.info?.selected_variant?.id,
-      creatorId: store.state.creator.info?.id,
-      creatorUsername: store.state.creator.info?.username,
-    },
-  });
-  trackingAddToCart(
-    store.state.product.info,
-    store.state.creator.info,
-    store.state.product.info.selected_variant?.id
-  );
+  // if (!store.state.product.info?.selected_variant?.id) {
+  //   emit("getVariant");
+  //   return;
+  // }
+  // router.push({
+  //   name: "CartItems",
+  //   query: {
+  //     isExpress: true,
+  //     pid: store.state.product.info?.id,
+  //     vid: store.state.product.info?.selected_variant?.id,
+  //     creatorId: store.state.creator.info?.id,
+  //     creatorUsername: store.state.creator.info?.username,
+  //   },
+  // });
+  // trackingAddToCart(
+  //   store.state.product.info,
+  //   store.state.creator.info,
+  //   store.state.product.info.selected_variant?.id
+  // );
 }
 
 function goToCart() {
-  router.push({
-    name: "CartItems",
-  });
+  // router.push({
+  //   name: "CartItems",
+  // });
 }
 </script>
 

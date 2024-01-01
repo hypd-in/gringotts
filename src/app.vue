@@ -1,5 +1,4 @@
 <template>
-  <div>App Vue (can be considered as default layout (if only one layout))</div>
   <NuxtLayout>
     <NuxtPage />
   </NuxtLayout>
@@ -24,7 +23,6 @@ if (route.params.creatorUsername) {
     }
   );
   creatorStore.saveCreatorInfo(data?.value?.payload);
-  console.log(loadingCreatorInfo.value);
 }
 
 onMounted(() => {

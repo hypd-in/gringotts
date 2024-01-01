@@ -2,7 +2,7 @@
   <div class="policies-wrapper">
     <section
       class="policy-section"
-      v-for="(policy, index) in policies"
+      v-for="(policy, index) in brandInfo.policies"
       :key="index"
     >
       <div class="policy-heading" @click="expandPolicy(policy)">
@@ -42,23 +42,29 @@
 </template>
 
 <script setup>
-import { getBrandInfoFromBrandId } from "@/API/APIs";
-import store from "@/store";
-import { computed, onMounted, ref, watch } from "vue";
-
 const expandedPolicies = ref({});
 const brandInfo = ref({});
+const product = useProductStore();
+const runtimeConfig = useRuntimeConfig();
+
+if (product.info?.brand_id) {
+  const { data: brand, pending: fetchingBrandInfo } = await useFetch(
+    `${runtimeConfig.public.entityURL}/api/app/brand/${product.info.brand_id}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  brandInfo.value = { ...brand.value.payload };
+}
+
 const policies = computed(() => {
   return brandInfo.value.policies;
 });
 const productInfo = computed(() => {
-  return store.state.product.info;
-});
-
-watch(productInfo, async (newValue, oldValue) => {
-  if (newValue.brand_id && newValue.brand_id != oldValue.brand_id) {
-    brandInfo.value = { ...(await getBrandInfoFromBrandId(newValue.brand_id)) };
-  }
+  return product?.info;
 });
 
 function expandPolicy(policy) {

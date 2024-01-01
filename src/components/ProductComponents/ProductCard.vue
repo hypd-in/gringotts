@@ -67,14 +67,13 @@
 </template>
 
 <script setup>
-import {
-  addItemToWishlist,
-  convertToINR,
-  removeItemFromWishlist,
-} from "@/API/APIs";
+// import {
+//   addItemToWishlist,
+//   convertToINR,
+//   removeItemFromWishlist,
+// } from "@/API/APIs";
 import ImageFrame from "@/components/ImageFrame.vue";
 import { getObjectLength } from "@/customMethods/globalMethods";
-import store from "@/store";
 import { computed } from "vue";
 import { useRouter } from "vue-router";
 
@@ -85,6 +84,8 @@ const props = defineProps({
 });
 const emit = defineEmits(["buttonAction"]);
 const router = useRouter();
+const store = useStore();
+const creatorStore = useCreatorStore();
 
 const cartIcon = computed(() => {
   return '<svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 21 21" fill="none"><path d="M1.6084 2.16663H3.0584C3.9584 2.16663 4.66673 2.94163 4.59173 3.83329V12.1333C4.47507 13.4916 5.55006 14.6583 6.91673 14.6583H15.7917C16.9917 14.6583 18.0417 13.675 18.1334 12.4833L18.2001 6.2333C18.3001 4.84996 17.2501 3.72496 15.8584 3.72496H13.5834" stroke="#FB6C23" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M14.625 18.8333C15.2003 18.8333 15.6667 18.367 15.6667 17.7917C15.6667 17.2164 15.2003 16.75 14.625 16.75C14.0497 16.75 13.5834 17.2164 13.5834 17.7917C13.5834 18.367 14.0497 18.8333 14.625 18.8333Z" stroke="#FB6C23" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.95829 18.8333C8.53359 18.8333 8.99996 18.367 8.99996 17.7917C8.99996 17.2164 8.53359 16.75 7.95829 16.75C7.383 16.75 6.91663 17.2164 6.91663 17.7917C6.91663 18.367 7.383 18.8333 7.95829 18.8333Z" stroke="#FB6C23" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/><path d="M7.75 7.16663H17.75" stroke="#FB6C23" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -94,7 +95,7 @@ const couponIcon = computed(() => {
   return '<svg width="16" height="17" viewBox="0 0 16 17" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M11.33 3.16663H4.66334C2.11 3.16663 1.39667 3.77996 1.33667 6.16663C2.62334 6.16663 3.66334 7.21329 3.66334 8.49996C3.66334 9.78663 2.62334 10.8266 1.33667 10.8333C1.39667 13.22 2.11 13.8333 4.66334 13.8333H11.33C13.9967 13.8333 14.6633 13.1666 14.6633 10.5V6.49996C14.6633 3.83329 13.9967 3.16663 11.33 3.16663Z" stroke="#01C159" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.99548 3.16663V5.49996" stroke="#01C159" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M5.99548 11.5V13.8333" stroke="#01C159" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M10.0166 6.71994L10.43 7.55327C10.47 7.63327 10.55 7.69327 10.6366 7.70661L11.5566 7.83994C11.7833 7.87327 11.8766 8.15327 11.71 8.31327L11.0433 8.95994C10.9766 9.01994 10.95 9.11327 10.9633 9.20661L11.1233 10.1199C11.1633 10.3466 10.9233 10.5199 10.7233 10.4133L9.9033 9.97994C9.8233 9.93994 9.7233 9.93994 9.6433 9.97994L8.8233 10.4133C8.61664 10.5199 8.3833 10.3466 8.4233 10.1199L8.5833 9.20661C8.59664 9.11327 8.56997 9.02661 8.5033 8.95994L7.8433 8.31327C7.67664 8.15327 7.76997 7.87327 7.99664 7.83994L8.91664 7.70661C9.00997 7.69327 9.0833 7.63994 9.1233 7.55327L9.52997 6.71994C9.6233 6.51327 9.91664 6.51327 10.0166 6.71994Z" stroke="#01C159" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 });
 const hotSellingProductsObject = computed(() => {
-  return store.state.hotSellingProducts.reduce((obj, product) => {
+  return store.hotSellingProducts.reduce((obj, product) => {
     return {
       ...obj,
       [product.id]: product,
@@ -103,7 +104,7 @@ const hotSellingProductsObject = computed(() => {
 });
 
 const wishlistIcon = computed(() => {
-  if (!!store.state.wishlistedItems[props.itemInfo.id]) {
+  if (!!store.wishlistedItems[props.itemInfo.id]) {
     return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" fill="#fc404d" stroke="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
   } else {
     return '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12.62 20.8101C12.28 20.9301 11.72 20.9301 11.38 20.8101C8.48 19.8201 2 15.6901 2 8.6901C2 5.6001 4.49 3.1001 7.56 3.1001C9.38 3.1001 10.99 3.9801 12 5.3401C13.01 3.9801 14.63 3.1001 16.44 3.1001C19.51 3.1001 22 5.6001 22 8.6901C22 15.6901 15.52 19.8201 12.62 20.8101Z" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
@@ -116,28 +117,26 @@ const isOutOfStock = computed(() => {
 
 const noOfOffers = computed(() => {
   var availableOffers = [];
-  if (store.getters.couponsMap[props.itemInfo?.id]) {
+  if (store.couponsMap[props.itemInfo?.id]) {
     availableOffers = [
       ...availableOffers,
-      ...store.getters.couponsMap[props.itemInfo?.id],
+      ...store.couponsMap[props.itemInfo?.id],
     ];
   }
 
   if (
-    store.getters.couponsMap[
-      props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id
-    ]
+    store.couponsMap[props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id]
   ) {
     availableOffers = [
       ...availableOffers,
-      ...store.getters.couponsMap[
+      ...store.couponsMap[
         props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id
       ],
     ];
   }
 
   if (store.getters.couponsMap["cart"]) {
-    availableOffers = [...availableOffers, ...store.getters.couponsMap["cart"]];
+    availableOffers = [...availableOffers, ...store.couponsMap["cart"]];
   }
   return availableOffers.length;
 });
@@ -147,7 +146,7 @@ const isBxGy = computed(() => {
     buy_count: 0,
     get_count: 0,
   };
-  store.state.bxgyCoupons.forEach((coupon) => {
+  store.bxgyCoupons.forEach((coupon) => {
     if (
       (coupon.applicable_on.bxgy.sub_type == "catalog" &&
         coupon.applicable_on.bxgy.buy_ids.includes(props.itemInfo?.id)) ||
@@ -218,13 +217,12 @@ function buttonAction() {
 }
 
 function goToProduct() {
-  // console.log(props.itemInfo.id);
-  if (store.state.creator?.info?.username) {
+  if (creatorStore?.info?.username) {
     router.push({
       name: "creatorProduct",
       params: {
         product_id: props.itemInfo?.id,
-        creator_username: store.state.creator?.username,
+        creator_username: creatorStore?.info?.username,
       },
       query: {
         title: props.itemInfo?.name,
@@ -242,8 +240,7 @@ function goToProduct() {
 }
 
 async function toggleWishlist() {
-  if (!!store.state.wishlistedItems[props.itemInfo.id]) {
-    // console.log(props.itemInfo);
+  if (!!store.wishlistedItems[props.itemInfo.id]) {
     removeItemFromWishlist(props.itemInfo);
   } else {
     await addItemToWishlist(props.itemInfo);
@@ -460,7 +457,7 @@ span#discount {
   color: #a9a9a9;
   background: #fefefe;
 }
-.disabled >>> svg path {
+.disabled :deep() svg path {
   stroke: #a9a9a9;
 }
 </style>

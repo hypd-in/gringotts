@@ -6,13 +6,9 @@ export const useCreatorStore = defineStore("creator", () => {
   function saveCreatorInfo(creatorInfo) {
     info.value = { ...creatorInfo };
   }
-  function updateCreatorInfo(newInfo) {
-    info.value = { ...newInfo };
-  }
 
   return {
     info,
     saveCreatorInfo,
-    updateCreatorInfo,
   };
 });

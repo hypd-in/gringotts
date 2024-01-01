@@ -108,7 +108,7 @@
           </div>
           <span>Cart</span>
         </button>
-        <button
+        <!-- <button
           @click="openDropDown"
           :class="{ 'sign-in-btn': !store.state.user?.id }"
           class="profile-desktop action-btn"
@@ -144,11 +144,11 @@
             />
           </svg>
           <span v-if="store.state.user?.id"> Profile </span>
-        </button>
-        <DropDown @close="showDropDown = false" v-if="showDropDown" />
+        </button> -->
+        <!-- <DropDown @close="showDropDown = false" v-if="showDropDown" /> -->
       </div>
     </section>
-    <Wishlist @close="toggleWishlist" v-if="showWishlist" />
+    <!-- <Wishlist @close="toggleWishlist" v-if="showWishlist" /> -->
     <section class="mobile-header">
       <div class="back-btn">
         <button @click="goBack" class="back">
@@ -184,10 +184,7 @@
       <div class="header-items">
         <button
           @click="goToExplore"
-          v-if="
-            $route.params.creator_username ||
-            $store.state.creator.info?.username
-          "
+          v-if="route.params.creatorUsername || creatorStore?.info?.username"
           class="search"
         >
           <ExploreButton :class="{ dark: darkMode }" />
@@ -259,13 +256,10 @@
 </template>
 
 <script setup>
-import DropDown from "@/components/HeaderDropDown.vue";
-import Wishlist from "@/components/WishlistComponent.vue";
+// import DropDown from "@/components/HeaderDropDown.vue";
+// import Wishlist from "@/components/WishlistComponent.vue";
 import ExploreButton from "@/components/ExploreComponents/ExploreButton.vue";
-import { getCreatorUserName } from "@/customMethods/globalMethods";
-import store from "@/store";
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+// import { getCreatorUserName } from "@/customMethods/globalMethods";
 
 const props = defineProps({
   darkMode: Boolean,
@@ -273,14 +267,15 @@ const props = defineProps({
 
 const router = useRouter();
 const route = useRoute();
-const store = useStore();
+const product = useProductStore();
+const creatorStore = useCreatorStore();
 
 const searchInputQuery = ref("");
 const showDropDown = ref(false);
 const showWishlist = ref(false);
 
 const noOfCartItems = computed(() => {
-  return Object.keys(store.state.cartItems).length;
+  return 1;
 });
 
 async function goBack() {
@@ -344,7 +339,7 @@ function goToExplore() {
 // }
 
 function openDropDown() {
-  if (!store.state.user?.id) {
+  if (!store.user?.id) {
     router.push({
       name: "login",
       query: {
@@ -359,9 +354,10 @@ function openDropDown() {
 
 <style scoped>
 @media only screen and (max-width: 520px) {
+  .header {
+    height: 58px !important;
+  }
   .mobile-header {
-    position: fixed;
-    top: 0;
     z-index: 52;
     display: flex !important;
     align-items: center;
@@ -370,17 +366,17 @@ function openDropDown() {
     box-sizing: border-box;
     background: none;
     width: 100dvw;
+    height: 100%;
   }
   .desktop-header {
     display: none !important;
-  }
-  button {
-    border: 1px solid var(--primary-border-color);
   }
 }
 .header {
   position: relative;
   z-index: 2;
+  height: 72px;
+  border-bottom: 1px solid var(--primary-border-color);
 }
 
 .desktop-header {
@@ -391,7 +387,6 @@ function openDropDown() {
   justify-content: flex-start;
   align-content: center;
   padding: 11px 32px;
-  height: 72px;
   box-sizing: border-box;
   background: var(--plian-white, #fff);
 
@@ -399,7 +394,7 @@ function openDropDown() {
   top: 0;
   left: 0;
   width: 100%;
-  border-bottom: 1px solid var(--primary-border-color);
+  height: 72px;
 }
 
 .desktop-header .logo {
@@ -564,7 +559,7 @@ button {
   border: 1px solid #ffffff1a;
 }
 
-.dark >>> svg path {
+.dark:deep() svg path {
   stroke: #fff;
 }
 

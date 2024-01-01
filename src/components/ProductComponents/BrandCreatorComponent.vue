@@ -113,7 +113,6 @@ import { useRoute, useRouter } from "vue-router";
 import ImageFrame from "../ImageFrame.vue";
 const route = useRoute();
 const router = useRouter();
-const store = useStore();
 
 const brandInfo = computed(() => {
   return store.state.product.info?.brand_info;

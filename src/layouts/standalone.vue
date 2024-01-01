@@ -1,14 +1,11 @@
 <template>
-  <div></div>
+  <div>
+    <slot />
+  </div>
 </template>
 
 <script setup>
-definePageMeta({
-  name: "Index",
-  layout: "public"
-})
 </script>
 
 <style scoped>
-
 </style>

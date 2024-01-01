@@ -28,10 +28,9 @@
 </template>
 
 <script setup>
-import { convertToINR } from "@/API/APIs";
-import store from "@/store";
 import { computed, onMounted, onUpdated, ref } from "vue";
 import { useRouter } from "vue-router";
+import { convertToINR } from "~/Helpers/helperMethods";
 const router = useRouter();
 const props = defineProps({
   offers: Object,
@@ -256,7 +255,7 @@ h2 {
   align-items: flex-start;
   justify-content: center;
 }
-.section >>> span {
+.section:deep() span {
   font-family: "Urbanist-Bold";
 }
 
@@ -341,7 +340,7 @@ h2 {
   text-decoration: underline;
 }
 
-.right-section >>> #small {
+.right-section:deep() #small {
   font-size: 12px !important;
 }
 </style>

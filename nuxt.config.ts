@@ -96,4 +96,18 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  components: [
+    {
+      path: "~/src/components",
+      pathPrefix: false,
+      extensions: [".vue"],
+    },
+  ],
+
+  css: [
+    "@/assets/style/main.css",
+    "@/assets/style/transitions.css",
+    "@/assets/style/main.scss",
+  ],
 });

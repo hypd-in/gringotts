@@ -18,15 +18,15 @@
               v-if="media.media_type == 'image'"
               class="product-image"
               @click="openImagePreview(index), toggleImagePreview()"
-              :src="$optimizeImage(media.media_info.url, 800)"
+              :src="optimizeImage(media.media_info.url, 800)"
               :objectFit="'cover'"
             />
-            <VideoPlayer
+            <!-- <VideoPlayer
               v-else-if="media.media_type == 'video'"
               class="product-image"
               :muted="true"
               :media_info="media.media_info"
-            />
+            /> -->
           </div>
         </section>
 
@@ -83,7 +83,7 @@
             </div>
           </section>
 
-          <Offers v-if="productOffers.length > 0" :offers="productOffers" />
+          <!-- <Offers v-if="productOffers.length > 0" :offers="productOffers" /> -->
 
           <div class="mobile-variant-selector" v-if="showVariantSelector">
             <div @click="showVariantSelector = false" class="backdrop"></div>
@@ -132,24 +132,24 @@
 
           <PoliciesComponent />
 
-          <BrandCreatorComponent />
+          <!-- <BrandCreatorComponent /> -->
 
           <PDPButtons @getVariant="toggleVariantSelector" class="mobile-btns" />
         </div>
       </div>
-      <SimilarProducts :products="similarProducts" heading="Similar Products" />
+      <!-- <SimilarProducts :products="similarProducts" heading="Similar Products" /> -->
     </div>
-    <Footer />
+    <!-- <Footer /> -->
   </div>
 </template>
 
 <script setup>
-import {
-  convertToINR,
-  fetchSimilarProducts,
-  getProductInfoById,
-} from "@/API/APIs";
-import store from "@/store";
+// import {
+//   convertToINR,
+//   fetchSimilarProducts,
+//   getProductInfoById,
+// } from "@/API/APIs";
+
 import {
   computed,
   getCurrentInstance,
@@ -158,27 +158,29 @@ import {
   ref,
   watch,
 } from "vue";
-import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
+// import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import ImageFrame from "../ImageFrame.vue";
-import VideoPlayer from "../hypdPlayer.vue";
+// import VideoPlayer from "../hypdPlayer.vue";
 import ImagePreview from "./ImagePreview.vue";
-import Footer from "@/components/FooterHypd.vue";
+// import Footer from "@/components/FooterHypd.vue";
 import Offers from "./ProductOffers.vue";
 import PDPButtons from "./PDPButtons.vue";
 import PoliciesComponent from "@/components/ProductComponents/PoliciesComponent.vue";
 import VariantSelector from "@/components/ProductComponents/VariantSelector.vue";
-import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorComponent.vue";
-import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
-import { getCreatorUserName } from "@/customMethods/globalMethods";
-import axios from "axios";
-import { trackingViewItems } from "../../eventTracking.js";
+// import { convertToINR, optimizeImage } from "~/Helpers/helperMethods";
+// import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorComponent.vue";
+// import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
+// import { getCreatorUserName } from "@/customMethods/globalMethods";
+// import { trackingViewItems } from "../../eventTracking.js";
 
 const route = useRoute();
 const router = useRouter();
 const { proxy } = getCurrentInstance();
-const props = defineProps({
-  productInfo: Object,
-});
+const product = useProductStore();
+const creator = useCreatorStore();
+// const props = defineProps({
+//   productInfo: Object,
+// });
 
 const productOffers = ref([]);
 const viewDescription = ref(false);
@@ -190,11 +192,12 @@ const timeout = ref(null);
 const productImagesRef = ref(null);
 const similarProducts = ref([]);
 const productInfo = computed(() => {
-  return store.getters["product/productInfo"];
+  return product.info;
 });
+
 const scrollLeft = ref(0);
 const contentInfo = computed(() => {
-  var contentInfo = store.state.product.info?.content_info;
+  var contentInfo = product.info?.content_info;
   var info = contentInfo?.filter((info) => {
     if (info.media_info?.url || info.media_info?.hls_playback_url) {
       return true;
@@ -203,7 +206,7 @@ const contentInfo = computed(() => {
   if (info?.length == 0) {
     info.push({
       media_info: {
-        url: store.state.product.info?.featured_image.src,
+        url: product.info?.featured_image.src,
       },
     });
   }
@@ -212,19 +215,19 @@ const contentInfo = computed(() => {
 
 
 const itemName = computed(() => {
-  return store.state.product.info?.name;
+  return product.info?.name;
 });
 
 const brandName = computed(() => {
-  return store.state.product.info?.brand_info?.name;
+  return product.info?.brand_info?.name;
 });
 
 const retailPrice = computed(() => {
-  return store.state.product.info?.retail_price?.value;
+  return product.info?.retail_price?.value;
 });
 
 const basePrice = computed(() => {
-  return store.state.product.info?.base_price?.value;
+  return product.info?.base_price?.value;
 });
 
 const discount = computed(() => {
@@ -253,23 +256,24 @@ const productDescription = computed(() => {
   }
 });
 
-onBeforeUnmount(async () => {
-  await store.dispatch("product/saveProductInfo", {});
+onBeforeUnmount(() => {
+  product.saveProductInfo({});
 });
 
-watch(productInfo, async (newV, oldV) => {
-  if (newV.id && newV.id != oldV.id) {
-    await getProductOffers();
-    similarProducts.value = await fetchSimilarProducts(newV?.id);
-  }
-});
-onMounted(async () => {
-  if (productInfo.value?.id) {
-    await getProductOffers();
-  }
-});
+// watch(productInfo, async (newV, oldV) => {
+//   if (newV.id && newV.id != oldV.id) {
+//     await getProductOffers();
+//     similarProducts.value = await fetchSimilarProducts(newV?.id);
+//   }
+// });
+// onMounted(async () => {
+//   if (productInfo.value?.id) {
+//     await getProductOffers();
+//   }
+// });
 
 async function getProductOffers() {
+
   try {
     var params = new URLSearchParams();
     if (productInfo.value.id) {
@@ -308,16 +312,16 @@ async function getProductOffers() {
 
 function shareProduct() {
   var shareObject = {};
-  if (store.state.product.info?.name) {
-    shareObject["title"] = store.state.creator.info
-      ? `${store.state.creator.info?.name} | ${store.state.product.info.name} | Hypd Store`
-      : `${store.state.product.info?.name} | Hypd Store`;
+  if (product.info?.name) {
+    shareObject["title"] = creator.info
+      ? `${creator.info?.name} | ${product.info.name} | Hypd Store`
+      : `${product.info?.name} | Hypd Store`;
   }
   shareObject["url"] = `${proxy.$base}/${
     route.params.creator_username ||
-    getCreatorUserName(store.state.creator?.info?.id)
-  }/product/${store.state.product.info?.id}?title=${
-    store.state.product.info?.name
+    getCreatorUserName(creator?.info?.id)
+  }/product/${product.info?.id}?title=${
+    product.info?.name
   }`;
 
   if (navigator.canShare) {

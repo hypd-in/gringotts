@@ -32,40 +32,40 @@
 </template>
 
 <script setup>
-import store from "@/store";
-import { computed, onUpdated, watch } from "vue";
+// import { computed, onUpdated, watch } from "vue";
 
+const product = useProductStore();
 const productVariants = computed(() => {
-  return store.state.product.info?.variants;
+  return product.info?.variants;
 });
 const variantType = computed(() => {
-  return store.state.product.info?.variant_type;
+  return product.info?.variant_type;
 });
 
-watch(productVariants, (newValue) => {
-  if (
-    newValue?.length == 1 &&
-    newValue[0]?.inventory_info?.status?.value !== "out_of_stock"
-  ) {
-    store.dispatch("product/updateProductInfo", {
-      selected_variant: newValue[0],
-    });
-  }
-});
+// watch(productVariants, (newValue) => {
+//   if (
+//     newValue?.length == 1 &&
+//     newValue[0]?.inventory_info?.status?.value !== "out_of_stock"
+//   ) {
+//     store.dispatch("product/updateProductInfo", {
+//       selected_variant: newValue[0],
+//     });
+//   }
+// });
 
 function selectVariant(variant) {
-  if (variant.id == store.state.product.info?.selected_variant?.id) {
+  if (variant.id == product.info?.selected_variant?.id) {
     return;
   } else {
-    store.dispatch("product/updateProductInfo", {
+    product.updateProductInfo({
       selected_variant: { ...variant },
     });
   }
 }
 
 function isSelected(id) {
-  if (id && store.state.product.info?.selected_variant?.id) {
-    return store.state.product.info?.selected_variant?.id == id;
+  if (id && product.info?.selected_variant?.id) {
+    return product.info?.selected_variant?.id == id;
   } else {
     return false;
   }
