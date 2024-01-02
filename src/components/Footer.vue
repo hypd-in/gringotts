@@ -29,7 +29,7 @@
     </div>
 
     <!-- Copyright Section -->
-    <section class="copyright">HYPD - © 2023. ALL RIGHTS RESERVED.</section>
+    <section class="copyright">HYPD - © 2024. ALL RIGHTS RESERVED.</section>
   </footer>
 </template>
 

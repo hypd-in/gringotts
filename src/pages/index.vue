@@ -1,14 +1,12 @@
 <template>
-  <div></div>
+  <div>
+    Index Page
+    <NuxtLink :to="{ name: 'Login' }">Go To Login</NuxtLink>
+  </div>
 </template>
 
 <script setup>
-definePageMeta({
-  name: "Index",
-  layout: "public"
-})
 </script>
 
-<style scoped>
-
+<style>
 </style>
