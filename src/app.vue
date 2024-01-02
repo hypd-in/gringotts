@@ -26,6 +26,6 @@ if (route.params.creatorUsername) {
 }
 
 onMounted(() => {
-  console.log("App mounted");
+  console.log("App mounted Updated");
 });
 </script>
