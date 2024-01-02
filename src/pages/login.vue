@@ -312,7 +312,7 @@ hr {
   margin: 100px 0 80px;
 }
 .new-login {
-  background: url("../assets/img/login-bg-web.svg");
+  /* background: url("../assets/img/login-bg-web.svg"); */
   background-repeat: no-repeat;
   background-size: cover;
 }

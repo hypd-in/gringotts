@@ -1152,7 +1152,7 @@ img[lazy="loaded"] {
     height: 100vh;
     width: 100vw;
     background: rgba(0, 0, 0, 0.637);
-    background-image: url("../src/assets/img/loaders/Spinner.svg");
+    /* background-image: url("../src/assets/img/loaders/Spinner.svg"); */
     background-size: 150px;
     background-repeat: no-repeat;
     background-position: center;

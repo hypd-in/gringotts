@@ -32,13 +32,13 @@
           type="text"
           placeholder="What are you looking for?"
         />
-        <img
+        <!-- <img
           @click="searchInputQuery = ''"
           v-if="searchInputQuery.length > 0"
           class="close-icon"
-          src="@/assets/icons/misc/close.svg"
+          src="/assets/icons/misc/close.svg"
           alt="close"
-        />
+        /> -->
       </div>
 
       <div class="header-action-btns">
