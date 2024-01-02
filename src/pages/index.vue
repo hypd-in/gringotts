@@ -1,15 +1,12 @@
 <template>
   <div>
-    Index (/)
+    Index Page
+    <NuxtLink :to="{ name: 'Login' }">Go To Login</NuxtLink>
   </div>
 </template>
 
-
-<script setup lang="js">
-const route = useRoute()
-
-onMounted(()=>{
-  console.log("index mounted")
-})
-
+<script setup>
 </script>
+
+<style>
+</style>

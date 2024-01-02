@@ -1,15 +1,15 @@
 export default defineNuxtConfig({
+  modules: ["@pinia/nuxt"],
   devtools: {
     enabled: true,
-
     timeline: {
       enabled: true,
     },
   },
+  ssr: true,
   devServer: {
     port: 8080,
   },
-  ssr: true,
   srcDir: "src",
   modules: [
     '@pinia/nuxt',
@@ -102,4 +102,18 @@ export default defineNuxtConfig({
       ],
     },
   },
+
+  components: [
+    {
+      path: "~/src/components",
+      pathPrefix: false,
+      extensions: [".vue"],
+    },
+  ],
+
+  css: [
+    "@/assets/style/main.css",
+    "@/assets/style/transitions.css",
+    "@/assets/style/main.scss",
+  ],
 });
