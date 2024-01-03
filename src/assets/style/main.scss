@@ -1,0 +1,43 @@
+$max: 200;
+$offset: 1;
+$unit: 'px'; // Feel free to change the unit.
+@mixin list-loop($className, $styleName) {
+  $i: 0;
+  @while $i <= $max {
+    #{$className + $i} { 
+      #{$styleName}: #{$i + $unit};
+    }
+    $i: $i + $offset;
+  }
+}
+
+@mixin list-loop-without-unit($className, $styleName) {
+  $i: 0;
+  @while $i <= $max {
+    #{$className + $i} { 
+      #{$styleName}: #{$i};
+    }
+    $i: $i + $offset;
+  }
+}
+@include list-loop('.gap-', 'gap');
+@include list-loop('.margin-', 'margin');
+@include list-loop('.mt-', 'margin-top');
+@include list-loop('.mt_', 'margin-top');
+@include list-loop('.mb-', 'margin-bottom');
+@include list-loop('.m-', 'margin');
+@include list-loop('.ml-', 'margin-left');
+@include list-loop('.mr-', 'margin-right');
+@include list-loop('.mr_', 'margin-right');
+@include list-loop('.pr-', 'padding-right');
+@include list-loop('.pr_', 'padding-right');
+@include list-loop('.pb_', 'padding-bottom');
+@include list-loop('.pl-', 'padding-left');
+@include list-loop('.pt-', 'padding-top');
+@include list-loop('.pt_', 'padding-top');
+@include list-loop('.pb-', 'padding-bottom');
+@include list-loop('.fs-', 'font-size');
+
+
+// without units
+@include list-loop-without-unit('.lc-', '-webkit-line-clamp');

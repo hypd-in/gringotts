@@ -1,0 +1,14 @@
+.rtl-slide-enter-active,
+.rtl-slide-leave-active {
+    transition: all 1s ease-in-out;
+}
+
+.rtl-slide-enter-from,
+.rtl-slide-leave-to {
+    left: 100%;
+}
+
+.rtl-slide-leave-from,
+.rtl-slide-enter-to {
+    left: 0;
+}
