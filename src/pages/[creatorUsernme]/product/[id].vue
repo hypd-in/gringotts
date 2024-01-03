@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{ route.params.id }} product from {{ route.params.creator }}'s store
+    {{ route.params.id }} product from {{ route.params.creatorUsername }}'s store
   </div>
 </template>
 
