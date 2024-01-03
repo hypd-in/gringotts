@@ -98,7 +98,7 @@ function goToTerms() {
 
 .content-container section {
   display: grid;
-  justify-content: center;
+  /* justify-content: center; */
   width: 100%;
   box-sizing: border-box;
 }

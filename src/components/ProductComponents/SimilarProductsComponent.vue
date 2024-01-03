@@ -15,14 +15,31 @@
 </template>
 
 <script setup>
-import store from "@/store";
-import axios from "axios";
-import { computed, getCurrentInstance, onMounted, ref, watch } from "vue";
-import ProductCard from "@/components/ProductComponents/ProductCard.vue";
+import ProductCard from "~/components/ProductComponents/ProductCard.vue";
 
-const props = defineProps({
-  products: Object,
-});
+const route = useRoute();
+const productStore = useProductStore();
+const config = useRuntimeConfig();
+const products = ref([]);
+
+if (route.params.id) {
+  console.log(route.params);
+  const { data } = await useFetch(
+    `${config.public.catalogURL}/api/app/catalog/similar`,
+    {
+      method: "GET",
+      query: {
+        query: route.params.id,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (data.value.payload) {
+    products.value = [...data.value.payload];
+  }
+}
 </script>
 
 <style scoped>

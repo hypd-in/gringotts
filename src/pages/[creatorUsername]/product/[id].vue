@@ -8,8 +8,8 @@
 import ProductView from "@/components/ProductComponents/PDPComponent.vue";
 
 definePageMeta({
-  name: "ProductPage",
-  layout: "default",
+  name: "CreatorProduct",
+  layout: "public",
 });
 
 const route = useRoute();
@@ -66,7 +66,6 @@ onBeforeMount(() => {
   }
   .product-view {
     margin: 0 !important;
-    height: calc(100dvh);
     padding: 0px;
   }
 }

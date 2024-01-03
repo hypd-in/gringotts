@@ -53,6 +53,7 @@
               class="ph-no-input"
               maxlength="10"
               @input="updatePhoneNumber($event)"
+              @keydown.enter="sendOTP"
             />
           </div>
           <SubmitButton
@@ -60,6 +61,7 @@
             :loading="generatingOTP"
             class="submit-btn"
             :disabled="!disabledBtn"
+            @submit="sendOTP"
           />
           <p class="tnc">
             By continuing, I agree to the <span>Terms of Use</span> &<br />
@@ -75,7 +77,7 @@
             <span class="change-btn" @click="changeNo()"> change</span>
           </div>
           <div class="otp-container mt-24" :class="{ wiggle: showError }">
-            <!-- <OTP ref="otpInputs" /> -->
+            <OTP ref="otpInputs" @autoSubmit="confirmOTP" />
           </div>
           <div class="timer">00:{{ `${timer > 9 ? timer : "0" + timer}` }}</div>
           <div class="resend">
@@ -122,14 +124,14 @@
 <script setup>
 definePageMeta({
   name: "Login",
-  layout: "public"
+  layout: "public",
 });
-// import OTP from "~/components/OtpInput.vue";
+import OTP from "~/components/OtpInput.vue";
 import SubmitButton from "~/components/SubmitButton.vue";
 // import Footer from "~/components/Footer.vue";
 import { returnMaxLength, returnNumber } from "~/Helpers/helperMethods";
 const phone_no = ref("");
-const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
@@ -151,46 +153,121 @@ const disabledBtn = computed(() => {
   }
   return false;
 });
+
+const sendOTP = async () => {
+  generatingOTP.value = true;
+  try {
+    var response = await $fetch(
+      `${config.public.entityURL}/api/customer/otp/generate`,
+      {
+        method: "POST",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          phone_no: {
+            prefix: "+91",
+            number: phone_no.value,
+          },
+        },
+      }
+    );
+    if (response.payload) {
+      console.log("Sending OTP", response.payload);
+      generatingOTP.value = false;
+      enterOTP.value = true;
+      startTimer();
+    }
+  } catch (err) {
+    generatingOTP.value = false;
+    console.log("Error generating OTP", err);
+  }
+};
+
+const confirmOTP = async (otpValue) => {
+  submittingOTP.value = true;
+  try {
+    var response = await $fetch(
+      `${config.public.entityURL}/api/customer/otp/confirm?isWeb=true`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: {
+          phone_no: {
+            prefix: "+91",
+            number: phone_no.value,
+          },
+          otp: otpInputs?.value?.otp,
+        },
+      }
+    );
+    if (response.payload) {
+      submittingOTP.value = false;
+      // await fetchUserInfo();
+      // await fetchCartInfo();
+      console.log(useCookie("creators"));
+      // if (redirect) {
+      //   router.replace(`${redirect}`);
+      // } else if (getCookie("creators")) {
+      //   let creator = Object.values(JSON.parse(getCookie("creators")));
+      //   router.replace(`/${creator[0].username}`);
+      // } else {
+      //   router.replace(`/`);
+      // }
+    }
+  } catch (err) {
+    showError.value = true;
+    submittingOTP.value = false;
+    otpInputs.value.clearOTP();
+    console.log("Error verifying OTP", err);
+    setTimeout(() => {
+      showError.value = false;
+    }, 3500);
+  }
+};
 const showError = ref(false);
 const featuredIn = ref([
   {
     alt: "YourStory",
-    img: "~/assets/media/yourstory.png",
+    img: "../assets/media/yourstory.png",
     link: "https://yourstory.com/2021/02/funding-alert-hypd-store-raises-pre-seed-investment",
   },
   {
     alt: "Tech in Asia",
-    img: "~/assets/media/techinasia.png",
+    img: "../assets/media/techinasia.png",
     link: "https://www.techinasia.com/indian-ecommerce-platform-hypd-bags-pre-seed-money-scoopwhoop",
   },
   {
     alt: "Entrepreneur India",
-    img: "~/assets/media/entrepreneurindia.png",
+    img: "../assets/media/entrepreneurindia.png",
     link: "https://www.entrepreneur.com/article/365308",
   },
   {
     alt: "The Startup Lab",
-    img: "~/assets/media/startuplab.png",
+    img: "../assets/media/startuplab.png",
     link: "https://thestartuplab.in/content-to-commerce-discovery-platform-hypd-store-raises-pre-seed-investment-from-scoopwhoop/",
   },
   {
     alt: "Next Big Brand",
-    img: "~/assets/media/nbb.png",
+    img: "../assets/media/nbb.png",
     link: "https://www.nextbigbrand.in/hypd-store-a-content-based-commerce-platform-raises-pre-seed-investment-from-scoopwhoop/",
   },
   {
     alt: "Bwdisrupt",
-    img: "~/assets/media/bwdisrupt.png",
+    img: "../assets/media/bwdisrupt.png",
     link: "http://bwdisrupt.businessworld.in/article/Hypd-Store-Raises-Pre-seed-Strategic-Investment-From-ScoopWhoop/11-02-2021-376502/",
   },
   {
     alt: "TechCircle",
-    img: "~/assets/media/techcircle.png",
+    img: "../assets/media/techcircle.png",
     link: "https://www.techcircle.in/2021/02/12/hypd-store-payme-india-raise-funding#utm_source=twitter&utm_medium=social&utm_campaign=HYPD%20Store,%20PayMe%20India%20raise%20funding",
   },
   {
     alt: "VC Circle",
-    img: "~/assets/media/vccircle.png",
+    img: "../assets/media/vccircle.png",
     link: "https://www.vccircle.com/hypd-store-payme-india-raise-funding#utm_source=twitter&utm_medium=social&utm_campaign=HYPD%20Store,%20PayMe%20India%20raise%20funding",
   },
 ]);
@@ -209,99 +286,30 @@ const changeNo = () => {
   clearInterval(timerInterval.value);
   timer.value = 30;
 };
-// const sendOTP = async () => {
-//   generatingOTP.value = true;
-//   try {
-//     var response = await axios({
-//       method: "POST",
-//       url: proxy.$entityURL + "/api/customer/otp/generate",
-//       withCredentials: true,
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       data: {
-//         phone_no: {
-//           prefix: "+91",
-//           number: phone_no.value,
-//         },
-//       },
-//     });
-//     if (response.data.payload) {
-//       generatingOTP.value = false;
-//       enterOTP.value = true;
-//       startTimer();
-//     }
-//   } catch (err) {
-//     generatingOTP.value = false;
-//     console.log("Error generating OTP", err);
-//   }
-// };
 
-// const confirmOTP = async (otpValue) => {
-//   submittingOTP.value = true;
-//   try {
-//     var response = await axios({
-//       method: "POST",
-//       url: proxy.$entityURL + "/api/customer/otp/confirm?isWeb=true",
-//       withCredentials: true,
-//       headers: {
-//         "Content-Type": "application/json",
-//       },
-//       data: {
-//         phone_no: {
-//           prefix: "+91",
-//           number: phone_no.value,
-//         },
-//         otp: otpInputs?.value?.otp,
-//       },
-//     });
-//     if (response.data.payload) {
-//       submittingOTP.value = false;
-//       await fetchUserInfo();
-//       await fetchCartInfo();
-
-//       if (redirect) {
-//         router.replace(`${redirect}`);
-//       } else if (getCookie("creators")) {
-//         let creator = Object.values(JSON.parse(getCookie("creators")));
-//         router.replace(`/${creator[0].username}`);
-//       } else {
-//         router.replace(`/`);
-//       }
-//     }
-//   } catch (err) {
-//     showError.value = true;
-//     submittingOTP.value = false;
-//     otpInputs.value.clearOTP();
-//     console.log("Error verifying OTP", err);
-//     setTimeout(() => {
-//       showError.value = false;
-//     }, 3500);
-//   }
-// };
-// const resendCode = async () => {
-//   if (timer.value > 0) {
-//     return;
-//   }
-//   if (generatingOTP.value) {
-//     return;
-//   } else {
-//     otpInputs.value.clearOTP();
-//     clearInterval(timerInterval.value);
-//     timer.value = 30;
-//     startTimer();
-//     // await sendOTP();
-//   }
-// };
-// const startTimer = () => {
-//   timerInterval.value = setInterval(() => {
-//     if (timer.value > 0) {
-//       timer.value--;
-//     } else if (timer.value == 0) {
-//       clearInterval(timerInterval.value);
-//     }
-//   }, 1000);
-// };
+const resendCode = async () => {
+  if (timer.value > 0) {
+    return;
+  }
+  if (generatingOTP.value) {
+    return;
+  } else {
+    otpInputs.value.clearOTP();
+    clearInterval(timerInterval.value);
+    timer.value = 30;
+    startTimer();
+    await sendOTP();
+  }
+};
+const startTimer = () => {
+  timerInterval.value = setInterval(() => {
+    if (timer.value > 0) {
+      timer.value--;
+    } else if (timer.value == 0) {
+      clearInterval(timerInterval.value);
+    }
+  }, 1000);
+};
 </script>
 
 <style scoped>
@@ -383,7 +391,7 @@ hr {
   padding: 11px 14px;
   border: 1px solid rgba(0, 0, 0, 0.1);
   width: fit-content;
-  font-family: 'Urbanist-Regular';
+  font-family: "Urbanist-Regular";
   font-size: 12px;
 }
 .prev-2 {
@@ -490,6 +498,7 @@ hr {
 }
 .news-items {
   flex-shrink: 0;
+  cursor: pointer;
 }
 .news-items img {
   height: 108px;

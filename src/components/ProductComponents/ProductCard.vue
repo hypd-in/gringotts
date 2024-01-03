@@ -29,7 +29,7 @@
       <ImageFrame
         @click="goToProduct"
         class="featured-image"
-        :src="$optimizeImage(productImage, 550)"
+        :src="optimizeImage(productImage, 550)"
       />
     </div>
     <div class="item-info-wrapper" @click="goToProduct">
@@ -69,13 +69,14 @@
 <script setup>
 // import {
 //   addItemToWishlist,
-//   convertToINR,
 //   removeItemFromWishlist,
 // } from "@/API/APIs";
 import ImageFrame from "@/components/ImageFrame.vue";
-import { getObjectLength } from "@/customMethods/globalMethods";
-import { computed } from "vue";
-import { useRouter } from "vue-router";
+import {
+  convertToINR,
+  getObjectLength,
+  optimizeImage,
+} from "~/Helpers/helperMethods";
 
 const props = defineProps({
   itemInfo: Object,
@@ -135,7 +136,7 @@ const noOfOffers = computed(() => {
     ];
   }
 
-  if (store.getters.couponsMap["cart"]) {
+  if (store.couponsMap["cart"]) {
     availableOffers = [...availableOffers, ...store.couponsMap["cart"]];
   }
   return availableOffers.length;

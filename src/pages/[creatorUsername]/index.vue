@@ -9,6 +9,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  name: "CreatorStore",
+  layout: "public"
+})
 const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
@@ -36,7 +40,7 @@ useSeoMeta({
   ogDescription: `Shop from ${creatorStore.info.name}'s store on HYPD`,
   ogImage: `${creatorStore.info?.profile_image?.src}`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
-  twitterCard: 'summary_large_image',
+  twitterCard: "summary_large_image",
 });
 </script>
 

@@ -24,7 +24,7 @@ export default defineNuxtConfig({
           },
   },
   nitro: {
-    preset: 'node-cluster',
+    preset: "node-cluster",
   },
   app: {
     head: {

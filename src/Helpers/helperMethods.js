@@ -44,3 +44,39 @@ export function returnNumber(event) {
     return event.target.value.replace(event.data, "");
   }
 }
+
+export async function getCreatorUserName(id) {
+  // if (
+  //   JSON.parse(getCookie("creators")) &&
+  //   JSON.parse(getCookie("creators"))[id]
+  // ) {
+  //   return JSON.parse(getCookie("creators"))[id].username;
+  // }
+  // if (store.state?.creator?.info?.username) {
+  //   return store.state?.creator?.info?.username;
+  // }
+  // if (router.currentRoute.value.params.creator_username) {
+  //   return router.currentRoute.value.params.creator_username;
+  // }
+  // if (localStorage.getItem("creatorInfo") != null) {
+  //   var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
+  //   return creatorInfo?.creatorName;
+  // }
+  // let payload = null;
+
+  // let creator_id =
+  //   id ||
+  //   router.currentRoute.value.params.creator_id ||
+  //   router.currentRoute.value.params.creatorId;
+
+  // if (id) {
+  //   payload = await getInfluencerById(creator_id);
+  //   return payload.username;
+  // }
+  // if (getCookie("creators")) {
+  //   return Object.values(JSON.parse(getCookie("creators")))[
+  //     Object.values(JSON.parse(getCookie("creators"))).length - 1
+  //   ].username;
+  // }
+  return "hypd_store";
+}
