@@ -23,6 +23,9 @@ export default defineNuxtConfig({
             entityURL: "https://entity.hypd.store",
           },
   },
+  nitro: {
+    preset: 'node-cluster',
+  },
   app: {
     head: {
       title: "HYPD Store | #getHYPD",
