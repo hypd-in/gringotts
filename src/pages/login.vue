@@ -330,7 +330,7 @@ hr {
   height: 1px;
   border: none;
   background-color: #e9eaee;
-  margin: 100px 0 80px;
+  margin: 60px 0;
 }
 
 .new-login {
@@ -524,11 +524,13 @@ hr {
 .featured-news {
   display: flex;
   flex-wrap: nowrap;
-  gap: 20px;
-  overflow: scroll;
+  gap: 16px;
+  overflow: scroll hidden;
   width: 100%;
-  max-width: 1100px;
-  margin: 16px auto;
+  max-width: 1024px;
+  padding: 16px;
+  margin: 0 auto;
+  box-sizing: border-box;
 }
 
 .news-items {
@@ -620,7 +622,7 @@ span.disabled-resend {
 
 .video {
   width: 100%;
-  max-width: 1100px;
+  max-width: 1024px;
   margin: 16px auto;
   display: block;
   border-radius: 16px;
