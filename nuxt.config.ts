@@ -12,16 +12,19 @@ export default defineNuxtConfig({
   },
   srcDir: "src",
   runtimeConfig: {
-    public:
-      process.env.NODE_ENV != "production"
-        ? {
-            catalogURL: "https://catalogv2.getshitdone.in",
-            entityURL: "https://entity.getshitdone.in",
-          }
-        : {
-            catalogURL: "https://catalog2.hypd.store",
-            entityURL: "https://entity.hypd.store",
-          },
+    public: {
+      catalogURL: "https://catalogv2.getshitdone.in",
+      entityURL: "https://entity.getshitdone.in",
+    },
+    // process.env.NODE_ENV != "production"
+    //   ? {
+    //       catalogURL: "https://catalogv2.getshitdone.in",
+    //       entityURL: "https://entity.getshitdone.in",
+    //     }
+    //   : {
+    //       catalogURL: "https://catalog2.hypd.store",
+    //       entityURL: "https://entity.hypd.store",
+    //     },
   },
   nitro: {
     preset: "node-cluster",
