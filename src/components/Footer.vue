@@ -110,6 +110,7 @@ h2.name {
   color: var(--primary-black);
   cursor: pointer;
   user-select: none;
+  width: fit-content;
 }
 
 p.content {

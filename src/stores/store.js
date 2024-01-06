@@ -12,12 +12,12 @@ export const useStore = defineStore("store", () => {
     user.value = { ...userInfo };
   }
 
-  function saveWishlistedItems(wishlistedItems) {
-    wishlistedItems.value = { ...wishlistedItems };
+  function saveWishlistedItems(items) {
+    wishlistedItems.value = { ...items };
   }
 
   function saveCouponsMap(coupons) {
-    couponsMap = { ...coupons };
+    couponsMap.value = { ...coupons };
   }
 
   function saveHotSellingProducts(products) {

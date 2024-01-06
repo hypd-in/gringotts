@@ -13,9 +13,7 @@ export const useProductStore = defineStore("product", () => {
   }
 
   function saveBrandInfo(brandInfo) {
-    console.log("Brand Info", brandInfo);
     brandInfo.value = { ...brandInfo };
-    console.log("Product Brand Info", brandInfo.value);
   }
 
   return {

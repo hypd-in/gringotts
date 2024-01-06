@@ -1,65 +1,49 @@
 <template>
   <div class="product-card-wrapper" :class="{ 'oos-card': isOutOfStock }">
     <div class="image-tag-wrapper" v-if="productImage">
-      <div @click="goToProduct" class="tag out-of-stock" v-if="isOutOfStock">
-        Out of Stock
-      </div>
-      <div @click="goToProduct" class="tag bxgy" v-else-if="isBxGy">
-        {{ isBxGy }}
-      </div>
-      <div
-        @click="goToProduct"
-        class="tag hot-selling"
-        v-else-if="isHotSelling"
-      >
-        Hot Selling
-      </div>
-      <div
-        @click="goToProduct"
-        class="tag low-in-stock"
-        v-else-if="isLowInStock"
-      >
-        Only Few Left
-      </div>
-      <div
-        @click="toggleWishlist"
-        class="wishlist-icon"
-        v-html="wishlistIcon"
-      ></div>
-      <ImageFrame
-        @click="goToProduct"
-        class="featured-image"
-        :src="optimizeImage(productImage, 550)"
-      />
+      <NuxtLink :to="goToProduct">
+        <div class="tag out-of-stock" v-if="isOutOfStock">
+          Out of Stock
+        </div>
+        <div class="tag bxgy" v-else-if="isBxGy">
+          {{ isBxGy }}
+        </div>
+        <div class="tag hot-selling" v-else-if="isHotSelling">
+          Hot Selling
+        </div>
+        <div class="tag low-in-stock" v-else-if="isLowInStock">
+          Only Few Left
+        </div>
+      </NuxtLink>
+      <div @click="toggleWishlist" class="wishlist-icon" v-html="wishlistIcon"></div>
+      <NuxtLink :to="goToProduct">
+        <ImageFrame class="featured-image" :src="optimizeImage(productImage, 550)" />
+      </NuxtLink>
     </div>
-    <div class="item-info-wrapper" @click="goToProduct">
-      <div class="info-container">
-        <h3 class="brand-name">{{ brandName }}</h3>
-        <p class="item-name line-clamp">{{ itemName }}</p>
-      </div>
+    <NuxtLink :to="goToProduct">
+      <div class="item-info-wrapper">
+        <div class="info-container">
+          <h3 class="brand-name">{{ brandName }}</h3>
+          <p class="item-name line-clamp">{{ itemName }}</p>
+        </div>
 
-      <div @click="goToProduct" class="pricing-info">
-        <span id="retail-price">{{ convertToINR(retailPrice) }}</span>
-        <span v-if="basePrice > retailPrice" id="base-price">{{
-          convertToINR(basePrice)
-        }}</span>
-        <span v-if="basePrice > retailPrice" id="discount"
-          >({{ discount }}% off)</span
-        >
+        <div class="pricing-info">
+          <span id="retail-price">{{ convertToINR(retailPrice) }}</span>
+          <span v-if="basePrice > retailPrice" id="base-price">{{
+            convertToINR(basePrice)
+          }}</span>
+          <span v-if="basePrice > retailPrice" id="discount">({{ discount }}% off)</span>
+        </div>
       </div>
-    </div>
+    </NuxtLink>
     <div class="offer-section">
       <div class="offers-bar" v-if="noOfOffers > 0">
         <div class="flex-together" v-html="couponIcon"></div>
         {{ noOfOffers }} offers available
       </div>
     </div>
-    <button
-      :class="{ disabled: props.itemInfo.inventory_status == 'out_of_stock' }"
-      @click="buttonAction"
-      v-if="showButton"
-      class="add-to-cart"
-    >
+    <button :class="{ disabled: props.itemInfo.inventory_status == 'out_of_stock' }" @click="buttonAction"
+      v-if="showButton" class="add-to-cart">
       <div class="flex-together" v-html="cartIcon"></div>
       Add To Cart
     </button>
@@ -131,7 +115,7 @@ const noOfOffers = computed(() => {
     availableOffers = [
       ...availableOffers,
       ...store.couponsMap[
-        props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id
+      props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id
       ],
     ];
   }
@@ -210,6 +194,31 @@ const discount = computed(() => {
   }
 });
 
+const goToProduct = computed(() => {
+  var obj = {};
+  if (creatorStore.info?.username) {
+    obj = {
+      name: "CreatorProduct",
+      params: {
+        id: props.itemInfo?.id,
+        creatorUsername: creatorStore?.info?.username,
+      },
+      query: {
+        title: props.itemInfo?.name,
+      },
+    }
+  } else {
+    obj = {
+      name: "product",
+      params: { id: props.itemInfo?.id },
+      query: {
+        title: props.itemInfo?.name,
+      },
+    }
+  }
+  return obj;
+})
+
 function buttonAction() {
   if (props.itemInfo?.inventory_status == "out_of_stock") {
     return;
@@ -217,28 +226,13 @@ function buttonAction() {
   emit("buttonAction", props.itemInfo);
 }
 
-function goToProduct() {
-  if (creatorStore?.info?.username) {
-    router.push({
-      name: "creatorProduct",
-      params: {
-        product_id: props.itemInfo?.id,
-        creator_username: creatorStore?.info?.username,
-      },
-      query: {
-        title: props.itemInfo?.name,
-      },
-    });
-  } else {
-    router.push({
-      name: "product",
-      params: { product_id: props.itemInfo?.id },
-      query: {
-        title: props.itemInfo?.name,
-      },
-    });
-  }
-}
+// function goToProduct() {
+//   if (creatorStore?.info?.username) {
+//     router.push();
+//   } else {
+//     router.push();
+//   }
+// }
 
 async function toggleWishlist() {
   if (!!store.wishlistedItems[props.itemInfo.id]) {
@@ -254,13 +248,16 @@ async function toggleWishlist() {
   box-sizing: border-box;
   max-width: 180px;
 }
+
 .oos-card .featured-image {
   filter: grayscale(1);
 }
+
 .oos-card .item-info-wrapper {
   color: var(--inactive-text) !important;
   opacity: 50%;
 }
+
 .image-tag-wrapper {
   position: relative;
   z-index: 0;
@@ -283,6 +280,7 @@ async function toggleWishlist() {
   z-index: 2;
   cursor: pointer;
 }
+
 .item-info-wrapper {
   padding: 8px 0 0;
   cursor: default;
@@ -318,6 +316,7 @@ p.item-name {
   gap: 4px;
   padding: 4px 0 0;
 }
+
 span#retail-price {
   color: var(--dark-purple, #13141b);
   font-family: Urbanist-Bold;
@@ -339,7 +338,8 @@ span#discount {
   color: var(--green, #01c159);
   font-family: Urbanist-Bold;
   font-size: 12px;
-  line-height: 18px; /* 150% */
+  line-height: 18px;
+  /* 150% */
   letter-spacing: 0.4px;
 }
 
@@ -352,16 +352,12 @@ span#discount {
   top: 0;
   left: 0;
   z-index: 1;
-  background: transparent
-    linear-gradient(
-      52deg,
+  background: transparent linear-gradient(52deg,
       transparent,
       rgba(0, 0, 0, 0.1) 82%,
       rgba(0, 0, 0, 0.1) 90%,
       rgba(0, 0, 0, 0.1) 100%,
-      rgba(0, 0, 0, 0) 0
-    )
-    0 0 no-repeat padding-box;
+      rgba(0, 0, 0, 0) 0) 0 0 no-repeat padding-box;
 }
 
 .tag {
@@ -407,6 +403,7 @@ span#discount {
 .bxgy.tag {
   background: var(--dark-blue);
 }
+
 .offers-section {
   height: 24px;
   width: 100%;
@@ -458,6 +455,7 @@ span#discount {
   color: #a9a9a9;
   background: #fefefe;
 }
+
 .disabled :deep() svg path {
   stroke: #a9a9a9;
 }

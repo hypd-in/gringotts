@@ -244,9 +244,9 @@ const productDescription = computed(() => {
   }
 });
 
-onBeforeUnmount(() => {
-  product.saveProductInfo({});
-});
+// onBeforeUnmount(() => {
+//   product.saveProductInfo({});
+// });
 
 // watch(productInfo, async (newV, oldV) => {
 //   if (newV.id && newV.id != oldV.id) {

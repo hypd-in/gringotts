@@ -14,13 +14,13 @@ definePageMeta({
 
 const route = useRoute();
 const router = useRouter();
-const runtimeConfig = useRuntimeConfig();
+const config = useRuntimeConfig();
 const product = useProductStore();
 const creatorStore = useCreatorStore();
 
 if (route.params.id) {
   const { data: productInfo, pending: fetchingProductInfo } = await useFetch(
-    `${runtimeConfig.public.catalogURL}/api/app/catalog/${route.params.id}`,
+    `${config.public.catalogURL}/api/app/catalog/${route.params.id}`,
     {
       method: "GET",
       headers: {
@@ -44,7 +44,7 @@ useSeoMeta({
 });
 
 onBeforeMount(() => {
-  console.log(creatorStore, product);
+  console.log("PDP Mounted");
 });
 </script>
 
@@ -59,11 +59,13 @@ onBeforeMount(() => {
   position: relative;
   z-index: 0;
 }
+
 @media only screen and (max-width: 520px) {
   .product-page-container {
     background: var(--background-grey, #f9f9f9);
     height: 100%;
   }
+
   .product-view {
     margin: 0 !important;
     padding: 0px;

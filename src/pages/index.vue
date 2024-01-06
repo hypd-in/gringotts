@@ -6,7 +6,10 @@
 </template>
 
 <script setup>
+definePageMeta({
+  name: "Index",
+  layout: "standalone"
+})
 </script>
 
-<style>
-</style>
+<style></style>
