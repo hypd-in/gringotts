@@ -34,29 +34,27 @@
 </template>
 
 <script setup>
-const route = useRoute();
-const router = useRouter();
 
 function goToIndex() {
-  router.push({
+  navigateTo({
     name: "Index",
   });
 }
 
 function goToContact() {
-  router.push({
+  navigateTo({
     name: "ContactUs",
   });
 }
 
 function goToPrivacyPolicy() {
-  router.push({
+  navigateTo({
     name: "PrivacyPolicy",
   });
 }
 
 function goToTerms() {
-  router.push({
+  navigateTo({
     name: "TermsAndConditions",
   });
 }

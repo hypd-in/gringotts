@@ -13,7 +13,6 @@ definePageMeta({
 });
 
 const route = useRoute();
-const router = useRouter();
 const config = useRuntimeConfig();
 const product = useProductStore();
 const creatorStore = useCreatorStore();
@@ -35,17 +34,18 @@ if (route.params.id) {
 
 useSeoMeta({
   title: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
-  ogTitle: `${product.info?.name}`,
+  ogTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
   description: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   ogDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   ogImage: `${product.info?.featured_image?.src}`,
+  ogUrl: `www.hypd.store/${creatorStore.info.name}`,
+  twitterTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
+  twitterDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   twitterImage: `${product.info?.featured_image?.src}`,
   twitterCard: "summary_large_image",
+  lang: "en-IN"
 });
 
-onBeforeMount(() => {
-  console.log("PDP Mounted");
-});
 </script>
 
 
@@ -53,11 +53,6 @@ onBeforeMount(() => {
 .product-view {
   padding: 12px 0;
   box-sizing: border-box;
-}
-
-.product-page-container {
-  position: relative;
-  z-index: 0;
 }
 
 @media only screen and (max-width: 520px) {

@@ -3,7 +3,7 @@
     <div @click="emit('close')" class="backdrop"></div>
     <div class="image-preview-container">
       <button @click="emit('close')" class="close">
-        <!-- <img src="@/assets/icons/misc/close.svg" alt="close" srcset="" /> -->
+        <img src="@/assets/icons/misc/close.svg" alt="close" srcset="" />
       </button>
       <div class="navigation-btns">
         <button
@@ -11,14 +11,14 @@
           :class="{ disabled: index == 0 }"
           class="back"
         >
-          <!-- <img src="@/assets/icons/misc/back.svg" alt="back" srcset="" /> -->
+          <img src="@/assets/icons/misc/back.svg" alt="back" srcset="" />
         </button>
         <button
           @click="changeImage('forward', index)"
           :class="{ disabled: index == mediaImages?.length - 1 }"
           class="forward"
         >
-          <!-- <img src="@/assets/icons/misc/forward.svg" alt="forward" srcset="" /> -->
+          <img src="@/assets/icons/misc/forward.svg" alt="forward" srcset="" />
         </button>
       </div>
 

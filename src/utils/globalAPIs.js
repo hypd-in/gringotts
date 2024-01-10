@@ -41,11 +41,64 @@ export async function fetchWishlistedProducts() {
       .then((response) => {
         if (response.payload) {
           store.saveWishlistedItems(response.payload);
-          console.log(store.wishlistedItems);
         }
       })
       .catch((err) => {
         console.log("Error fetching Wishlisted Products", err);
       });
   }
+}
+
+export async function fetchCartInfo() {
+  const store = useStore();
+  // const route = useRoute();
+  if (!store.user?.id) {
+    return;
+  } else {
+    await $fetch(
+      `${useRuntimeConfig().public.entityURL}/api/app/v2/cart/${store.user.id}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    )
+      .then(async (response) => {
+        if (response.payload) {
+          store.saveCartInfo(response.payload);
+          if (response.payload?.items && response.payload?.items?.length > 0) {
+            var items = await saveVariants(response.payload?.items);
+            var cartItemsObject = {};
+            cartItemsObject = items?.reduce(
+              (obj, item) => Object.assign(obj, { [item.variant_id]: item }),
+              {}
+            );
+            store.saveCartItems(cartItemsObject);
+          } else {
+            store.saveCartItems({});
+          }
+        }
+      })
+      .catch((err) => {
+        console.log("Error fetching cart info", err);
+      });
+  }
+}
+
+export async function saveVariants(items) {
+  items.forEach(async (item) => {
+    item["variants"] = await item.catalog_info?.variants?.reduce(
+      (obj, item) => {
+        return {
+          ...obj,
+          [item["id"]]: item,
+        };
+      },
+      {}
+    );
+  });
+
+  return items;
 }

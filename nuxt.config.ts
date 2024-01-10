@@ -99,6 +99,11 @@ export default defineNuxtConfig({
           rel: "canonical",
           href: "https://www.hypd.store",
         },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/favicon.ico'
+        }
       ],
     },
   },

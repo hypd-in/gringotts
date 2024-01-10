@@ -5,9 +5,7 @@
       <div class="heading-container">
         <h2 class="heading">
           Wishlist
-          <span v-if="noOfWishlistedProducts > 0"
-            >({{ noOfWishlistedProducts }})</span
-          >
+          <span v-if="noOfWishlistedProducts > 0">({{ noOfWishlistedProducts }})</span>
         </h2>
         <button @click="close" class="close-btn">
           <img src="@/assets/icons/common/cross.svg" alt="" />
@@ -16,12 +14,7 @@
 
       <div class="wishlisted-products" v-if="noOfWishlistedProducts > 0">
         <div class="product-listing-wrapper">
-          <ProductCard
-            v-for="product in wishlistedProducts"
-            :itemInfo="product"
-            :key="product?.id"
-            origin="wishlist"
-          />
+          <ProductCard v-for="product in wishlistedProducts" :itemInfo="product" :key="product?.id" origin="wishlist" />
         </div>
       </div>
       <div v-else class="empty-cart">
@@ -33,8 +26,8 @@
 </template>
 
 <script setup>
-import ProductCard from "@/components/ProductComponents/ProductCard.vue";
-// import { getObjectLength } from "@/customMethods/globalMethods";
+import ProductCard from "~/components/ProductComponents/ProductCard.vue";
+import { getObjectLength } from "~/utils/helperMethods";
 
 const { proxy } = getCurrentInstance();
 const emit = defineEmits(["close"]);
@@ -97,6 +90,7 @@ h2.heading {
   letter-spacing: 0.2px;
   margin: 0;
 }
+
 .wishlist-wrapper {
   position: fixed;
   top: 0;
@@ -106,6 +100,7 @@ h2.heading {
   box-sizing: border-box;
   z-index: 59;
 }
+
 .overlay {
   position: fixed;
   top: 0;

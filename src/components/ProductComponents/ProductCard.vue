@@ -58,9 +58,8 @@
 import ImageFrame from "@/components/ImageFrame.vue";
 import {
   convertToINR,
-  getObjectLength,
   optimizeImage,
-} from "~/Helpers/helperMethods";
+} from "~/utils/helperMethods";
 
 const props = defineProps({
   itemInfo: Object,
@@ -225,14 +224,6 @@ function buttonAction() {
   }
   emit("buttonAction", props.itemInfo);
 }
-
-// function goToProduct() {
-//   if (creatorStore?.info?.username) {
-//     router.push();
-//   } else {
-//     router.push();
-//   }
-// }
 
 async function toggleWishlist() {
   if (!!store.wishlistedItems[props.itemInfo.id]) {

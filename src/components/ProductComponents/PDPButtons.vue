@@ -1,23 +1,9 @@
 <template>
   <section class="buttons-section">
-    <button
-      @click="toggleWishlist"
-      :class="{ wishlisted: isWishlisted }"
-      class="wishlist-btn"
-      v-html="wishlistIcon"
-    ></button>
-    <Button
-      class="add-to-cart-btn"
-      :loading="addingToCart"
-      :defaultText="addToCartText"
-      @click="addToCart"
-    />
-    <Button
-      @click="buyNow"
-      class="buy-now-btn"
-      :loading="buyingNow"
-      defaultText="Buy Now"
-    />
+    <button @click="toggleWishlist" :class="{ wishlisted: isWishlisted }" class="wishlist-btn"
+      v-html="wishlistIcon"></button>
+    <Button class="add-to-cart-btn" :loading="addingToCart" :defaultText="addToCartText" @click="addToCart" />
+    <Button @click="buyNow" class="buy-now-btn" :loading="buyingNow" defaultText="Buy Now" />
   </section>
 </template>
 
@@ -26,17 +12,18 @@
 import Button from "@/components/SubmitButton.vue";
 // import { addItemToCart } from "@/customMethods/cartMethods";
 // import { trackingAddToCart } from "@/eventTracking";
-// import store from "@/store";
-// import product from "@/store/modules/product";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 
 const route = useRoute();
+const store = useStore();
+const creatorStore = useCreatorStore();
+const productStore = useProductStore();
 const emit = defineEmits(["getVariant"]);
 
 const isWishlisted = computed(() => {
-  // return !!store.state.wishlistedItems[store.state.product.info?.id];
-  return false;
+  return !!store.wishlistedItems[productStore.info?.id];
+  // return false;
 });
 const wishlistIcon = computed(() => {
   if (isWishlisted.value) {
@@ -50,101 +37,102 @@ const addingToCart = ref(false);
 const buyingNow = ref(false);
 const router = useRouter();
 const selectedVariantId = computed(() => {
-  return store.getters["product/selectedVariant"]?.id;
+  return productStore.info?.selected_variant?.id;
 });
 const addToCartText = computed(() => {
-  // if (!!store.getters?.cartItems[selectedVariantId.value]) {
-  //   return "Go to cart";
-  // } else {
+  if (!!store.cartItems[selectedVariantId.value]) {
+    return "Go to cart";
+  } else {
     return "Add to cart";
-  // }
+  }
 });
 
 async function toggleWishlist() {
-  // if (!isWishlisted.value) {
-  //   var itemInfo = {
-  //     ...store.state.product.info,
-  //     source: {
-  //       id: store.state.creator?.info?.id,
-  //       type: "creator_store",
-  //     },
-  //   };
-  //   await addItemToWishlist(itemInfo);
-  // } else {
-  //   await removeItemFromWishlist(store.state.product.info);
-  // }
+  if (!isWishlisted.value) {
+    var itemInfo = {
+      ...productStore.info,
+      source: {
+        id: creatorStore?.info?.id,
+        type: "creator_store",
+      },
+    };
+    // await addItemToWishlist(itemInfo);
+  } else {
+    await removeItemFromWishlist(productStore.info);
+  }
 }
 async function addToCart() {
-  // if (!store.state.product.info.selected_variant?.id) {
-  //   emit("getVariant");
-  //   return;
-  // } else if (
-  //   !!store.state?.cartItems[store.state.product?.info?.selected_variant?.id]
-  // ) {
-  //   goToCart();
-  // }
-  // var itemInfo = {
-  //   variant_id: store.state.product.info.selected_variant?.id,
-  //   catalog_id: store.state.product.info.id,
-  //   quantity: 1,
-  // };
-  // if (store.state.creator.info?.id) {
-  //   itemInfo["source"] = {
-  //     id: store.state.creator.info.id,
-  //     type: "creator_store",
-  //   };
-  // }
-  // if (store.state.user?.id) {
-  //   itemInfo["id"] = store.state.user.id;
-  //   addingToCart.value = true;
-  //   await addItemToCart(itemInfo);
-  //   addingToCart.value = false;
-  // } else {
-  //   if (localStorage.getItem("cart_items") != null) {
-  //     var cartItems = JSON.parse(localStorage.getItem("cart_items"));
-  //     cartItems.push(itemInfo);
-  //     localStorage.removeItem("cart_items");
-  //     localStorage.setItem("cart_items", JSON.stringify(cartItems));
-  //   } else {
-  //     var cartItems = [];
-  //     cartItems.push(itemInfo);
-  //     localStorage.setItem("cart_items", JSON.stringify(cartItems));
-  //   }
-  //   store.dispatch("addItemToCart", {
-  //     ...itemInfo,
-  //     ...store.state.product?.info,
-  //   });
-  // }
+  if (!productStore.info?.selected_variant?.id) {
+    emit("getVariant");
+    return;
+  } else if (
+    !!store.cartItems[productStore.info?.selected_variant?.id]
+  ) {
+    goToCart();
+  }
+  var itemInfo = {
+    variant_id: productStore.info?.selected_variant?.id,
+    catalog_id: productStore.info?.id,
+    quantity: 1,
+  };
+  if (creatorStore.info?.id) {
+    itemInfo["source"] = {
+      id: creatorStore.info?.id,
+      type: "creator_store",
+    };
+  }
+  if (store.user?.id) {
+    itemInfo["id"] = store.user.id;
+    addingToCart.value = true;
+    // await addItemToCart(itemInfo);
+    addingToCart.value = false;
+  } else {
+    if (localStorage.getItem("cart_items") != null) {
+      var cartItems = JSON.parse(localStorage.getItem("cart_items"));
+      cartItems.push(itemInfo);
+      localStorage.removeItem("cart_items");
+      localStorage.setItem("cart_items", JSON.stringify(cartItems));
+    } else {
+      var cartItems = [];
+      cartItems.push(itemInfo);
+      localStorage.setItem("cart_items", JSON.stringify(cartItems));
+    }
+    // store.dispatch("addItemToCart", {
+    //   ...itemInfo,
+    //   ...productStore?.info,
+    // });
+  }
   // trackingAddToCart(
-  //   store.state.product.info,
-  //   store.state.creator.info,
-  //   store.state.product.info.selected_variant?.id
+  //   productStore.info,
+  //   creatoStore.info,
+  //   productStore.info?.selected_variant?.id
   // );
 }
 
 function buyNow() {
-  // if (!store.state.product.info?.selected_variant?.id) {
-  //   emit("getVariant");
-  //   return;
-  // }
-  // router.push({
-  //   name: "CartItems",
-  //   query: {
-  //     isExpress: true,
-  //     pid: store.state.product.info?.id,
-  //     vid: store.state.product.info?.selected_variant?.id,
-  //     creatorId: store.state.creator.info?.id,
-  //     creatorUsername: store.state.creator.info?.username,
-  //   },
-  // });
+  if (!productStore.info?.selected_variant?.id) {
+    emit("getVariant");
+    return;
+  }
+  navigateTo({
+    name: "CartItems",
+    query: {
+      isExpress: true,
+      pid: productStore.info?.id,
+      vid: productStore.info?.selected_variant?.id,
+      creatorId: creatorStore.info?.id,
+      creatorUsername: creatorStore.info?.username,
+    },
+  });
   // trackingAddToCart(
-  //   store.state.product.info,
-  //   store.state.creator.info,
-  //   store.state.product.info.selected_variant?.id
+  //   productStore.info,
+  //   creatorStore.info,
+  //   productStore.info.selected_variant?.id
   // );
 }
 
 function goToCart() {
+  console.log("GO TO CART");
   // router.push({
   //   name: "CartItems",
   // });
@@ -160,13 +148,16 @@ function goToCart() {
     border-top: 0;
     padding: 12px 16px !important;
   }
+
   .mobile-btns {
     display: flex !important;
   }
+
   .desktop-btns {
     display: none !important;
   }
 }
+
 .buttons-section.mobile-btns {
   display: none;
 }

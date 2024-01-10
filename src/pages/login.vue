@@ -96,9 +96,9 @@
           <img :src="news.img" :alt="news.alt" />
         </div>
       </div>
-      <video id="video-1" class="video"
+      <!-- <video id="video-1" class="video"
         src="https://hypd-store-prod.s3.ap-south-1.amazonaws.com/assets/common/Hypd+Store++Dont+just+watch+now+shop_1080p.mp4"
-        muted autoplay loop @click="toggleMute()"></video>
+        muted autoplay loop @click="toggleMute()"></video> -->
       <Footer />
     </div>
   </div>
@@ -107,13 +107,14 @@
 <script setup>
 definePageMeta({
   name: "Login",
-  layout: "false",
+  layout: "standalone",
 });
-import { fetchUserInfo } from "~/utils/globalAPIs";
+import { fetchUserInfo, fetchCartInfo } from "~/utils/globalAPIs";
 import OTP from "~/components/OtpInput.vue";
 import SubmitButton from "~/components/SubmitButton.vue";
 import Footer from "~/components/Footer.vue";
-import { returnMaxLength, returnNumber } from "~/Helpers/helperMethods";
+// import { returnMaxLength, returnNumber } from "~/Helpers/helperMethods";
+
 const phone_no = ref("");
 const config = useRuntimeConfig();
 const router = useRouter();
@@ -193,17 +194,22 @@ const confirmOTP = async (otpValue) => {
     if (response.payload) {
       submittingOTP.value = false;
       await fetchUserInfo();
-      // await fetchUserInfo();
+      await fetchCartInfo();
       // await fetchCartInfo();
-      console.log(useCookie("creators"));
-      // if (redirect) {
-      //   router.replace(`${redirect}`);
-      // } else if (getCookie("creators")) {
+      // console.log(useCookie("creators"));
+      if (redirect) {
+        navigateTo({
+          path: `${redirect}`,
+          replace: true,
+        });
+      }
+      // else if (getCookie("creators")) {
       //   let creator = Object.values(JSON.parse(getCookie("creators")));
       //   router.replace(`/${creator[0].username}`);
-      // } else {
-      //   router.replace(`/`);
       // }
+      else {
+        navigateTo({ path: '/', replace: true })
+      }
     }
   } catch (err) {
     showError.value = true;

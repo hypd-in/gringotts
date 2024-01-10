@@ -156,10 +156,9 @@ import Offers from "./ProductOffers.vue";
 import PDPButtons from "./PDPButtons.vue";
 import PoliciesComponent from "@/components/ProductComponents/PoliciesComponent.vue";
 import VariantSelector from "@/components/ProductComponents/VariantSelector.vue";
-import { convertToINR, optimizeImage } from "~/Helpers/helperMethods";
+import { convertToINR, getCreatorUserName, optimizeImage } from "~/utils/helperMethods";
 import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorComponent.vue";
 import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
-// import { getCreatorUserName } from "@/customMethods/globalMethods";
 // import { trackingViewItems } from "../../eventTracking.js";
 
 const route = useRoute();

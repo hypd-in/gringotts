@@ -106,7 +106,7 @@
 </template>
 
 <script setup>
-import { getCreatorUserName } from "~/Helpers/helperMethods";
+import { getCreatorUserName } from "~/utils/helperMethods";
 import ImageFrame from "../ImageFrame.vue";
 const route = useRoute();
 const router = useRouter();
@@ -146,7 +146,7 @@ async function goToBrandPage() {
 
 async function goToCreatorStore() {
   var creatorUsername = creatorStore.info?.username || await getCreatorUserName();
-  router.push({
+  navigateTo({
     name: "CreatorStore",
     params: {
       creatorUsername: creatorUsername,

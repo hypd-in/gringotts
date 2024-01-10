@@ -23,7 +23,6 @@ const config = useRuntimeConfig();
 const products = ref([]);
 
 if (route.params.id) {
-  console.log(route.params);
   const { data } = await useFetch(
     `${config.public.catalogURL}/api/app/catalog/similar`,
     {

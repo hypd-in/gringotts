@@ -28,9 +28,10 @@ if (route.params.creatorUsername) {
 }
 
 onMounted(async () => {
-  console.log("App mounted Updated");
+  console.log("App mounted");
   if (!store.user.id) {
-    var user = fetchUserInfo();
+    var user = await fetchUserInfo();
+    await fetchCartInfo();
     if (user?.id) {
       userInfo.value = { ...user };
     }

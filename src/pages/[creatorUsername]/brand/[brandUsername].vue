@@ -6,6 +6,9 @@
 </template>
 
 <script setup>
+definePageMeta({
+    name: "BrandProfile"
+})
 const route = useRoute();
 </script>
 
