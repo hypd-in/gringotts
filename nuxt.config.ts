@@ -11,23 +11,19 @@ export default defineNuxtConfig({
     port: 8080,
   },
   srcDir: "src",
-  modules: [
-    '@pinia/nuxt',
-  ],
-  pinia: {
-    storesDirs: ['../src/stores/**'],
-  },
   runtimeConfig: {
     public:
       process.env.NODE_ENV != "production"
         ? {
-            catalogURL: "https://catalogv2.getshitdone.in",
-            entityURL: "https://entity.getshitdone.in",
-          }
+          catalogURL: "https://catalogv2.getshitdone.in",
+          entityURL: "https://entity.getshitdone.in",
+          cmsURL: 'https://cms.getshitdone.in'
+        }
         : {
-            catalogURL: "https://catalog2.hypd.store",
-            entityURL: "https://entity.hypd.store",
-          },
+          catalogURL: "https://catalog2.hypd.store",
+          entityURL: "https://entity.hypd.store",
+          cmsURL: 'https://cms.hypd.store'
+        },
   },
   app: {
     head: {
