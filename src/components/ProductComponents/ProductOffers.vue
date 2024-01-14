@@ -5,33 +5,24 @@
       <span>{{ `${currentIndex}/${totalCoupons}` }}</span>
     </div>
     <div @scroll="getCouponIndex" class="coupon-listing">
-      <div
-        :class="offer.type"
-        class="coupon"
-        ref="couponEl"
-        v-for="offer in offers"
-        :key="offer.code"
-      >
+      <div :class="offer.type" class="coupon" ref="couponEl" v-for="offer in offers" :key="offer.code">
         <div class="section left-section">
           <div v-html="couponText[offer.id]"></div>
           <button @click="copyCode(offer)" v-html="buttonText(offer)"></button>
         </div>
         <div class="half-circle top-circle"></div>
         <div class="half-circle bottom-circle"></div>
-        <div
-          class="section right-section"
-          v-html="discountText[offer.id]"
-        ></div>
+        <div class="section right-section" v-html="discountText[offer.id]"></div>
       </div>
     </div>
   </section>
 </template>
 
 <script setup>
-import { computed, onMounted, onUpdated, ref } from "vue";
-import { useRouter } from "vue-router";
-import { convertToINR } from "~/Helpers/helperMethods";
+import { convertToINR } from "~/utils/helperMethods";
 const router = useRouter();
+const creatorStore = useCreatorStore();
+const productStore = useProductStore();
 const props = defineProps({
   offers: Object,
 });
@@ -53,9 +44,9 @@ async function getCouponIndex(event) {
       bounding.top >= 0 &&
       bounding.left >= 0 &&
       bounding.right <=
-        (window.innerWidth || document.documentElement.clientWidth) &&
+      (window.innerWidth || document.documentElement.clientWidth) &&
       bounding.bottom <=
-        (window.innerHeight || document.documentElement.clientHeight)
+      (window.innerHeight || document.documentElement.clientHeight)
     ) {
       currentIndex.value = index + 1;
     }
@@ -75,15 +66,13 @@ onMounted(async () => {
 async function getCouponDiscountText() {
   props.offers.forEach((offer) => {
     if (offer.type == "percent_off") {
-      couponText.value[offer.id] = `Use code <span>"${
-        offer.code
-      }"</span> to get <span>${convertToINR(offer.total_discount)}</span> off.`;
+      couponText.value[offer.id] = `Use code <span>"${offer.code
+        }"</span> to get <span>${convertToINR(offer.total_discount)}</span> off.`;
 
       discountText.value[offer.id] = `${offer.value}% off`;
     } else if (offer.type == "flat_off") {
-      couponText.value[offer.id] = `Use code <span>"${
-        offer.code
-      }"</span> to get <span>${convertToINR(offer.total_discount)}</span> off.`;
+      couponText.value[offer.id] = `Use code <span>"${offer.code
+        }"</span> to get <span>${convertToINR(offer.total_discount)}</span> off.`;
 
       discountText.value[offer.id] = `${convertToINR(offer.value)} off`;
     } else if (offer.applicable_on.name == "bxgy") {
@@ -95,23 +84,19 @@ async function getCouponDiscountText() {
         offer.id
       ] = `Buy${offer.applicable_on.bxgy.buy_count} Get${offer.applicable_on.bxgy.get_count}`;
     } else if (offer.applicable_on.name == "bundle") {
-      couponText.value[offer.id] = `Use <span>"${
-        offer.code
-      }"</span> to get <span>${offer.applicable_on.bundle.quantity}</span> at ${
-        offer.applicable_on.bundle.sub_type == "flat"
+      couponText.value[offer.id] = `Use <span>"${offer.code
+        }"</span> to get <span>${offer.applicable_on.bundle.quantity}</span> at ${offer.applicable_on.bundle.sub_type == "flat"
           ? `Flat <span>${convertToINR(
-              offer.applicable_on.bundle.amount
-            )}</span>`
+            offer.applicable_on.bundle.amount
+          )}</span>`
           : `<span>${offer.applicable_on.bundle.amount}% off</span>`
-      }`;
+        }`;
 
-      discountText.value[offer.id] = `Buy${
-        offer.applicable_on.bundle.quantity
-      } <span id="small">@</span> ${
-        offer.applicable_on.bundle.sub_type == "flat"
+      discountText.value[offer.id] = `Buy${offer.applicable_on.bundle.quantity
+        } <span id="small">@</span> ${offer.applicable_on.bundle.sub_type == "flat"
           ? `<span>${convertToINR(offer.applicable_on.bundle.amount)}</span>`
           : `<span>${offer.applicable_on.bundle.amount}% </span> <span id="small">off</span>`
-      }`;
+        }`;
     }
   });
 }
@@ -130,10 +115,10 @@ async function copyCode(offer) {
 }
 
 async function goToBundleProducts(offer) {
-  await router.push({
+  await navigateTo({
     name: "CouponEligibleProducts",
     params: {
-      creator_username: store.state.creator.info?.username,
+      creator_username: creatorStore.info?.username,
       id: offer.id,
     },
   });
@@ -143,23 +128,23 @@ async function goToBxgyProducts(offer) {
   if (offer.applicable_on.bxgy.sub_type == "brand") {
     await goToBrandProfile();
   } else if (offer.applicable_on.bxgy.sub_type == "catalog") {
-    await store.dispatch("saveBxGyGetIds", [
-      ...offer.applicable_on.bxgy.get_ids,
-    ]);
-    await router.push({
+    // await store.dispatch("saveBxGyGetIds", [
+    //   ...offer.applicable_on.bxgy.get_ids,
+    // ]);
+    await navigateTo({
       name: "BxGy",
       params: {
-        creator_username: store.state.creator?.info?.username,
+        creatorUsername: creatorStore?.info?.username,
       },
     });
   }
 }
 async function goToBrandProfile() {
-  await router.push({
+  await navigateTo({
     name: "creatorBrandProfile",
     params: {
-      creator_username: store.state.creator?.info?.username,
-      name: store.state.product?.info?.brand_info?.username,
+      creatorUsername: creatorStore?.info?.username,
+      name: productStore?.info?.brand_info?.username,
     },
   });
 }
@@ -182,6 +167,7 @@ function buttonText(offer) {
   position: relative;
   z-index: 1;
 }
+
 .heading {
   display: flex;
   align-items: center;
@@ -189,6 +175,7 @@ function buttonText(offer) {
   box-sizing: border-box;
   padding: 16px 16px 0;
 }
+
 .heading span {
   color: var(--inactive-text, #a9a9a9);
 
@@ -197,6 +184,7 @@ function buttonText(offer) {
   line-height: 16px;
   letter-spacing: 0.4px;
 }
+
 h2 {
   color: var(--primary-black, #13141b);
   font-family: Urbanist-Bold;
@@ -205,6 +193,7 @@ h2 {
   letter-spacing: 0.2px;
   margin: 0;
 }
+
 .coupon-listing {
   display: flex;
   align-items: center;
@@ -233,6 +222,7 @@ h2 {
   position: relative;
   z-index: 0;
 }
+
 .section {
   border: 2px dashed rgba(0, 0, 0, 0.2);
   border-radius: 12px;
@@ -255,6 +245,7 @@ h2 {
   align-items: flex-start;
   justify-content: center;
 }
+
 .section:deep() span {
   font-family: "Urbanist-Bold";
 }
@@ -266,6 +257,7 @@ h2 {
   white-space: pre-wrap;
   gap: 2px;
 }
+
 .right-section {
   background: #f6bd28;
   align-items: center;
@@ -309,6 +301,7 @@ h2 {
 .percent_off .left-section {
   background: #fffaed;
 }
+
 .flat_off .right-section,
 .percent_off .right-section {
   background: #f6bd28;
@@ -320,6 +313,7 @@ h2 {
 .bxgy .left-section {
   background: #edf7ff;
 }
+
 .bundle .right-section,
 .bxgy .right-section {
   background: #4baeff;

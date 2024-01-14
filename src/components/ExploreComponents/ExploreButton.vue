@@ -71,7 +71,7 @@ onMounted(() => {
 function showAnimation() {
   if (!timeout.value) {
     timeout.value = setTimeout(() => {
-      store.dispatch("toggleExploreAnimation");
+      store.toggleExploreAnimation();
     }, 2000);
   } else {
     clearTimeout(timeout.value);

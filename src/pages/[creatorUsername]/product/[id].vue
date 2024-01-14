@@ -5,12 +5,64 @@
 </template>
 
 <script setup>
-const route = useRoute()
-    onMounted(()=>{
-        console.log("PDP mounted")
-    })
+import ProductView from "@/components/ProductComponents/PDPComponent.vue";
+
+definePageMeta({
+  name: "CreatorProduct",
+  layout: "public",
+});
+
+const route = useRoute();
+const config = useRuntimeConfig();
+const product = useProductStore();
+const creatorStore = useCreatorStore();
+
+if (route.params.id) {
+  const { data: productInfo, pending: fetchingProductInfo } = await useFetch(
+    `${config.public.catalogURL}/api/app/catalog/${route.params.id}`,
+    {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (productInfo.value.payload) {
+    product.saveProductInfo(productInfo.value.payload);
+  }
+}
+
+useSeoMeta({
+  title: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
+  ogTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
+  description: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
+  ogDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
+  ogImage: `${product.info?.featured_image?.src}`,
+  ogUrl: `www.hypd.store/${creatorStore.info.name}`,
+  twitterTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
+  twitterDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
+  twitterImage: `${product.info?.featured_image?.src}`,
+  twitterCard: "summary_large_image",
+  lang: "en-IN"
+});
+
 </script>
 
-<style>
+<style scoped>
+.product-view {
+  padding: 12px 0;
+  box-sizing: border-box;
+}
 
+@media only screen and (max-width: 520px) {
+  .product-page-container {
+    background: var(--background-grey, #f9f9f9);
+    height: 100%;
+  }
+
+  .product-view {
+    margin: 0 !important;
+    padding: 0px;
+  }
+}
 </style>

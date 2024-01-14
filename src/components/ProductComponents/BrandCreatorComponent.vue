@@ -106,50 +106,50 @@
 </template>
 
 <script setup>
-import { getCreatorUserName } from "@/customMethods/globalMethods";
-import store from "@/store";
-import { computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { getCreatorUserName } from "~/utils/helperMethods";
 import ImageFrame from "../ImageFrame.vue";
 const route = useRoute();
 const router = useRouter();
+const productStore = useProductStore();
+const creatorStore = useCreatorStore();
 
 const brandInfo = computed(() => {
-  return store.state.product.info?.brand_info;
+  return productStore.info?.brand_info;
 });
 const creatorInfo = computed(() => {
-  return store.state.creator.info;
+  return creatorStore.info;
 });
 const brandLogo = computed(() => {
-  return store.state.product.info?.brand_info?.logo?.src;
+  return productStore.info?.brand_info?.logo?.src;
 });
 
 const creatorImage = computed(() => {
-  return store.state.creator.info?.profile_image?.src;
+  return creatorStore.info?.profile_image?.src;
 });
 
 async function goToBrandPage() {
   var creatorUsername = await getCreatorUserName();
-  if(brandInfo.value?.username){
-    router.push({
-      name: "creatorBrandProfile",
-      params: {
-        creator_username: creatorUsername,
-        name: brandInfo.value?.username,
-      },
-      query: {
-        title: brandInfo.value?.name,
-      }
-    });
-  }
+  console.log(creatorUsername);
+  // if (brandInfo.value?.username) {
+  //   router.push({
+  //     name: "creatorBrandProfile",
+  //     params: {
+  //       creatorUsername: creatorUsername,
+  //       brandUsername: brandInfo.value?.username,
+  //     },
+  //     query: {
+  //       title: brandInfo.value?.name,
+  //     },
+  //   });
+  // }
 }
 
 async function goToCreatorStore() {
-  var creatorUsername = await getCreatorUserName();
-  router.push({
-    name: "creator_store",
+  var creatorUsername = creatorStore.info?.username || await getCreatorUserName();
+  navigateTo({
+    name: "CreatorStore",
     params: {
-      creator_username: creatorUsername,
+      creatorUsername: creatorUsername,
     },
   });
 }

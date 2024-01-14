@@ -34,29 +34,27 @@
 </template>
 
 <script setup>
-const route = useRoute();
-const router = useRouter();
 
 function goToIndex() {
-  router.push({
+  navigateTo({
     name: "Index",
   });
 }
 
 function goToContact() {
-  router.push({
+  navigateTo({
     name: "ContactUs",
   });
 }
 
 function goToPrivacyPolicy() {
-  router.push({
+  navigateTo({
     name: "PrivacyPolicy",
   });
 }
 
 function goToTerms() {
-  router.push({
+  navigateTo({
     name: "TermsAndConditions",
   });
 }
@@ -98,7 +96,7 @@ function goToTerms() {
 
 .content-container section {
   display: grid;
-  justify-content: center;
+  /* justify-content: center; */
   width: 100%;
   box-sizing: border-box;
 }
@@ -110,6 +108,7 @@ h2.name {
   color: var(--primary-black);
   cursor: pointer;
   user-select: none;
+  width: fit-content;
 }
 
 p.content {

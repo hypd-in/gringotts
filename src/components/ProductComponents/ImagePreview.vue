@@ -3,7 +3,7 @@
     <div @click="emit('close')" class="backdrop"></div>
     <div class="image-preview-container">
       <button @click="emit('close')" class="close">
-        <!-- <img src="@/assets/icons/misc/close.svg" alt="close" srcset="" /> -->
+        <img src="@/assets/icons/misc/close.svg" alt="close" srcset="" />
       </button>
       <div class="navigation-btns">
         <button

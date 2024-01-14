@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { returnMaxLength, returnNumber } from "~/Helpers/helperMethods";
+import { returnMaxLength, returnNumber } from "~/utils/helperMethods";
 
 const emit = defineEmits(["autoSubmit"]);
 const otpField = ref(null);

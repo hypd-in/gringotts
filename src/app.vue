@@ -7,14 +7,16 @@
 <script setup>
 const route = useRoute();
 const router = useRouter();
+const store = useStore();
 const creatorStore = useCreatorStore();
 const runtimeConfig = useRuntimeConfig();
+const userInfo = ref({});
 
 if (route.params.creatorUsername) {
   const { data, pending: loadingCreatorInfo } = await useFetch(
     runtimeConfig.public.entityURL +
-      "/api/app/influencer/username/" +
-      route.params.creatorUsername,
+    "/api/app/influencer/username/" +
+    route.params.creatorUsername,
     {
       key:"influencer_info_app",
       methods: "GET",
@@ -26,7 +28,14 @@ if (route.params.creatorUsername) {
   creatorStore.saveCreatorInfo(data?.value?.payload);
 }
 
-onMounted(() => {
+onMounted(async () => {
   console.log("App mounted");
+  if (!store.user.id) {
+    var user = await fetchUserInfo();
+    await fetchCartInfo();
+    if (user?.id) {
+      userInfo.value = { ...user };
+    }
+  }
 });
 </script>

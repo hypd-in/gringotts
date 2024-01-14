@@ -25,6 +25,9 @@ export default defineNuxtConfig({
           cmsURL: 'https://cms.hypd.store'
         },
   },
+  nitro: {
+    preset: "node-cluster",
+  },
   app: {
     head: {
       title: "HYPD Store | #getHYPD",
@@ -95,6 +98,11 @@ export default defineNuxtConfig({
           rel: "canonical",
           href: "https://www.hypd.store",
         },
+        {
+          rel: 'icon',
+          type: 'image/png',
+          href: '/favicon.ico'
+        }
       ],
     },
   },

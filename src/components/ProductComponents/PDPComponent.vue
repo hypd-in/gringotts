@@ -132,12 +132,12 @@
 
           <PoliciesComponent />
 
-          <!-- <BrandCreatorComponent /> -->
+          <BrandCreatorComponent />
 
           <PDPButtons @getVariant="toggleVariantSelector" class="mobile-btns" />
         </div>
       </div>
-      <!-- <SimilarProducts :products="similarProducts" heading="Similar Products" /> -->
+      <SimilarProducts :products="similarProducts" heading="Similar Products" />
     </div>
     <!-- <Footer /> -->
   </div>
@@ -145,32 +145,20 @@
 
 <script setup>
 // import {
-//   convertToINR,
 //   fetchSimilarProducts,
 //   getProductInfoById,
 // } from "@/API/APIs";
 
-import {
-  computed,
-  getCurrentInstance,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  watch,
-} from "vue";
-// import { onBeforeRouteLeave, useRoute, useRouter } from "vue-router";
 import ImageFrame from "../ImageFrame.vue";
 // import VideoPlayer from "../hypdPlayer.vue";
 import ImagePreview from "./ImagePreview.vue";
-// import Footer from "@/components/FooterHypd.vue";
 import Offers from "./ProductOffers.vue";
 import PDPButtons from "./PDPButtons.vue";
 import PoliciesComponent from "@/components/ProductComponents/PoliciesComponent.vue";
 import VariantSelector from "@/components/ProductComponents/VariantSelector.vue";
-// import { convertToINR, optimizeImage } from "~/Helpers/helperMethods";
-// import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorComponent.vue";
-// import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
-// import { getCreatorUserName } from "@/customMethods/globalMethods";
+import { convertToINR, getCreatorUserName, optimizeImage } from "~/utils/helperMethods";
+import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorComponent.vue";
+import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
 // import { trackingViewItems } from "../../eventTracking.js";
 
 const route = useRoute();
@@ -212,7 +200,6 @@ const contentInfo = computed(() => {
   }
   return info;
 });
-
 
 const itemName = computed(() => {
   return product.info?.name;
@@ -256,9 +243,9 @@ const productDescription = computed(() => {
   }
 });
 
-onBeforeUnmount(() => {
-  product.saveProductInfo({});
-});
+// onBeforeUnmount(() => {
+//   product.saveProductInfo({});
+// });
 
 // watch(productInfo, async (newV, oldV) => {
 //   if (newV.id && newV.id != oldV.id) {
@@ -266,14 +253,13 @@ onBeforeUnmount(() => {
 //     similarProducts.value = await fetchSimilarProducts(newV?.id);
 //   }
 // });
-// onMounted(async () => {
-//   if (productInfo.value?.id) {
-//     await getProductOffers();
-//   }
-// });
+onMounted(async () => {
+  // if (productInfo.value?.id) {
+  //   await getProductOffers();
+  // }
+});
 
 async function getProductOffers() {
-
   try {
     var params = new URLSearchParams();
     if (productInfo.value.id) {
@@ -318,11 +304,8 @@ function shareProduct() {
       : `${product.info?.name} | Hypd Store`;
   }
   shareObject["url"] = `${proxy.$base}/${
-    route.params.creator_username ||
-    getCreatorUserName(creator?.info?.id)
-  }/product/${product.info?.id}?title=${
-    product.info?.name
-  }`;
+    route.params.creator_username || getCreatorUserName(creator?.info?.id)
+  }/product/${product.info?.id}?title=${product.info?.name}`;
 
   if (navigator.canShare) {
     navigator.share(shareObject);
