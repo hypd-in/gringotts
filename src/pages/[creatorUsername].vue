@@ -164,13 +164,9 @@
                             }" @click="changeTab('CreatorCollections')">
                                 Collections
                             </div>
-                            <div :class="{ 'active-creator-contents': route.name == 'CreatorProducts' }"
-                                @click="changeTab('spotlight')">
+                            <div :class="{ 'active-creator-contents': route.name == 'CreatorSpotlight' }"
+                                @click="changeTab('CreatorSpotlight')">
                                 Spotlight
-                            </div>
-                            <div :class="{ 'active-creator-contents': route.name == 'CreatorPebbles' }"
-                                @click="changeTab('pebbles')">
-                                Pebbles
                             </div>
                         </div>
                         <!-- 
@@ -695,7 +691,7 @@
 
 // import * as tracking from "../eventTracking";
 // import moment from "moment";
-import { getReplacedSource, defaultProfileImage, optimizeImage } from "~/Helpers/helperMethods";
+import { getReplacedSource, defaultProfileImage, optimizeImage } from "~/utils/helperMethods";
 
 const route = useRoute();
 const router = useRouter();
@@ -872,7 +868,6 @@ function handleChange() {
     }
 }
 function scrollingBody(el) {
-    this.fetchMoreResults(el);
     let page = document.getElementById("creator-store-section");
     if (page.scrollTop > 99) {
         document.documentElement.style.setProperty(
@@ -898,64 +893,7 @@ function autoPlay() {
     play.value = true;
 }
 
-function fetchMoreResults(el, next = false) {
-    let elemHeight = document.getElementById("scroll-ref")?.offsetHeight;
-    if (active_tab.value == "pebbles") {
-        if (received_all_pebble.value == true) {
-            return;
-        } else {
-            if (
-                (el.srcElement.scrollHeight - 5 <=
-                    el.srcElement.scrollTop +
-                    el.srcElement.offsetHeight +
-                    elemHeight +
-                    150 ||
-                    next) &&
-                !loadingPebbles.value &&
-                creator.value
-            ) {
-                pagination_count_pebble.value += 1;
-                this.getPebbles();
-            }
-        }
-    }
-    if (active_tab.value == "products") {
-        if (received_all_product.value == true) {
-            return;
-        } else {
-            if (
-                el.srcElement.scrollHeight - 5 <=
-                el.srcElement.scrollTop +
-                el.srcElement.offsetHeight +
-                elemHeight +
-                150 &&
-                !loadingProducts.value &&
-                creator.value
-            ) {
-                pagination_count_product.value += 1;
-                getCatalogIds();
-            }
-        }
-    }
-    if (active_tab.value == "collections") {
-        if (received_all_collection.value == true) {
-            return;
-        } else {
-            if (
-                el.srcElement.scrollHeight - 5 <=
-                el.srcElement.scrollTop +
-                el.srcElement.offsetHeight +
-                elemHeight +
-                150 &&
-                !loadingCollections.value &&
-                creator.value
-            ) {
-                pagination_count_collection.value += 1;
-                getCollections();
-            }
-        }
-    }
-}
+
 function getCartItemsLength() {
     let quantity = 0;
     for (let i in this.cart_items) {
@@ -1045,158 +983,9 @@ function unfollow_author() {
             .catch((error) => { });
     }
 }
-async function getPebbles() {
-    loadingPebbles.value = true;
-    try {
-        let response = await $fetch(runtimeConfig.public.cmsURL + "/api/pebble/influencer",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                query: { influencer_id: creator.value.id, page: pagination_count_pebble.value }
-            })
-        response = JSON.parse(response)
-        response = response.payload
-        if (response && response?.length > 0) {
-            let pebblesArray = [...pebbles.value, ...response];
-            pebbles.value = pebblesArray.filter(function ({ id }) {
-                return !this[id] && (this[id] = id);
-            }, {});
 
-        } else {
-            received_all_pebble.value = true;
-        }
-    }
-    catch (err) {
-        alert(err);
-    }
-    finally {
-        loadingPebbles.value = false;
-    }
-}
-function pebbleDuration(seconds) {
-    let minutes = Math.floor(seconds / 60);
-    let seconds_left = parseInt(seconds % 60);
-    if (seconds_left < 10) {
-        seconds_left = "0" + seconds_left;
-    }
-    return minutes + ":" + seconds_left;
-}
-async function getCatalogIds() {
-    loadingProducts.value = true;
-    try {
-        let response = await $fetch(runtimeConfig.public.cmsURL + "/api/catalog/influencer",
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-                query: { influencer_id: creator.value.id, page: pagination_count_product.value }
-            })
-        response = JSON.parse(response)
-        response = response.payload
-        if (response && response?.length > 0) {
-            total_no_of_catalogs.value = response?.length;
-            catalog.value_ids = response;
-            console.log(" here bisiu")
-            await getCatalog();
-        } else {
-            received_all_product.value = true;
-        }
-    }
-    catch (err) {
-        alert(err);
-    }
-    finally {
-        loadingProducts.value = false;
-    }
-}
-async function getCatalog() {
-    // isLoading.value = true;
-    // loading_products.value = true;
-    // let ids = catalog.value_ids;
-    // let max_limit = 0;
 
-    // if (total_no_of_catalogs.value > 20) {
-    //   max_limit = 20;
-    // } else {
-    //   max_limit = total_no_of_catalogs.value;
-    // }
 
-    // var params = new URLSearchParams();
-
-    // console.log(catalogs_sent.value, total_no_of_catalogs.value)
-
-    // for (
-    //   let i = catalogs_sent.value + 0;
-    //   i < catalogs_sent.value + max_limit;
-    //   i++
-    // ) {
-    //   params.append("id", ids[i]);
-    //   total_no_of_catalogs.value -= 1;
-    // }
-
-    // console.log(params, "pARAM")
-    // try {
-    //   let response = $fetch(runtimeConfig.public.catalogURL + "/api/v2/app/catalog/basic", {
-    //     method: "GET",
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //     },
-    //     credentials: 'include',
-    //     query: params
-    //   })
-    //   if (response.payload) {
-    //     catalog.value = [...catalog.value, ...response.payload];
-    //     catalogs_sent.value += max_limit;
-
-    //     if (total_no_of_catalogs.value < 1) {
-    //       isLoading.value = false;
-    //     } else {
-    //       await getCatalog();
-    //     }
-    //   }
-    // } catch (err) {
-    //   console.log(err)
-    // } finally {
-    //   loading_products.value = false;
-    // }
-
-    console.log("API ki dikkat!")
-
-}
-
-function selectPebble(id) {
-    let i = pebbles.value.findIndex(function (obj) {
-        return obj.id == id;
-    });
-    if (i != -1) {
-        selected_pebble_index.value = i;
-        selected_pebble.value = pebbles.value[i];
-        router.push({
-            name: "pebble_page",
-            params: {
-                id: selected_pebble.value.id,
-                creator_username: creator.value.username,
-            },
-        });
-        tracking.trackingClickOnCreatorPebble(props.user, creator.value, id);
-    }
-}
-function selectPebbleByIndex(i) {
-    selected_pebble_index.value = i;
-    selected_pebble.value = pebbles.value[i];
-    router.push({
-        name: "pebble_page",
-        params: {
-            id: selected_pebble.value.id,
-            creator_username: creator.value.username,
-        },
-    });
-}
 function parseSocialLinks(external_links, social_account) {
     if (external_links) {
         if (external_links[0] == "") {
@@ -1232,82 +1021,6 @@ function parseSocialLinks(external_links, social_account) {
                 }
             }
         }
-    }
-}
-
-async function getInfluencerByUsername(username) {
-    emits("loadingPage", true);
-    try {
-        let response = await $fetch(runtimeConfig.public.entityURL + "/api/app/influencer/username/" + username,
-            {
-                method: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                credentials: 'include',
-            })
-        response = response.payload
-        if (response) {
-            creator.value = response;
-            if (!creator.value.profile_image) {
-                creator.value["profile_image"] = {
-                    src: defaultProfileImage(),
-                };
-            }
-            // uncomment later
-            // tracking.trackingLandingEvent("creator_store_landing");
-            // storing count in a reactive variable to re-render whenever the count changes
-
-            creatorFollowers.value = response.followers_count;
-            meta.value.title = creator.value.name;
-            meta.value.description = creator.value.bio;
-            meta.value.image = creator.value.profile_image.src;
-
-            if (response.is_followed_by_user) {
-                user_following.value = response.is_followed_by_user;
-            } else {
-                user_following.value = false;
-            }
-            await getPebbles();
-            await getCatalogIds();
-
-            // uncomment later
-            // if (
-            //   moment("2 Dec, 2022 00:00:00+05:30").format() <= moment().format()
-            // ) {
-            //   botd.value = false;
-            //   botd.valueImage = null;
-            // } else {
-            //   botd.value = true;
-            //   checkDevice();
-            // }
-
-            // // Calling BOTD API
-            // if (this.$store.state.bwbInfo) {
-            //   botdData.value = this.$store.state.bwbInfo;
-            //   checkDevice();
-            // } else {
-            //   getBOTD();
-            // }
-        } else {
-            noUserFound.value = true;
-            emits("loadingPage", false);
-            router.push({
-                name: "main-404",
-            });
-        }
-    }
-    catch (err) {
-        noUserFound.value = true;
-        emits("loadingPage", false);
-        router.push({
-            name: "main-404",
-        });
-    }
-    finally {
-        setTimeout(() => {
-            emits("loadingPage", false);
-        }, 200);
     }
 }
 
@@ -1394,30 +1107,7 @@ async function getPebbleById(id) {
 //     }
 //   }
 // }
-async function getCollections() {
-    try {
-        let response = await $fetch(runtimeConfig.public.catalogURL +
-            "/api/app/influencer/collections/active?influencer_id=" +
-            creator.value.id +
-            "&page=" +
-            pagination_count_collection.value +
-            "&collection_type=affiliate", {
-            method: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            credentials: 'include'
-        })
 
-        if (response.payload) {
-            collections.value = [...collections.value, ...response.payload];
-        } else {
-            received_all_collection.value = true;
-        }
-    } catch (err) {
-        cosnole.log(err)
-    }
-}
 function toggleDrawer() {
     side_drawer.value = !side_drawer.value;
 }

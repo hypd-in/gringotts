@@ -13,7 +13,7 @@
   
 <script setup>
 import ImageFrame from "../components/ImageFrame.vue";
-import { optimizeImage } from "~/Helpers/helperMethods";
+import { optimizeImage } from "~/utils/helperMethods";
 
 const router = useRouter()
 const props = defineProps(["item"])

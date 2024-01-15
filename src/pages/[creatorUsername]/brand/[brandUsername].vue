@@ -3,7 +3,7 @@
       <div class="profile-wrapper">
         <div class="display-picture">
           <img
-            :src="getReplacedSource(results.cover_img.src)"
+            :src="getReplacedSource(results?.cover_img?.src)"
             :alt="results.name"
           />
         </div>
@@ -67,7 +67,7 @@
 const nuxtApp = useNuxtApp();
 console.log("fuck yay", nuxtApp.payload?.data?.brand_profile_info, "HELP FUCK");
 
-import { getReplacedSource } from "~/Helpers/helperMethods.js";
+import { getReplacedSource } from "~/utils/helperMethods.js";
 import { getBrandInfoFromUsername } from "../../../API/brandProfile.js";
 
 const route = useRoute();
@@ -87,13 +87,13 @@ const { data: brandInfo } = await useFetch(uri, {
 useSeoMeta({
   ogtitle: () => brandInfo.value?.payload?.name,
   description: () => brandInfo.value?.payload?.bio,
-  ogImage: () => brandInfo.value?.payload?.cover_img.src,
+  ogImage: () => brandInfo.value?.payload?.cover_img?.src,
   ogDescription: () => brandInfo.value?.payload?.bio,
-  ogImage: () => brandInfo.value?.payload?.cover_img.src,
+  ogImage: () => brandInfo.value?.payload?.cover_img?.src,
   ogUrl: () => brandInfo.value?.payload?.website,
   twitterTitle: () => brandInfo.value?.payload?.name,
   twitterDescription: () => brandInfo.value?.payload?.bio,
-  twitterImage: () => brandInfo.value?.payload?.cover_img.src,
+  twitterImage: () => brandInfo.value?.payload?.cover_img?.src,
   twitterCard: "summary",
 });
 </script>

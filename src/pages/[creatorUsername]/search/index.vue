@@ -223,9 +223,9 @@ async function getCategoryInfoById(subCollection, collectionId) {
     console.log("Error fetching category info", err);
   });
 }
-async function unobserveTarget() {
+function unobserveTarget() {
   if (observer.value && target.value) {
-    await observer.unobserve(target.value);
+    observer.unobserve(target.value);
   }
 }
 

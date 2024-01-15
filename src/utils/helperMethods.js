@@ -45,7 +45,7 @@ export function returnNumber(event) {
   }
 }
 
-export async function addingObserver(target, callback) {
+export function addingObserver(target, callback) {
   let options = {
     rootMargin: "0px",
     root: null,
@@ -92,4 +92,20 @@ export async function getCreatorUserName(id) {
   //   ].username;
   // }
   return "hypd_store";
+}
+
+
+export function defaultProfileImage() {
+  //  This function generate random default profile image
+  const defaultProfileImageList = [
+    "https://dmk9je7eclmvw.cloudfront.net/assets/img/13ebdefault-user-profile.png",
+    "https://dmk9je7eclmvw.cloudfront.net/assets/img/c216default-user-profile-1.png",
+    "https://dmk9je7eclmvw.cloudfront.net/assets/img/834edefault-user-profile-2.png",
+    "https://dmk9je7eclmvw.cloudfront.net/assets/img/d4b8default-user-profile-3.png",
+  ];
+
+  const min = 0;
+  const max = defaultProfileImageList.length - 1;
+  const randomNumber = Math.floor(Math.random() * (max - min + 1)) + min;
+  return defaultProfileImageList[randomNumber];
 }

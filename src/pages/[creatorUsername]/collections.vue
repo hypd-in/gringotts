@@ -1,7 +1,7 @@
 <template>
   <div class="collections">
-    <CollectionComponent v-for="collection in collections" :key="collection.id" :item="collection" />
-    <div class="observer-footer"></div>
+    <CollectionComponent v-for="collection in creatorStore.collectionInfo.collections" :key="collection.id" :item="collection" />
+    <div class="target" ref="target"></div>
   </div>
 </template>
 
@@ -11,9 +11,12 @@ definePageMeta({
 });
 
 import CollectionComponent from '~/components/CollectionComponent.vue';
+import { addingObserver } from "~/utils/helperMethods";
 
 const collectionPage = ref(0)
 const collections = ref([])
+const target = ref();
+let observer
 
 
 const runtimeConfig = useRuntimeConfig()
@@ -35,8 +38,16 @@ async function getCollections() {
 
     })
     if (response.payload) {
+      collectionPage.value++
       collections.value = [...collections.value, ...response.payload]
-      console.log(collections.value)
+
+      creatorStore.saveCollections(collections.value)
+      creatorStore.saveCollectionPage(collectionPage.value)
+    }
+    else if (response.payload == null) {
+      if (observer && target.value) {
+        observer.unobserve(target.value);
+      }
     }
   }
   catch (err) {
@@ -44,12 +55,23 @@ async function getCollections() {
   }
 }
 
+async function callback(entries) {
+  entries.forEach(async (entry) => {
+    if (entry.isIntersecting) {
+      getCollections()
+    }
+  });
+}
+
 onMounted(() => {
-  getCollections()
-  setTimeout(() => {
-    collectionPage.value++
-    console.log("fuck", collectionPage.value)
-  }, 1000);
+  if (creatorStore.collectionInfo.collections) {
+    collectionPage.value = creatorStore.collectionInfo.page
+    collections.value = [...creatorStore.collectionInfo.collections]
+  }
+
+  if (target.value) {
+    observer = addingObserver(target.value, callback);
+  }
 })
 
 </script>

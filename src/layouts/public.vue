@@ -2,7 +2,7 @@
   <div>
     <Header class="header" />
     <div class="page-content">
-      <slot />
+      <NuxtPage />
     </div>
     <Footer class="footer" />
   </div>
