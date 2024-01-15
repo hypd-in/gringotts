@@ -1,5 +1,8 @@
 export default defineNuxtConfig({
   modules: ["@pinia/nuxt"],
+  build: {
+    transpile: ['vue-ssr-carousel/nuxt'],
+  },
   devtools: {
     enabled: true,
     timeline: {

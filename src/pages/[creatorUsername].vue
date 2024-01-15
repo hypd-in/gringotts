@@ -3,17 +3,8 @@
         <div v-show="isLoading" class="page-loader">
             <img src="@/assets/img/loaders/H..png" alt="" />
         </div>
-        <!-- <SideDrawer :class="{ 'slide-in-menu': side_drawer }" :user="user" @closeDrawer="toggleDrawer" /> -->
-        <div @scroll="scrollingBody" id="creator-store-section" style="
-          overflow-y: scroll;
-          overflow-x: hidden;
-          height: 100vh;
-          scroll-behavior: smooth;
-        " :class="{ disable_scroll: selected_pebble_index != null }">
-            <div class="show-panda" id="show-error">
-                <p>Please Rotate your Device</p>
-                <img class="panda" src="@/assets/illustrations/rotate-screen.svg" />
-            </div>
+        <div id="creator-store-section">
+
             <div id="creator-store-section-hide">
                 <div v-if="noUserFound">
                     <div class="no-user">
@@ -88,76 +79,36 @@
                                 {{ creator.bio }}
                             </div>
                         </div>
-
-                        <!-- If BOTD Exists -->
-                        <!-- <div v-if="botdImages" class="sticky-container">
-                <div class="botd ban-desk">
-                  <carousel v-if="botdImages.length > 1" :mouseDrag="true" :itemsToShow="1.25" :autoplay="2000"
-                    :transition="200" :pauseAutoplayOnHover="false" :style="'height: calc(100%)'" :touchDrag="true"
-                    :wrapAround="true" :snapAlign="'center'">
-                    <slide v-for="(botdImage, index) in botdImages" :key="index">
-                      <div style="postion: relative">
-                        <div class="timer botd-timer" v-if="checkSaleTimer(botdImage.redirectionUrl)">
-                          Sale Ends in {{ timeLeft }}
-                        </div>
-                        <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
-                          @click="redirectToBWB(botdImage.redirectionUrl)" :key="index" />
-                      </div>
-                    </slide>
-                  </carousel>
-                  <div v-else-if="botdImages.length === 1" style="position: relative">
-                    <div class="timer" v-if="checkSaleTimer(botdImages[0].redirectionUrl)">
-                      Sale ends in {{ timeLeft }}
                     </div>
-                    <img :src="getReplacedSource(botdImages[0].src)" alt="" class="single-botdImg"
-                      @click="redirectToBWB(botdImages[0].redirectionUrl)" />
-                  </div>
-                </div>
-  
-                <div class="botd ban-mob">
-                  <carousel v-if="botdImages.length > 1" :mouseDrag="true" :itemsToShow="1.25" :autoplay="2000"
-                    :transition="200" :pauseAutoplayOnHover="false" :style="'height: calc(100%)'" :touchDrag="true"
-                    :wrapAround="true" :snapAlign="'center'">
-                    <slide v-for="(botdImage, index) in botdImages" :key="index">
-                      <div style="position: relative">
-                        <div v-if="checkSaleTimer(botdImage.redirectionUrl)" class="timer">
-                          Sale ends in {{ timeLeft }}
-                        </div>
-                        <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
-                          @click="redirectToBWB(botdImage.redirectionUrl)" :key="index" />
-                      </div>
-                    </slide>
-                  </carousel>
-                  <div style="position: relative" v-else-if="botdImages.length === 1">
-                    <div v-if="checkSaleTimer(botdImages[0].redirectionUrl)" class="timer">
-                      sale ends in {{ timeLeft }}
-                    </div>
-                    <img :src="getReplacedSource(botdImages[0].src)" alt="" class="single-botdImg"
-                      @click="redirectToBWB(botdImages[0].redirectionUrl)" />
-                  </div>
-                </div>
-  
-              Common pebble section for mobile and desktop 
-                <div class="creator-contents">
-                  <div :class="{
-                    'active-creator-contents': active_tab == 'collections',
-                  }" @click="changeTab('collections')">
-                    Collections
-                  </div>
-                  <div :class="{
-                    'active-creator-contents': active_tab == 'products',
-                  }" @click="changeTab('products')">
-                    Spotlight
-                  </div>
-                  <div :class="{
-                    'active-creator-contents': active_tab == 'pebbles',
-                  }" @click="changeTab('pebbles')">
-                    Pebbles
-                  </div>
-                </div>
-              </div> -->
+                    <!-- If BOTD Exists -->
 
-                        <!-- v-else -->
+                    <div class="sticky-container">
+                        <div v-if="botdImages">
+                            <div class="botd ban-desk">
+                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000" :touchDrag="true"
+                                    :pauseAutoplayOnHover="true">
+                                    <slide v-for="(botdImage, index) in botdImages" :key="index">
+                                        <div style="postion: relative">
+                                            <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
+                                                @click="redirectToBWB(botdImage.redirectionUrl)" :key="index" />
+                                        </div>
+                                    </slide>
+                                </carousel>
+                            </div>
+
+                            <div class="botd ban-mob">
+                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000" :touchDrag="true"
+                                    :pauseAutoplayOnHover="true" :style="'height: calc(100%)'">
+                                    <slide v-for="(botdImage, index) in botdImages" :key="index">
+                                        <div style="postion: relative">
+                                            <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
+                                                @click="redirectToBWB(botdImage.redirectionUrl)" :key="index" />
+                                        </div>
+                                    </slide>
+                                </carousel>
+                            </div>
+                        </div>
+
                         <div class="creator-contents">
                             <div :class="{
                                 'active-creator-contents': route.name == 'CreatorCollections',
@@ -169,54 +120,12 @@
                                 Spotlight
                             </div>
                         </div>
-                        <!-- 
-              <div class="product-contents" v-if="active_tab == 'products'">
-                <div :id="product.id" @click="saveProductScrollPosition(product.id)" v-for="(product, i) in catalog"
-                  :key="i">
-                  <Product class="product-card" origin="creator_store" source="creator_featured_products"
-                    :itemInfo="product" />
-                </div>
-                <div v-for="i in 4" :key="i + 999" v-show="loading_products">
-                  <div class="product-loader-image-container"></div>
-                  <div class="product-loader-data-wrapper">
-                    <div class="loader-text"></div>
-                    <div class="loader-text"></div>
-                  </div>
-                </div>
-              </div>
-              <div class="product-contents" v-if="active_tab == 'pebbles'">
-                <div v-for="(pebble, i) in pebbles" :key="i">
-                  <div class="pebbles-cover" @click="selectPebble(pebble.id)">
-                    <span class="pebble-duration">{{
-                      pebbleDuration(pebble.media_info.duration)
-                    }}</span>
-                    <img :src="thumbnail(pebble.media_info.thumbnail_url[0], 300)" alt="" />
-                  </div>
-                </div>
-                <div v-for="i in 4" :key="i + 777" v-show="loadingPebbles">
-                  <div class="product-loader-image-container"></div>
-                </div>
-              </div>
-              <div class="collection-contents" v-if="active_tab == 'collections'">
-                <div v-for="(collection, c) in collections" :id="collection.id"
-                  @click="saveCollectionScrollPosition(collection.id)" :key="c">
-                  <CollectionComponent :item="collection" :creator="creator || {}" />
-                </div>
-              </div> -->
                     </div>
-                    <!-- <Pebble v-if="selected_pebble_index != null" :user="user" :creator="creator || {}" :store="true"
-              :wishlisted_items="wishlisted_items" :pebbles_list="pebbles" :selected_pebble_index="selected_pebble_index"
-              :isDesktop="isDesktop" :is_followed_by_user="user_following" :play="play" :selected_pebble="selected_pebble"
-              :muted="muted" @muteAudio="muteAudio" @autoPlay="autoPlay" @fetchMoreResults="fetchMoreResults"
-              @closePebble="closePebble" @selectPebbleByIndex="selectPebbleByIndex" @follow_author="follow_author"
-              @unfollow_author="unfollow_author" /> -->
-
-                    <!-- Funding news -->
-
 
                     <!-- pages -->
                     <NuxtPage />
 
+                    <!-- Funding news -->
                     <div class="funding-news">
                         <div class="emoji-text">
                             <div class="emoji">
@@ -685,13 +594,12 @@
   
   
 <script setup>
-// import Product from "@/components/ProductComponents/ProductCard.vue";
-// import Pebble from "@/views/Pebble.vue";
-// import CollectionComponent from "@/components/CollectionComponent.vue";
-
 // import * as tracking from "../eventTracking";
-// import moment from "moment";
 import { getReplacedSource, defaultProfileImage, optimizeImage } from "~/utils/helperMethods";
+
+import 'vue3-carousel/dist/carousel.css'
+import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+
 
 const route = useRoute();
 const router = useRouter();
@@ -730,49 +638,13 @@ useSeoMeta({
 });
 
 const isLoading = ref(false)
-const loading_products = ref(false)
 const username = ref(null)
-const active_tab = ref(null)
-const selected_pebble_index = ref(null)
-const pebbles = ref([])
-const catalog = ref()
-const catalogs_sent = ref([])
-const collections = ref()
-const pagination_count_pebble = ref(0)
-const pagination_count_product = ref(0)
-const pagination_count_collection = ref(0)
-const received_all_pebble = ref(false)
-const received_all_product = ref(false)
-const received_all_collection = ref(false)
 const user_following = ref(null)
-const selected_pebble = ref(null)
-const loadingPebbles = ref(false)
-const loadingProducts = ref(false)
-const loadingCollections = ref(false)
-const total_no_of_catalogs = ref(null)
 const noUserFound = ref(false)
-const play = ref(true)
-const muted = ref(true)
-const page_title = ref(true)
-const side_drawer = ref(false)
-const social_links = ref({
-    facebook: null,
-    instagram: null,
-    twitter: null,
-    youtube: null,
-})
-const meta = ref({
-    title: '',
-    image: "",
-    description: "",
-})
-const video_key = ref(8766)
 const creatorFollowers = ref(0)
 const botdImages = ref(null)
 const botd = ref(true)
 const botdData = ref([])
-const startTimer = ref(null)
-const timeLeft = ref("00 : 00 : 00")
 const current_slide = ref(0)
 
 
@@ -781,9 +653,6 @@ const creatorProfilePic = computed(() => {
     return optimizeImage(creator.value?.profile_image?.src, 350);
 })
 
-function muteAudio() {
-    muted.value = !muted.value;
-}
 
 function readMore() {
     window.open(
@@ -791,10 +660,6 @@ function readMore() {
     );
 }
 
-function checkSaleTimer(path) {
-    let url = path.split(this.$base)[1];
-    return false && url.includes("too-haute-to-handle-sale");
-}
 
 function redirectToBWB(path) {
     let url = path.split(this.$base)[1];
@@ -846,68 +711,6 @@ function checkDevice() {
 function updateCarousel(payload) {
     current_slide.value = payload.currentSlide;
 }
-function handleChange() {
-    if (
-        window.innerWidth > 480 &&
-        window.innerWidth < 900 &&
-        !props.isDesktop
-    ) {
-        document.querySelector("#show-error").classList.remove("show-panda");
-        document.querySelector("#show-error").classList.add("show-panda-true");
-        document
-            .getElementById("creator-store-section")
-            .classList.remove("mobile");
-        document
-            .getElementById("creator-store-section-hide")
-            .classList.add("mobile");
-    } else {
-        document.querySelector("#show-error").classList.add("show-panda");
-        document
-            .querySelector("#show-error")
-            .classList.remove("show-panda-true");
-    }
-}
-function scrollingBody(el) {
-    let page = document.getElementById("creator-store-section");
-    if (page.scrollTop > 99) {
-        document.documentElement.style.setProperty(
-            "--creator-page-nav-bar-color",
-            "#f8f8f8"
-        );
-        page_title.value = false;
-    } else {
-        document.documentElement.style.setProperty(
-            "--creator-page-nav-bar-color",
-            "#ffffff"
-        );
-        page_title.value = true;
-    }
-}
-function thumbnail(url) {
-    let urlNew = getReplacedSource(url);
-    let poster_url = urlNew.split(".jpg")[0].slice(0, -7) + "0000000.jpg";
-    return poster_url;
-}
-
-function autoPlay() {
-    play.value = true;
-}
-
-
-function getCartItemsLength() {
-    let quantity = 0;
-    for (let i in this.cart_items) {
-        quantity += this.cart_items[i].quantity;
-    }
-    return quantity;
-}
-// function goBack() {
-//   if (this.$historyCount - window.history.length == 0) {
-//     router.push("/");
-//   } else {
-//     router.go(-1);
-//   }
-// }
 
 function changeTab(options) {
     router.push({ name: options })
@@ -915,12 +718,6 @@ function changeTab(options) {
         top: 0,
         behavior: "smooth",
     };
-}
-
-function closePebble() {
-    selected_pebble_index.value = null;
-    selected_pebble.value = null;
-    settingActiveTab();
 }
 
 function follow_author() {
@@ -983,47 +780,6 @@ function unfollow_author() {
             .catch((error) => { });
     }
 }
-
-
-
-function parseSocialLinks(external_links, social_account) {
-    if (external_links) {
-        if (external_links[0] == "") {
-            if (social_account.instagram) {
-                social_links.value.instagram = social_account.instagram.url;
-            }
-            if (social_account.facebook) {
-                social_links.value.facebook = social_account.facebook.url;
-            }
-            if (social_account.twitter) {
-                social_links.value.twitter = social_account.twitter.url;
-            }
-            if (social_account.youtube) {
-                social_links.value.youtube = social_account.youtube.url;
-            }
-        } else {
-            for (let i = 0; i < external_links?.length; i++) {
-                if (external_links[i].includes("instagram")) {
-                    social_links.value.instagram = external_links[i];
-                    continue;
-                }
-                if (external_links[i].includes("facebook")) {
-                    social_links.value.facebook = external_links[i];
-                    continue;
-                }
-                if (external_links[i].includes("twitter")) {
-                    social_links.value.twitter = external_links[i];
-                    continue;
-                }
-                if (external_links[i].includes("youtube")) {
-                    social_links.value.youtube = external_links[i];
-                    continue;
-                }
-            }
-        }
-    }
-}
-
 async function getBOTD() {
     emits("loadingPage", true);
     try {
@@ -1049,154 +805,14 @@ async function getBOTD() {
     }
 }
 
-async function getPebbleById(id) {
-    // runtimeConfig.public.cmsURL + "/api/pebble/id?id=" + id
-    emits("loadingPage", true);
-    try {
-        let response = await $fetch(runtimeConfig.public.cmsURL + "/api/pebble/id?id=" + id, {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-        response = response.payload
-
-        selected_pebble.value = response;
-        pebbles.value.push(response);
-        selected_pebble_index.value = 0;
-    } catch (err) {
-        console.log(err)
-    } finally {
-        setTimeout(() => {
-            emits("loadingPage", false);
-        }, 200);
-    }
-
-
-}
-
-// function settingActiveTab(is_collection) {
-//   if (Object.keys(route.query).length != 0) {
-//     if (route.query.active == "collections") {
-//       active_tab.value = "collections";
-//       router.replace({
-//         path: route.fullPath,
-//         query: { active: "collections" },
-//       });
-//     } else if (route.query.active == "products") {
-//       router.replace({
-//         path: route.fullPath,
-//         query: { active: "products" },
-//       });
-//       active_tab.value = "products";
-//     } else if (route.query.active == "pebbles") {
-//       active_tab.value = "pebbles";
-//       router.replace({
-//         path: route.fullPath,
-//         query: { active: "pebbles" },
-//       });
-//     } else {
-//       active_tab.value = "products";
-//     }
-//   } else {
-//     if (is_collection) {
-//       active_tab.value = "collections";
-//     } else {
-//       active_tab.value = "products";
-//     }
-//   }
-// }
-
-function toggleDrawer() {
-    side_drawer.value = !side_drawer.value;
-}
-function goToSearch() {
-    tracking.trackingClickEvent("user_navigated_to_search");
-    if (route.params.creatorUsername) {
-        router.push({
-            name: "hypdExplore",
-            params: { creator_username: route.params.creatorUsername },
-            query: { query: "" },
-        });
-    } else {
-        router.push({ name: "search", query: { query: "" } });
-    }
-}
-
-// watchers
-
-watch(route, ((to, from) => {
-    if (to.name == "pebble_page" && from.name == "pebble_page") {
-        selectPebble(to.params.id);
-    }
-    if (from.name == "creator_store" && to.name == "pebble_page") {
-        return;
-    } else {
-        video_key.value += 1;
-    }
-}))
-
 onMounted(() => {
     // Attaching Listener on while component is mounted
     window.addEventListener("resize", checkDevice);
 })
 
 onBeforeMount(() => {
-    console.log("BEFORE moiunt")
     getBOTD();
-
-    window.addEventListener(
-        "orientationchange",
-        function () {
-            if (window.orientation == 90) {
-                document.querySelector(".panda").classList.add("rotate-panda-left");
-                document
-                    .querySelector(".panda")
-                    .classList.remove("rotate-panda-right");
-            } else if (window.orientation == -90) {
-                document.querySelector(".panda").classList.add("rotate-panda-right");
-                document
-                    .querySelector(".panda")
-                    .classList.remove("rotate-panda-left");
-            }
-        },
-        false
-    );
-
-    if (
-        route.name == "pebble_page" ||
-        route.name == "lagacyPebble_page"
-    ) {
-        play.value = false;
-        getPebbleById(route.params.id);
-    } else {
-        play.value = true;
-        console.log(route.params)
-        username.value = route.params.creatorUsername;
-    }
-
-    startTimer.value = setInterval(() => {
-        let countDownDate = new Date("May 21, 2023 23:59:59").getTime();
-        var now = new Date().getTime();
-        // Find the distance between now and the count down date
-        var duration = countDownDate - now;
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(duration / (1000 * 60 * 60 * 24)) * 24;
-        var hours = Math.floor(
-            (duration % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-        );
-        var minutes = Math.floor((duration % (1000 * 60 * 60)) / (1000 * 60));
-        var seconds = Math.floor((duration % (1000 * 60)) / 1000);
-        timeLeft.value =
-            (days + hours < 10 ? "0" + (days + hours) : days + hours) +
-            " : " +
-            (minutes < 10 ? "0" + minutes : minutes) +
-            " : " +
-            (seconds < 10 ? "0" + seconds : seconds);
-    }, 1000);
 })
-
 
 onBeforeUnmount(() => {
     clearInterval(startTimer.value);
@@ -1519,9 +1135,9 @@ onBeforeUnmount(() => {
 
 .sticky-container {
     position: sticky;
-    top: 70px;
+    top: 56px;
     z-index: 5;
-    padding: 10px 0 0;
+    /* padding: 10px 0 0; */
     background: #ffffff;
 }
 
@@ -1592,7 +1208,6 @@ onBeforeUnmount(() => {
 
     .sticky-container {
         padding: 0;
-        top: 71px;
         z-index: 4;
         background: var(--creator-page-nav-bar-color);
     }
@@ -1764,9 +1379,13 @@ onBeforeUnmount(() => {
 .botd {
     /* position: relative; */
     max-width: 980px;
-    margin: 18px 0 0 18px;
+    margin: 0 0 0 18px;
     width: calc(100% - 36px);
     cursor: pointer;
+}
+
+section.carousel :deep(ol){
+    margin: 0 !important;
 }
 
 .botd::-webkit-scrollbar {
@@ -1788,6 +1407,7 @@ onBeforeUnmount(() => {
 }
 
 @media screen and (max-width: 480px) {
+
     .botd {
         /* position: relative; */
         margin: 18px 0 0;
@@ -1843,8 +1463,6 @@ onBeforeUnmount(() => {
     }
 
     .creator-contents {
-        position: sticky;
-        top: 69px;
         z-index: 4;
         background: var(--creator-page-nav-bar-color);
     }
