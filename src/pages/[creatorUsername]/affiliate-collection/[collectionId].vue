@@ -14,7 +14,7 @@
       <div class="curation-products">
         <h2 class="heading">{{ collectionName }}</h2>
         <div class="product-listing-wrapper" v-if="collectionProducts.length > 0">
-          <ProductCard v-for="product in collectionProducts" :key="product?.id" :itemInfo="product" />
+          <ProductCard v-for="product in collectionProducts" :key="product?.id" :itemInfo="product" :isAffiliate="true" />
         </div>
       </div>
     </div>
@@ -24,7 +24,7 @@
 <script setup>
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 definePageMeta({
-  name: "CreatorCollection",
+  name: "AffiliateCollection",
   layout: "public"
 })
 
@@ -48,22 +48,22 @@ if (route.params.collectionId) {
   })
   if (response) {
     collectionInfo.value = { ...response.value.payload }
-    if (collectionInfo.value?.catalog_ids?.length > 0) {
-      fetchCatalogInfo(collectionInfo.value.catalog_ids);
+    console.log("HERE", collectionInfo.value);
+    if (collectionInfo.value?.influencer_link_ids?.length > 0) {
+      fetchCatalogInfo(collectionInfo.value.influencer_link_ids);
     }
   } else if (error) {
     console.log("Error fetching collection info", err);
   }
 }
 
-async function fetchCatalogInfo(catalogIds) {
-  let ids = '';
-  catalogIds.forEach((id, index) => {
-    ids += `${index != 0 ? '&' : ''}id=${id}`
-  });
-  await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${ids}`, {
-    method: "GET",
+async function fetchCatalogInfo(linkIds) {
+  await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/influencer/collection/deeplinks/ids`, {
+    method: "POST",
     credentials: "include",
+    body: {
+      ids: [...linkIds]
+    },
     headers: {
       "Content-Type": "application/json",
     }

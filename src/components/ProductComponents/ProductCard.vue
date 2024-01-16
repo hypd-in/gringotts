@@ -1,7 +1,7 @@
 <template>
   <div class="product-card-wrapper" :class="{ 'oos-card': isOutOfStock }">
     <div class="image-tag-wrapper" v-if="productImage">
-      <NuxtLink :to="goToProduct">
+      <NuxtLink :to="goToProduct" v-if="!isAffiliate">
         <div class="tag out-of-stock" v-if="isOutOfStock">
           Out of Stock
         </div>
@@ -15,9 +15,9 @@
           Only Few Left
         </div>
       </NuxtLink>
-      <div @click="toggleWishlist" class="wishlist-icon" v-html="wishlistIcon"></div>
+      <div @click="toggleWishlist" class="wishlist-icon" v-if="!isAffiliate" v-html="wishlistIcon"></div>
       <NuxtLink :to="goToProduct">
-        <NuxtImg class="featured-image" :src="optimizeImage(productImage, 550)" :placeholder="[50, 25, 75, 5]"/>
+        <NuxtImg class="featured-image" :src="optimizeImage(productImage, 550)" :placeholder="[50, 25, 75, 5]" />
         <!-- <ImageFrame /> -->
       </NuxtLink>
     </div>
@@ -30,21 +30,21 @@
 
         <div class="pricing-info">
           <span id="retail-price">{{ convertToINR(retailPrice) }}</span>
-          <span v-if="basePrice > retailPrice" id="base-price">{{
+          <span v-if="basePrice > retailPrice && !isAffiliate" id="base-price">{{
             convertToINR(basePrice)
           }}</span>
-          <span v-if="basePrice > retailPrice" id="discount">({{ discount }}% off)</span>
+          <span v-if="basePrice > retailPrice && !isAffiliate" id="discount">({{ discount }}% off)</span>
         </div>
       </div>
     </NuxtLink>
-    <div class="offer-section">
+    <div class="offer-section" v-if="!isAffiliate">
       <div class="offers-bar" v-if="noOfOffers > 0">
         <div class="flex-together" v-html="couponIcon"></div>
         {{ noOfOffers }} offers available
       </div>
     </div>
     <button :class="{ disabled: props.itemInfo.inventory_status == 'out_of_stock' }" @click="buttonAction"
-      v-if="showButton" class="add-to-cart">
+      v-if="showButton && !isAffiliate" class="add-to-cart">
       <div class="flex-together" v-html="cartIcon"></div>
       Add To Cart
     </button>
@@ -66,6 +66,7 @@ const props = defineProps({
   itemInfo: Object,
   showButton: Boolean,
   showOffers: Boolean,
+  isAffiliate: Boolean,
 });
 const emit = defineEmits(["buttonAction"]);
 const router = useRouter();
@@ -167,11 +168,11 @@ const isLowInStock = computed(() => {
 });
 
 const productImage = computed(() => {
-  return props.itemInfo?.featured_image?.src || null;
+  return props.itemInfo?.featured_image?.src || props.itemInfo?.image || null;
 });
 
 const brandName = computed(() => {
-  return props.itemInfo?.brand_info?.name || "NA";
+  return props.itemInfo?.brand_info?.name || props.itemInfo?.affiliate_program?.name || "NA";
 });
 
 const itemName = computed(() => {
@@ -179,7 +180,7 @@ const itemName = computed(() => {
 });
 
 const retailPrice = computed(() => {
-  return props.itemInfo?.retail_price?.value;
+  return props.itemInfo?.retail_price?.value || props.itemInfo?.price;
 });
 const basePrice = computed(() => {
   return props.itemInfo?.base_price?.value;
@@ -196,7 +197,11 @@ const discount = computed(() => {
 
 const goToProduct = computed(() => {
   var obj = {};
-  if (creatorStore.info?.username) {
+  if (props.isAffiliate) {
+    // obj = {
+    //   name: "AffiliateProduct",
+    // };
+  } else if (creatorStore.info?.username) {
     obj = {
       name: "CreatorProduct",
       params: {
