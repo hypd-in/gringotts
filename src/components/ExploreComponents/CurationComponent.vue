@@ -58,10 +58,10 @@ async function goToCuration(subCuration) {
     props.curation?.sub_type == "catalog"
   ) {
     navigateTo({
-      name: "categoryCuration",
+      name: "CategoryCuration",
       params: {
-        creator_username: route.params.creator_username,
-        id: subCuration.id,
+        creatorUsername: route.params.creatorUsername,
+        categoryId: subCuration.id,
       },
       query: {
         title: subCuration?.name,

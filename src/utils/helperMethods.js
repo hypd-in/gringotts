@@ -45,7 +45,7 @@ export function returnNumber(event) {
   }
 }
 
-export async function addingObserver(target, callback) {
+export function addingObserver(target, callback) {
   let options = {
     rootMargin: "0px",
     root: null,
@@ -53,7 +53,6 @@ export async function addingObserver(target, callback) {
   };
 
   let observer = new IntersectionObserver(callback, options);
-  console.log(observer);
   observer.observe(target);
   return observer;
 }

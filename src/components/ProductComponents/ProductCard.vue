@@ -17,7 +17,8 @@
       </NuxtLink>
       <div @click="toggleWishlist" class="wishlist-icon" v-html="wishlistIcon"></div>
       <NuxtLink :to="goToProduct">
-        <ImageFrame class="featured-image" :src="optimizeImage(productImage, 550)" />
+        <NuxtImg class="featured-image" :src="optimizeImage(productImage, 550)" :placeholder="[50, 25, 75, 5]"/>
+        <!-- <ImageFrame /> -->
       </NuxtLink>
     </div>
     <NuxtLink :to="goToProduct">
@@ -55,7 +56,7 @@
 //   addItemToWishlist,
 //   removeItemFromWishlist,
 // } from "@/API/APIs";
-import ImageFrame from "@/components/ImageFrame.vue";
+// import ImageFrame from "@/components/ImageFrame.vue";
 import {
   convertToINR,
   optimizeImage,

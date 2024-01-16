@@ -181,7 +181,9 @@ function goToExplore() {
   if (route.params.creatorUsername) {
     navigateTo({
       name: "HypdExplore",
-      params: route.params.creatorUsername,
+      params: {
+        creatorUsername: route.params.creatorUsername
+      },
       query: {
         query: searchInputQuery.value,
       },
@@ -206,11 +208,11 @@ function openDropDown() {
 <style scoped>
 @media only screen and (max-width: 520px) {
   .header {
+    z-index: 52 !important;
     height: 58px !important;
   }
 
   .mobile-header {
-    z-index: 52;
     display: flex !important;
     align-items: center;
     justify-content: space-between;
@@ -358,7 +360,7 @@ input::placeholder {
 }
 
 button {
-  padding: 4px;
+  /* padding: 4px; */
   background: var(--plian-white, #fff);
   border-radius: 8px;
   box-sizing: border-box;
