@@ -52,10 +52,6 @@
 </template>
 
 <script setup>
-// import {
-//   addItemToWishlist,
-//   removeItemFromWishlist,
-// } from "@/API/APIs";
 // import ImageFrame from "@/components/ImageFrame.vue";
 import {
   convertToINR,

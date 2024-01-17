@@ -1,11 +1,11 @@
 export default defineNuxtConfig({
-  modules: ["@pinia/nuxt", "@nuxt/image"],
   devtools: {
     enabled: true,
     timeline: {
       enabled: true,
     },
   },
+  modules: ["@pinia/nuxt", "@nuxt/image"],
   ssr: true,
   devServer: {
     port: 8080,
@@ -15,6 +15,7 @@ export default defineNuxtConfig({
     public: {
       catalogURL: "https://catalogv2.getshitdone.in",
       entityURL: "https://entity.getshitdone.in",
+      couponURL: "https://coupon.getshitdone.in",
     },
     // process.env.NODE_ENV != "production"
     //   ? {

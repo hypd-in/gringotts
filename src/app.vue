@@ -9,12 +9,27 @@ const route = useRoute();
 const router = useRouter();
 const store = useStore();
 const creatorStore = useCreatorStore();
-const runtimeConfig = useRuntimeConfig();
+const config = useRuntimeConfig();
 const userInfo = ref({});
+
+onBeforeMount(async () => {
+  if (!store.user.id) {
+    var user = await fetchUserInfo();
+    await fetchCartInfo();
+    if (user?.id) {
+      userInfo.value = { ...user };
+    }
+  }
+});
+
+onMounted(async () => {
+  await fetchAllCoupons()
+})
+
 
 if (route.params.creatorUsername) {
   const { data, pending: loadingCreatorInfo } = await useFetch(
-    runtimeConfig.public.entityURL +
+    config.public.entityURL +
     "/api/app/influencer/username/" +
     route.params.creatorUsername,
     {
@@ -26,14 +41,4 @@ if (route.params.creatorUsername) {
   );
   creatorStore.saveCreatorInfo(data?.value?.payload);
 }
-
-onMounted(async () => {
-  if (!store.user.id) {
-    var user = await fetchUserInfo();
-    await fetchCartInfo();
-    if (user?.id) {
-      userInfo.value = { ...user };
-    }
-  }
-});
 </script>

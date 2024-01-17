@@ -10,6 +10,10 @@ definePageMeta({
   name: "Index",
   layout: "standalone"
 })
+
+onMounted(async () => {
+
+})
 </script>
 
 <style></style>

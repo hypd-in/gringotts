@@ -102,3 +102,91 @@ export async function saveVariants(items) {
 
   return items;
 }
+
+export async function addItemToWishlist(itemInfo) {
+  const store = useStore();
+  const router = useRouter();
+  var formData = {
+    user_id: store.user.id,
+    wishlisted_catalog: {
+      catalog_id: itemInfo.catalog_id || itemInfo.id,
+    },
+  };
+
+  if (itemInfo?.source) {
+    formData.wishlisted_catalog.source = { ...itemInfo?.source };
+  } else if (useCreatorStore.info?.id) {
+    formData.wishlisted_catalog.source = {
+      id: useCreatorStore?.info?.id,
+      type: "creator_store",
+    };
+  }
+  if (store.user.id) {
+    await $fetch(`${useRuntimeConfig().public.entityURL}/api/v2/app/wishlist`, {
+      method: "PUT",
+      credentials: "include",
+      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        await fetchWishlistedProducts();
+      })
+      .catch((error) => {
+        console.log("Error adding item to wishlist", error);
+      });
+  } else {
+    let wantToLogin = confirm("Let's get you logged in first?");
+    if (wantToLogin) {
+      navigateTo({
+        name: "Login",
+        query: {
+          redirection_url: router.currentRoute.fullPath,
+        },
+      });
+    }
+  }
+}
+
+export async function removeItemFromWishlist(itemInfo) {
+  const store = useStore();
+  if (store.user.id) {
+    var formData = {
+      user_id: store.user?.id,
+      catalog_id: itemInfo.catalog_id || itemInfo.id,
+    };
+    await $fetch(`${useRuntimeConfig().public.entityURL}/api/v2/app/wishlist`, {
+      method: "DELETE",
+      credentials: "include",
+      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        if (response.payload) {
+          await fetchWishlistedProducts();
+        }
+      })
+      .catch((error) => {
+        console.log("Error removing item form cart", error);
+      });
+  }
+}
+
+export async function fetchAllCoupons() {
+  await $fetch(`${useRuntimeConfig().public.couponURL}/api/app/coupons?version=2`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json"
+    }
+  }).then((response) => {
+    if (response.payload) {
+      createCouponsMap(response.payload);
+    }
+  }).catch((error) => {
+    console.log("Error fetching coupons", error);
+  })
+}

@@ -1,26 +1,14 @@
 <template>
-  <div
-    class="product-page-container"
-    :style="{ 'z-index': showImagePreview ? 2 : 0 }"
-  >
+  <div class="product-page-container" :style="{ 'z-index': showImagePreview ? 2 : 0 }">
     <div class="product-page">
-      <ImagePreview
-        @close="toggleImagePreview"
-        v-if="showImagePreview"
-        @updateImageIndex="openImagePreview"
-        :mediaImages="contentInfo"
-        :index="activeImageIndex"
-      />
+      <ImagePreview @close="toggleImagePreview" v-if="showImagePreview" @updateImageIndex="openImagePreview"
+        :mediaImages="contentInfo" :index="activeImageIndex" />
       <div class="product-page-wrapper">
         <section ref="productImagesRef" class="left-section product-images">
           <div v-for="(media, index) in contentInfo" :key="media.id">
-            <ImageFrame
-              v-if="media.media_type == 'image'"
-              class="product-image"
-              @click="openImagePreview(index), toggleImagePreview()"
-              :src="optimizeImage(media.media_info.url, 800)"
-              :objectFit="'cover'"
-            />
+            <ImageFrame v-if="media.media_type == 'image'" class="product-image"
+              @click="openImagePreview(index), toggleImagePreview()" :src="optimizeImage(media.media_info.url, 800)"
+              :objectFit="'cover'" />
             <!-- <VideoPlayer
               v-else-if="media.media_type == 'video'"
               class="product-image"
@@ -38,34 +26,13 @@
                 <p id="item-name">{{ itemName }}</p>
               </div>
               <button @click="shareProduct" class="share-btn">
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M13 11L21.2 2.79999"
-                    stroke="#13141B"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M22 6.8V2H17.2"
-                    stroke="#13141B"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                  <path
-                    d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13"
-                    stroke="#13141B"
-                    stroke-width="1.5"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M13 11L21.2 2.79999" stroke="#13141B" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path d="M22 6.8V2H17.2" stroke="#13141B" stroke-width="1.5" stroke-linecap="round"
+                    stroke-linejoin="round" />
+                  <path d="M11 2H9C4 2 2 4 2 9V15C2 20 4 22 9 22H15C20 22 22 20 22 15V13" stroke="#13141B"
+                    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
               </button>
             </div>
@@ -77,13 +44,11 @@
               <span v-if="basePrice > retailPrice" id="base-price">{{
                 convertToINR(basePrice)
               }}</span>
-              <span v-if="basePrice > retailPrice" id="discount"
-                >({{ discount }}% off)</span
-              >
+              <span v-if="basePrice > retailPrice" id="discount">({{ discount }}% off)</span>
             </div>
           </section>
 
-          <!-- <Offers v-if="productOffers.length > 0" :offers="productOffers" /> -->
+          <Offers v-if="productOffers.length > 0" :offers="productOffers" />
 
           <div class="mobile-variant-selector" v-if="showVariantSelector">
             <div @click="showVariantSelector = false" class="backdrop"></div>
@@ -95,35 +60,22 @@
 
           <VariantSelector :class="{ wiggle: getVariant }" />
 
-          <PDPButtons
-            @getVariant="toggleVariantSelector"
-            class="desktop-btns"
-          />
+          <PDPButtons @getVariant="toggleVariantSelector" class="desktop-btns" />
 
-          <section
-            class="description-specification"
-            v-if="productInfo?.description && productInfo?.specs"
-          >
+          <section class="description-specification" v-if="productInfo?.description && productInfo?.specs">
             <div class="description" v-if="productInfo.description?.length > 0">
               <h2>Product Description</h2>
               <p class="product-description">
                 {{ productDescription }}
-                <span
-                  v-if="productInfo?.description?.length > 180"
-                  @click="toggleDescription"
-                  >{{ `${viewDescription ? "View Less" : "View More"}` }}</span
-                >
+                <span v-if="productInfo?.description?.length > 180" @click="toggleDescription">{{ `${viewDescription ?
+                  "View Less" : "View More"}` }}</span>
               </p>
             </div>
 
             <div class="specification" v-if="productInfo.specs?.length > 0">
               <h2>Product Specification</h2>
               <ul>
-                <li
-                  class="list"
-                  v-for="spec in productInfo?.specs"
-                  :key="spec.name"
-                >
+                <li class="list" v-for="spec in productInfo?.specs" :key="spec.name">
                   <span>{{ spec.name }} : {{ spec.value }}</span>
                 </li>
               </ul>
@@ -144,11 +96,6 @@
 </template>
 
 <script setup>
-// import {
-//   fetchSimilarProducts,
-//   getProductInfoById,
-// } from "@/API/APIs";
-
 import ImageFrame from "../ImageFrame.vue";
 // import VideoPlayer from "../hypdPlayer.vue";
 import ImagePreview from "./ImagePreview.vue";
@@ -163,12 +110,9 @@ import SimilarProducts from "@/components/ProductComponents/SimilarProductsCompo
 
 const route = useRoute();
 const router = useRouter();
-const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 const product = useProductStore();
 const creator = useCreatorStore();
-// const props = defineProps({
-//   productInfo: Object,
-// });
 
 const productOffers = ref([]);
 const viewDescription = ref(false);
@@ -243,10 +187,6 @@ const productDescription = computed(() => {
   }
 });
 
-// onBeforeUnmount(() => {
-//   product.saveProductInfo({});
-// });
-
 // watch(productInfo, async (newV, oldV) => {
 //   if (newV.id && newV.id != oldV.id) {
 //     await getProductOffers();
@@ -254,32 +194,33 @@ const productDescription = computed(() => {
 //   }
 // });
 onMounted(async () => {
-  // if (productInfo.value?.id) {
-  //   await getProductOffers();
-  // }
+  if (productInfo.value?.id) {
+    await getProductOffers();
+  }
 });
 
 async function getProductOffers() {
   try {
-    var params = new URLSearchParams();
+    var params = {};
     if (productInfo.value.id) {
-      params.append("catalog_id", productInfo.value?.id);
-      params.append("brand_id", productInfo.value?.brand_info?.id);
-      params.append("price", retailPrice?.value);
+      params = {
+        'catalog_id': productInfo.value?.id,
+        'brand_id': productInfo.value?.brand_info?.id,
+        'price': retailPrice?.value,
+      }
     }
-    params.append("isWeb", true);
-    var response = await axios({
+    params = { ...params, 'isWeb': true }
+    var response = await $fetch(`${config.public.couponURL}/api/app/get-coupons`, {
       method: "GET",
-      url: proxy.$couponURL + "/api/app/get-coupons",
       params: params,
       withCredentials: true,
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (response.data.payload) {
+    if (response.payload) {
       // Shifting BXGY coupon to top of array
-      var coupons = response.data.payload;
+      var coupons = response.payload;
       var bxgyIndex = coupons.findIndex((coupon) => coupon?.type == "bxgy");
       var bundleIndex = coupons.findIndex((coupon) => coupon?.type == "bundle");
       if (bundleIndex > -1) {
@@ -303,9 +244,8 @@ function shareProduct() {
       ? `${creator.info?.name} | ${product.info.name} | Hypd Store`
       : `${product.info?.name} | Hypd Store`;
   }
-  shareObject["url"] = `${proxy.$base}/${
-    route.params.creator_username || getCreatorUserName(creator?.info?.id)
-  }/product/${product.info?.id}?title=${product.info?.name}`;
+  shareObject["url"] = `${proxy.$base}/${route.params.creator_username || getCreatorUserName(creator?.info?.id)
+    }/product/${product.info?.id}?title=${product.info?.name}`;
 
   if (navigator.canShare) {
     navigator.share(shareObject);
@@ -360,17 +300,21 @@ function toggleVariantSelector() {
   .product-page-container {
     z-index: 0 !important;
   }
+
   .product-page-wrapper {
     display: block !important;
     background: var(--background-grey, #f9f9f9) !important;
   }
+
   .right-section {
     background: var(--background-grey, #f9f9f9) !important;
     padding: 0 0 4px;
   }
+
   section {
     margin: 4px 0 0;
   }
+
   .product-images {
     display: flex !important;
     flex-wrap: nowrap !important;
@@ -390,11 +334,13 @@ function toggleVariantSelector() {
   .share-btn {
     display: block !important;
   }
+
   p {
     font-size: 16px !important;
     line-height: 24px !important;
     letter-spacing: 0.2px !important;
   }
+
   .mobile-variant-selector {
     display: block !important;
   }
@@ -406,6 +352,7 @@ function toggleVariantSelector() {
     width: 100%;
     z-index: 55;
   }
+
   .variant-selector section {
     margin: 0;
   }
@@ -430,6 +377,7 @@ function toggleVariantSelector() {
 .right-section {
   max-width: 520px;
 }
+
 .product-images {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(calc(493px / 2 - 3px), 1fr));
@@ -450,9 +398,11 @@ function toggleVariantSelector() {
   background: var(--primary-purple, #342546);
   border-radius: 12px;
 }
+
 .right-section {
   justify-self: flex-start;
 }
+
 .product-image {
   height: 320px;
   cursor: pointer;
@@ -460,10 +410,12 @@ function toggleVariantSelector() {
   border: 1px solid var(--primary-border-color);
   border-radius: 12px; */
 }
+
 section {
   padding: 16px;
   background: var(--plain-white, #fff);
 }
+
 .description-specification {
   padding: 0;
 }
@@ -472,6 +424,7 @@ section {
 .specification {
   padding: 12px 16px;
 }
+
 .item-info-wrapper {
   display: flex;
   align-items: flex-start;
@@ -500,12 +453,14 @@ p#item-name {
   line-height: 30px;
   margin: 0;
 }
+
 span#retail-price {
   color: var(--primary-black, #13141b);
   font-family: Urbanist-Bold;
   font-size: 24px;
   line-height: 30px;
 }
+
 span#base-price {
   color: var(--disabled-text, #bebebe);
   font-family: Urbanist-Regular;
@@ -515,6 +470,7 @@ span#base-price {
   text-decoration: line-through;
   padding: 0 0 0 6px;
 }
+
 span#discount {
   color: var(--green, #01c159);
   font-family: Urbanist-Bold;
@@ -534,14 +490,17 @@ p.product-description {
   padding: 2px 0;
   user-select: none;
 }
+
 p.product-description span {
   color: var(--primary-orange);
   cursor: pointer;
   user-select: none;
 }
+
 p.product-description span:hover {
   text-decoration: underline;
 }
+
 .description-specification {
   border-top: 1px solid var(--primary-border-color);
   border-bottom: 1px solid var(--primary-border-color);
@@ -550,6 +509,7 @@ p.product-description span:hover {
 ul {
   padding-inline-start: 24px;
 }
+
 li {
   color: var(--secondary-text, #5c5c5c);
   font-family: Urbanist-Medium;

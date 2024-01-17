@@ -1,7 +1,9 @@
 <template>
   <div class="header">
     <section class="desktop-header">
-      <div class="logo">HYPD.</div>
+      <div @click="navigate" class="logo">
+        HYPD
+      </div>
       <div class="search-input-bar">
         <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
           xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +70,7 @@
         <DropDown @close="showDropDown = false" v-if="showDropDown" />
       </div>
     </section>
-    <!-- <Wishlist @close="toggleWishlist" v-if="showWishlist" /> -->
+    <Wishlist @close="toggleWishlist" v-if="showWishlist" />
     <section class="mobile-header">
       <div class="back-btn">
         <button @click="goBack" class="back">
@@ -116,7 +118,7 @@
 
 <script setup>
 import DropDown from "~/components/HeaderDropDown.vue";
-// import Wishlist from "@/components/WishlistComponent.vue";
+import Wishlist from "@/components/WishlistComponent.vue";
 import ExploreButton from "@/components/ExploreComponents/ExploreButton.vue";
 import { getCreatorUserName } from "~/utils/helperMethods";
 
@@ -127,7 +129,7 @@ const props = defineProps({
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const product = useProductStore();
+// const product = useProductStore();
 const creatorStore = useCreatorStore();
 
 const searchInputQuery = ref("");
@@ -137,6 +139,24 @@ const showWishlist = ref(false);
 const noOfCartItems = computed(() => {
   return store.cartInfo.items?.length || 0;
 });
+
+async function navigate() {
+  var creatorUsername = await getCreatorUserName();
+  if (creatorUsername) {
+    navigateTo(
+      {
+        name: "CreatorStore",
+        params: {
+          creatorUsername: creatorUsername
+        }
+      }
+    )
+  } else {
+    navigateTo(
+      { name: "Index" }
+    )
+  }
+}
 
 async function goBack() {
   if (!router.options.history.state.back) {
@@ -254,11 +274,12 @@ function openDropDown() {
 }
 
 .desktop-header .logo {
-  color: #13141b;
+  color: #13141b !important;
   font-family: Ginger-Regular;
+  cursor: pointer;
   font-size: 24px;
   line-height: 20px;
-  cursor: pointer;
+
 }
 
 .search-input-bar {

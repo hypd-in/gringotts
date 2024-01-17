@@ -48,7 +48,6 @@ if (route.params.collectionId) {
   })
   if (response) {
     collectionInfo.value = { ...response.value.payload }
-    console.log("HERE", collectionInfo.value);
     if (collectionInfo.value?.influencer_link_ids?.length > 0) {
       fetchCatalogInfo(collectionInfo.value.influencer_link_ids);
     }
