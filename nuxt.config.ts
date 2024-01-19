@@ -20,12 +20,18 @@ export default defineNuxtConfig({
         ? {
           catalogURL: "https://catalogv2.getshitdone.in",
           entityURL: "https://entity.getshitdone.in",
-          cmsURL: 'https://cms.getshitdone.in'
+          cmsURL: 'https://cms.getshitdone.in',
+          orderURL:'https://orderv2.getshitdone.in',
+          couponURL:"https://coupon.getshitdone.in",
+          checkoutURL:"https://checkout.getshitdone.in",
         }
         : {
           catalogURL: "https://catalog2.hypd.store",
           entityURL: "https://entity.hypd.store",
-          cmsURL: 'https://cms.hypd.store'
+          cmsURL: 'https://cms.hypd.store',
+          orderURL:'https://orderv2.hypd.store',
+          couponURL:"https://coupon.hypd.store",
+          checkoutURL:"https://checkout.hypd.store",
         },
   },
   nitro: {

@@ -598,7 +598,7 @@
 import { getReplacedSource, defaultProfileImage, optimizeImage } from "~/utils/helperMethods";
 
 import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import { Carousel, Slide } from 'vue3-carousel'
 
 
 const route = useRoute();
@@ -812,10 +812,6 @@ onMounted(() => {
 
 onBeforeMount(() => {
     getBOTD();
-})
-
-onBeforeUnmount(() => {
-    clearInterval(startTimer.value);
 })
 
 </script>

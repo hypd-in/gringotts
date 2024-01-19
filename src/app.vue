@@ -5,12 +5,22 @@
 </template>
 
 <script setup>
+
+import * as API from "@/utils/globalAPIs.js";
+
+
+import { clearLocalCartItems } from "@/utils/cartMethods.js"
+
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
 const creatorStore = useCreatorStore();
 const runtimeConfig = useRuntimeConfig();
-const userInfo = ref({});
+
+const cart_details = ref()
+const wishlisted_items = ref([])
+const cart_items = ref([])
+const level_one_categories = ref([])
 
 if (route.params.creatorUsername) {
   const { data, pending: loadingCreatorInfo } = await useFetch(
@@ -18,24 +28,83 @@ if (route.params.creatorUsername) {
     "/api/app/influencer/username/" +
     route.params.creatorUsername,
     {
-      key:"influencer_info_app",
+      key: "influencer_info_app",
       methods: "GET",
       headers: {
         "Content-Type": "application/json",
       },
     }
   );
-  creatorStore.saveCreatorInfo(data?.value?.payload);
+  creatorStore.saveCreatorInfo(data.value.payload);
 }
 
-onMounted(async () => {
-  console.log("App mounted");
-  if (!store.user.id) {
-    var user = await fetchUserInfo();
-    await fetchCartInfo();
-    if (user?.id) {
-      userInfo.value = { ...user };
+onBeforeMount(async () => {
+  await API.fetchUserInfo();
+  if (store.user.id) {
+    clearLocalCartItems();
+    await API.fetchCartInfo();
+    
+    // tracking.trackingUser();
+  } else {
+    if (route.query.isExpress) {
+      await getCartItemsFromLocalStorage();
     }
   }
-});
+
+  // Calling Coupons API to fetch Brands for Hot selling Page
+  await API.fetchAllCoupons();
+  // created
+  document.addEventListener("visibilitychange", async () => {
+    if (
+      document.visibilityState == "visible" &&
+      route.query.isExpress
+    ) {
+      await API.fetchCartInfo();
+    }
+  });
+})
+
+
+onMounted(async () => {
+  // Calling Hot selling Products API
+  let response = await $fetch(runtimeConfig.public.orderURL + "/api/hot-selling-catalogs", {
+    method: "GET",
+    credentials: 'include',
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+
+  let hotSellingProducts = [...response?.payload];
+  console.log(hotSellingProducts)
+
+  store.saveHotSellingProducts(hotSellingProducts)
+
+  // uncomment later
+  // this.trackingUTM();
+  // tracking.trackingUserLanding();
+
+  // Condition for check iFrame
+  await fetchCategories();
+})
+
+async function fetchCategories() {
+  try {
+    let response = await $fetch(runtimeConfig.public.catalogURL + "/api/app/category/lvl1",
+      {
+        method: "GET",
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        }
+      }
+    )
+    level_one_categories.value = response?.payload;
+  }
+  catch (err) {
+    console.log(err);
+    alert(err.response.data.error[0].message);
+  }
+}
+
 </script>

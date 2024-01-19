@@ -15,10 +15,50 @@ export const useStore = defineStore("store", () => {
     products: [],
     page: 0,
   });
+
+  const brandWiseGifts = ref({});
+
   const couponsMap = ref({});
   const bxgyCoupons = ref([]);
+  const bxgyGetIds = ref([]);
+  const cartCoupons = ref({});
+
+  const allCoupons = ref([]);
+  const brandWiseCartItems = ref({});
+
   const hotSellingProducts = ref([]);
   const exploreAnimation = ref(false);
+
+  const brandTotalCartValue = ref();
+
+  // functions
+
+  function saveBrandTotalCartValue(value) {
+    brandTotalCartValue.value = value;
+  }
+
+  function setBrandWiseGift(gifts) {
+    brandWiseGifts.value = { ...gifts };
+  }
+
+  function saveBrandWiseCartItems(brandWiseCart) {
+    brandWiseCartItems.value = { ...brandWiseCart };
+  }
+
+  function saveBxGyGetIds(ids) {
+    bxgyGetIds.value = [...ids];
+  }
+
+  function saveAllCoupons(coupons) {
+    allCoupons.value = [...coupons];
+    bxgyCoupons.value = coupons.filter((coupon) => {
+      return coupon.applicable_on.name == "bxgy";
+    });
+  }
+
+  function saveCouponsObject(coupons) {
+    cartCoupons.value = { ...coupons };
+  }
 
   function saveUserInfo(userInfo) {
     user.value = { ...userInfo };
@@ -30,6 +70,10 @@ export const useStore = defineStore("store", () => {
 
   function saveCartInfo(info) {
     cartInfo.value = { ...info };
+  }
+
+  function updateCartInfo(info) {
+    cartInfo.value = { ...cartInfo.value, ...info };
   }
 
   function saveCartItems(items) {
@@ -57,8 +101,8 @@ export const useStore = defineStore("store", () => {
     exploreCurations.value = {
       curations: [],
       categoryCurations: {},
-      page: 0
-    }
+      page: 0,
+    };
   }
 
   function saveSearchProducts(newProducts) {
@@ -102,9 +146,23 @@ export const useStore = defineStore("store", () => {
     bxgyCoupons,
     hotSellingProducts,
     exploreAnimation,
+    cartCoupons,
+    allCoupons,
+    brandWiseCartItems,
+    bxgyGetIds,
+    brandWiseGifts,
+    brandTotalCartValue,
+
+    saveBrandTotalCartValue,
+    setBrandWiseGift,
+    saveBxGyGetIds,
+    saveBrandWiseCartItems,
+    saveAllCoupons,
+    saveCouponsObject,
     saveUserInfo,
     saveWishlistedItems,
     saveCartInfo,
+    updateCartInfo,
     saveCartItems,
     saveExploreCurations,
     saveExploreCategoryCurations,

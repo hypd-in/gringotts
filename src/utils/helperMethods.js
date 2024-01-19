@@ -1,3 +1,5 @@
+import { getInfluencerById } from "./globalAPIs";
+
 export function optimizeImage(image) {
   return image;
 }
@@ -11,6 +13,24 @@ export function getObjectLength(value) {
     return Object.keys(value).length;
   } else {
     return 0;
+  }
+}
+
+export function returnAlphabets(event) {
+  if (event.inputType == "insertFromPaste") {
+    var result = "";
+    event.target.value.split("").forEach((value) => {
+      if (/^[a-zA-Z]+$/.test(value)) {
+        result += value;
+      }
+    });
+    return result;
+  }
+
+  if (/^[a-zA-Z]+$/.test(event.target.value)) {
+    return event.target.value;
+  } else {
+    return event.target.value?.replace(event.data, "");
   }
 }
 
@@ -59,41 +79,41 @@ export function addingObserver(target, callback) {
 }
 
 export async function getCreatorUserName(id) {
-  // if (
-  //   JSON.parse(getCookie("creators")) &&
-  //   JSON.parse(getCookie("creators"))[id]
-  // ) {
-  //   return JSON.parse(getCookie("creators"))[id].username;
-  // }
-  // if (store.state?.creator?.info?.username) {
-  //   return store.state?.creator?.info?.username;
-  // }
-  // if (router.currentRoute.value.params.creator_username) {
-  //   return router.currentRoute.value.params.creator_username;
-  // }
-  // if (localStorage.getItem("creatorInfo") != null) {
-  //   var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
-  //   return creatorInfo?.creatorName;
-  // }
-  // let payload = null;
+  const router = useRouter();
+  if (
+    JSON.parse(getCookie("creators")) &&
+    JSON.parse(getCookie("creators"))[id]
+  ) {
+    return JSON.parse(getCookie("creators"))[id].username;
+  }
+  if (store?.creator?.info?.username) {
+    return store?.creator?.info?.username;
+  }
+  if (router.currentRoute.value.params.creator_username) {
+    return router.currentRoute.value.params.creator_username;
+  }
+  if (localStorage.getItem("creatorInfo") != null) {
+    var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
+    return creatorInfo?.creatorName;
+  }
+  let payload = null;
 
-  // let creator_id =
-  //   id ||
-  //   router.currentRoute.value.params.creator_id ||
-  //   router.currentRoute.value.params.creatorId;
+  let creator_id =
+    id ||
+    router.currentRoute.value.params.creator_id ||
+    router.currentRoute.value.params.creatorId;
 
-  // if (id) {
-  //   payload = await getInfluencerById(creator_id);
-  //   return payload.username;
-  // }
-  // if (getCookie("creators")) {
-  //   return Object.values(JSON.parse(getCookie("creators")))[
-  //     Object.values(JSON.parse(getCookie("creators"))).length - 1
-  //   ].username;
-  // }
-  return "hypd_store";
+  if (id) {
+    payload = await getInfluencerById(creator_id);
+    return payload.username;
+  }
+  if (getCookie("creators")) {
+    return Object.values(JSON.parse(getCookie("creators")))[
+      Object.values(JSON.parse(getCookie("creators"))).length - 1
+    ].username;
+  }
+  // return "hypd_store";
 }
-
 
 export function defaultProfileImage() {
   //  This function generate random default profile image
