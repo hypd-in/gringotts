@@ -87,6 +87,38 @@ export async function fetchCartInfo() {
   }
 }
 
+export async function fetchUserAddresses() {
+  const store = useStore();
+  if (!store.user.id) {
+    return;
+  }
+  await $fetch(
+    `${useRuntimeConfig().public.entityURL}/api/customer/${
+      store.user?.id
+    }/address`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((response) => {
+      var addressObject = response.payload?.reduce((obj, address) => {
+        return {
+          ...obj,
+          [address.id]: address,
+        };
+      }, {});
+      store.saveUserAddresses(addressObject);
+      console.log(store.addresses);
+    })
+    .catch((error) => {
+      console.log("Error fetching user addresses", error);
+    });
+}
+
 export async function saveVariants(items) {
   items.forEach(async (item) => {
     item["variants"] = await item.catalog_info?.variants?.reduce(
@@ -176,17 +208,22 @@ export async function removeItemFromWishlist(itemInfo) {
 }
 
 export async function fetchAllCoupons() {
-  await $fetch(`${useRuntimeConfig().public.couponURL}/api/app/coupons?version=2`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json"
+  await $fetch(
+    `${useRuntimeConfig().public.couponURL}/api/app/coupons?version=2`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
-  }).then((response) => {
-    if (response.payload) {
-      createCouponsMap(response.payload);
-    }
-  }).catch((error) => {
-    console.log("Error fetching coupons", error);
-  })
+  )
+    .then((response) => {
+      if (response.payload) {
+        createCouponsMap(response.payload);
+      }
+    })
+    .catch((error) => {
+      console.log("Error fetching coupons", error);
+    });
 }

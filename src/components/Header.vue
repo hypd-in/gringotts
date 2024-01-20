@@ -250,7 +250,7 @@ function openDropDown() {
 
 .header {
   position: relative;
-  z-index: 2;
+  z-index: 53;
   height: 72px;
   border-bottom: 1px solid var(--primary-border-color);
 }

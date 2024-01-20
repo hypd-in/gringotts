@@ -1,40 +1,20 @@
 <template>
-  <div class="address-listing-wrapper" :key="store.state.addresses">
+  <div class="address-listing-wrapper" :key="store.addresses">
     <div class="backdrop" @click="goBack()"></div>
     <div class="address-listing-container">
       <div class="close-btn" @click="goBackToAddresses()">
-        <svg
-          width="20"
-          height="20"
-          viewBox="0 0 20 20"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M4.97913 15.0503L14.8786 5.1508"
-            stroke="#292D32"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
-          <path
-            d="M14.8786 15.0504L4.97913 5.15088"
-            stroke="#292D32"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4.97913 15.0503L14.8786 5.1508" stroke="#292D32" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
+          <path d="M14.8786 15.0504L4.97913 5.15088" stroke="#292D32" stroke-width="2" stroke-linecap="round"
+            stroke-linejoin="round" />
         </svg>
       </div>
       <div class="heading">
         <span>{{ heading }}</span>
       </div>
       <div class="edit-address" v-if="editOrCreateNewAddress">
-        <EditAddress
-          :address="editAddress"
-          @selectAddress="selectAddress"
-          @close="goBackToAddresses"
-        />
+        <EditAddress :address="editAddress" @selectAddress="selectAddress" @close="goBackToAddresses" />
       </div>
       <div class="address-listing-wrapper" v-else>
         <div class="empty-address-container" v-if="noOfUserAddresses == 0">
@@ -46,14 +26,8 @@
           </div>
         </div>
         <div class="address-listing" v-else>
-          <AddressCard
-            :address="address"
-            @edit="goToEditAddress"
-            @remove="removeAddress"
-            @goBack="emits('close')"
-            v-for="address in store.state.addresses"
-            :key="address.id"
-          />
+          <AddressCard :address="address" @edit="goToEditAddress" @remove="removeAddress" @goBack="emits('close')"
+            v-for="address in store.addresses" :key="address.id" />
         </div>
         <section class="button-section">
           <button @click="goToEditAddress" class="add-new-btn">
@@ -67,13 +41,6 @@
 
 <script setup>
 // import { fetchCartInfo, fetchUserAddresses } from "@/API/APIs";
-import {
-  computed,
-  getCurrentInstance,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-} from "vue";
 import { useRoute } from "vue-router";
 import AddressCard from "./AddressCard.vue";
 import EditAddress from "./EditAddress.vue";
@@ -82,9 +49,9 @@ const emits = defineEmits(["close"]);
 const route = useRoute();
 const router = useRouter();
 const store = useStore();
-const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 onMounted(async () => {
-  if (noOfUserAddresses.value == 0 && store.state.user.id) {
+  if (noOfUserAddresses.value == 0 && store.user.id) {
     await fetchUserAddresses();
   }
   document.body.style.overflowY = "hidden";
@@ -106,7 +73,7 @@ const heading = computed(() => {
   return "My Addresses";
 });
 const noOfUserAddresses = computed(() => {
-  return Object.keys(store.state.addresses)?.length || 0;
+  return Object.keys(store.addresses)?.length || 0;
 });
 function goBack() {
   emits("close");
@@ -131,54 +98,54 @@ function goBackToAddresses() {
 }
 
 async function removeAddress(address) {
-  var params = new URLSearchParams();
-  params.append("user_id", store.state.user?.id);
-  params.append("address_id", address?.id);
-  try {
-    var response = await axios({
-      method: "DELETE",
-      url: proxy.$entityURL + "/api/customer/address",
-      params: params,
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (await response.data.payload) {
-      await fetchCartInfo();
-      await store.dispatch("removeUserAddress", address);
-    }
-  } catch (err) {
-    console.log("Error deleting address", err);
+  var params = {};
+  params = {
+    user_id: store.user?.id,
+    address_id: address?.id,
   }
+  await $fetch(`${config.public.entityURL}/api/customer/address`, {
+    method: "DELETE",
+    params: params,
+    credentials: include,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (response) => {
+    if (response.payload) {
+      await fetchCartInfo();
+      store.removeAddress(address);
+    }
+  }).catch((error) => {
+    alert("Oops! there was an error removing this address");
+    console.log("Error removing address", error);
+  })
 }
 
 async function selectAddress(address) {
   if (route.query.isExpress) {
-    store.dispatch("updateCartInfo", {
+    store.updateCartInfo({
       billing_address: { ...address },
       shipping_address: { ...address },
-    });
+    })
     return;
   }
   var data = { ...address };
-  data["id"] = store.state.user?.id;
-  try {
-    var response = await axios({
-      method: "POST",
-      url: proxy.$entityURL + "/api/app/cart/address",
-      withCredentials: true,
-      data: data,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.data.payload) {
+  data["id"] = store.user?.id;
+  var response = await $fetch(`${config.public.entityURL}/api/app/cart/address`, {
+    method: "POST",
+    credentials: "include",
+    data: data,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (response) => {
+    if (response.payload) {
       await fetchCartInfo();
     }
-  } catch (err) {
-    console.log(err);
-  }
+  }).catch((error) => {
+    alert("Oops! there was an error selecting this address");
+    console.log("Error selecting address", error);
+  })
 }
 </script>
 
@@ -186,6 +153,7 @@ async function selectAddress(address) {
 .address-listing-wrapper {
   box-sizing: border-box;
 }
+
 .address-listing-container {
   background: var(--plain-white, #fff);
   position: absolute;
@@ -210,9 +178,11 @@ async function selectAddress(address) {
 .address-listing-container::-webkit-scrollbar {
   width: 4px;
 }
+
 .address-listing-container::-webkit-scrollbar-thumb {
   background: var(--dark-hover);
 }
+
 .heading {
   color: #13141b;
   text-align: center;

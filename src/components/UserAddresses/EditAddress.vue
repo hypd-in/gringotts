@@ -3,53 +3,27 @@
     <div class="input-wrapper display-name">
       <div class="first-name">
         <label for="firstName">First Name</label>
-        <input
-          type="text"
-          placeholder="First Name"
-          v-model="firstName"
-          @input="updateFirstName"
-        />
+        <input type="text" placeholder="First Name" v-model="firstName" @input="updateFirstName" />
       </div>
       <div class="last-name">
         <label for="lastName">Last Name</label>
-        <input
-          type="text"
-          placeholder="Last Name"
-          v-model="lastName"
-          @input="updateLastName"
-        />
+        <input type="text" placeholder="Last Name" v-model="lastName" @input="updateLastName" />
       </div>
     </div>
 
     <div class="input-wrapper phone-no">
       <label for="phoneNumber">Phone Number</label>
       <div class="phone-input-wrapper flex">
-        <input
-          style="width: 42px; text-align: center"
-          class="disabled"
-          type="tel"
-          value="+91"
-          readonly
-        />
-        <input
-          type="tel"
-          maxlength="10"
-          placeholder="Phone No"
-          v-model="address.contact_number.number"
-          @input="updatePhoneNumber"
-        />
+        <input style="width: 42px; text-align: center" class="disabled" type="tel" value="+91" readonly />
+        <input type="tel" maxlength="10" placeholder="Phone No" v-model="address.contact_number.number"
+          @input="updatePhoneNumber" />
       </div>
     </div>
 
     <div class="input-wrapper flex gap-16">
       <div class="pincode">
         <label for="pincode">Pin code</label>
-        <input
-          type="tel"
-          @input="fetchPincodeInfo"
-          v-model="address.postal_code"
-          placeholder="Pin-code"
-        />
+        <input type="tel" @input="fetchPincodeInfo" v-model="address.postal_code" placeholder="Pin-code" />
       </div>
 
       <div class="city">
@@ -61,22 +35,11 @@
     <div class="input-wrapper">
       <div class="state">
         <label for="state">State</label>
-        <input
-          readonly
-          v-model="address.state.name"
-          type="text"
-          class="disabled"
-          @click="toggleStateDropdown"
-          placeholder="Enter State"
-        />
+        <input readonly v-model="address.state.name" type="text" class="disabled" @click="toggleStateDropdown"
+          placeholder="Enter State" />
       </div>
       <div v-if="showStateDropDown" class="states-dropdown">
-        <div
-          class="dropdown-item"
-          v-for="state in states"
-          :key="state.iso_code"
-          @click="updateAddressState(state)"
-        >
+        <div class="dropdown-item" v-for="state in states" :key="state.iso_code" @click="updateAddressState(state)">
           {{ state.name }}
         </div>
       </div>
@@ -85,71 +48,39 @@
     <div class="input-wrapper">
       <div class="line-1">
         <label for="lineOne">FLAT, HOUSE NO., BUILDING</label>
-        <input
-          type="text"
-          v-model="address.line1"
-          autocomplete="address"
-          placeholder="Enter flat, house no., building"
-        />
+        <input type="text" v-model="address.line1" autocomplete="address" placeholder="Enter flat, house no., building" />
       </div>
     </div>
 
     <div class="input-wrapper">
       <div class="line-2">
         <label for="lineTwo">Area, Street</label>
-        <input
-          v-model="address.line2"
-          autocomplete="address-area"
-          type="text"
-          placeholder="Enter area, street"
-        />
+        <input v-model="address.line2" autocomplete="address-area" type="text" placeholder="Enter area, street" />
       </div>
     </div>
 
     <div class="input-wrapper">
       <div class="line-3">
         <label for="lineThree">Locality</label>
-        <input
-          v-model="address.line3"
-          type="text"
-          autocomplete="address-landmark"
-          placeholder="Enter Locality"
-        />
+        <input v-model="address.line3" type="text" autocomplete="address-landmark" placeholder="Enter Locality" />
       </div>
     </div>
 
     <div class="input-wrapper">
       <label for="addressType"> Select type of address </label>
       <div class="address-name">
-        <div
-          :class="{
-            'selected-type': selectedAddressType == type,
-          }"
-          class="selector"
-          v-for="type in addressTypes"
-          :key="type"
-          @click="updateAddressType(type)"
-        >
+        <div :class="{
+          'selected-type': selectedAddressType == type,
+        }" class="selector" v-for="type in addressTypes" :key="type" @click="updateAddressType(type)">
           {{ type }}
         </div>
-        <input
-          v-if="selectedAddressType.toLowerCase() == 'others'"
-          type="text"
-          placeholder="Enter address type"
-          autocomplete="organization"
-          v-model="address.address_name"
-        />
+        <input v-if="selectedAddressType.toLowerCase() == 'others'" type="text" placeholder="Enter address type"
+          autocomplete="organization" v-model="address.address_name" />
       </div>
     </div>
 
-    <SubmitButton
-      class="submit-btn"
-      @submit="submitAddress"
-      :disabled="validateAddress()"
-      :loading="submittingAddress"
-      defaultText="Submit"
-      type="primary"
-    />
+    <SubmitButton class="submit-btn" @submit="submitAddress" :disabled="validateAddress()" :loading="submittingAddress"
+      defaultText="Submit" type="primary" />
   </div>
 </template>
 
@@ -166,19 +97,18 @@
 //   onMounted,
 //   ref,
 // } from "vue";
-import { useRoute } from "vue-router";
 import InputComponent from "./InputComponent.vue";
 import SubmitButton from "@/components/SubmitButton.vue";
 // import { fetchUserAddresses } from "@/API/APIs";
 // import { trackingAddShippingInfo } from "@/eventTracking";
 
-const route = useRoute();
+const emit = defineEmits(["close", "selectAddress"]);
 const props = defineProps({
   address: Object,
 });
-const emit = defineEmits(["close", "selectAddress"]);
-const { proxy } = getCurrentInstance();
-
+const route = useRoute();
+// const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 const address = ref({
   address_name: "home",
   display_name: "",
@@ -431,17 +361,17 @@ function createPlainAddress() {
     address.value.line1 && address.value.line2
       ? `, ${address.value.line2}`
       : address.value.line2 && !address.value.line1
-      ? `${address.value.line2}`
-      : "";
+        ? `${address.value.line2}`
+        : "";
 
   address.value.plain_address +=
     address.value.line1 || address.value.line2
       ? `, ${address.value.line3}`
       : address.value.line3 && !(address.value.line1 && address.value.line2)
-      ? `${address.value.line3}`
-      : address.value.line3
-      ? address.value.line3
-      : "";
+        ? `${address.value.line3}`
+        : address.value.line3
+          ? address.value.line3
+          : "";
 
   address.value.plain_address +=
     address.value.city.length > 0 ? `, ${address.value.city}` : "";
@@ -499,9 +429,9 @@ async function submitAddress() {
       emit("close");
       await fetchUserAddresses();
       submittingAddress.value = false;
-      if (!data.id) {
-        trackingAddShippingInfo(store.state.cartInfo);
-      }
+      // if (!data.id) {
+      //   trackingAddShippingInfo(store.state.cartInfo);
+      // }
     }
   } catch (err) {
     emit("close");
@@ -515,6 +445,7 @@ async function submitAddress() {
 .edit-address-wrapper {
   padding: 0 0 16px;
 }
+
 .display-name {
   display: flex;
   align-items: center;
@@ -631,6 +562,7 @@ input::placeholder {
   position: relative;
   cursor: pointer;
 }
+
 .states-dropdown {
   position: absolute;
   height: 132px;

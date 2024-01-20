@@ -302,14 +302,6 @@ async function fetchExploreCurations() {
   .explore-wrapper {
     margin: 0 auto !important;
   }
-
-  .trending-searches {
-    padding: 0 0 16px !important;
-  }
-}
-
-.trending-searches {
-  padding: 16px 0;
 }
 
 .title {

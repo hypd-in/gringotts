@@ -93,11 +93,11 @@ function routeToCreatorCollection(collectionInfo) {
   navigateTo({
     name: "CreatorCollection",
     params: {
-      creator_username: creatorStore?.info?.username,
-      collection_id: collectionInfo.id,
+      creatorUsername: creatorStore?.info?.username,
+      collectionId: collectionInfo.id,
     },
     query: {
-      title: collectionInfo?.name,
+      title: collectionInfo?.collection_name,
     },
   });
 }
