@@ -18,7 +18,7 @@
       </div>
       <div class="address-listing-wrapper" v-else>
         <div class="empty-address-container" v-if="noOfUserAddresses == 0">
-          <img src="../../assets/img/illustrations/no-address.svg" alt="" />
+          <img src="~/assets/illustrations/no-address.svg" alt="" />
           <div style="margin: 16px auto">
             <span>
               Looks like, we don't have your addresses saved in your profile.
@@ -134,7 +134,7 @@ async function selectAddress(address) {
   var response = await $fetch(`${config.public.entityURL}/api/app/cart/address`, {
     method: "POST",
     credentials: "include",
-    data: data,
+    body: data,
     headers: {
       "Content-Type": "application/json",
     },

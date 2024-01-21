@@ -23,6 +23,24 @@ export function convertToINR(value) {
   }).format(value);
 }
 
+export function returnAlphabets(event) {
+  if (event.inputType == "insertFromPaste") {
+    var result = "";
+    event.target.value.split("").forEach((value) => {
+      if (/^[a-zA-Z]+$/.test(value)) {
+        result += value;
+      }
+    });
+    return result;
+  }
+
+  if (/^[a-zA-Z]+$/.test(event.target.value)) {
+    return event.target.value;
+  } else {
+    return event.target.value?.replace(event.data, "");
+  }
+}
+
 export function returnMaxLength(event, maxlength) {
   event.target.value = event.target.value.slice(0, maxlength);
   return event.target.value;

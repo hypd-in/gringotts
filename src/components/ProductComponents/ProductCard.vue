@@ -194,9 +194,13 @@ const discount = computed(() => {
 const goToProduct = computed(() => {
   var obj = {};
   if (props.isAffiliate) {
-    // obj = {
-    //   name: "AffiliateProduct",
-    // };
+    let link = props.itemInfo.hypd_link.split("/");
+    obj = {
+      name: "AfflinkRedirection",
+      params: {
+        'afflinkId': link[link.length - 1],
+      }
+    };
   } else if (creatorStore.info?.username) {
     obj = {
       name: "CreatorProduct",

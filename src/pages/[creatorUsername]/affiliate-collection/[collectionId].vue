@@ -2,7 +2,7 @@
   <div class="curation-wrapper">
     <div class="sub-header">
       <div class="journey-path">
-        <NuxtImg placeholder="[50, 25, 20, 10]" :alt="creatorStore.info.name" width="32" height="32" style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info?.profile_image?.src" />
+        <NuxtImg :placeholder="[32, 32, 70, 10]" :alt="creatorStore.info.name" width="32" height="32" style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info?.profile_image?.src" />
         {{ creatorStore.info.name }} / Collections / &nbsp;
         <!-- <NuxtImg width="32" height="32" style="border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="collectionInfo.image.src" /> -->
         <span v-if="route.query.title" style="color: #000">{{

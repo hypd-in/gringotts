@@ -85,29 +85,16 @@
 </template>
 
 <script setup>
-// import {
-//   returnAlphabets,
-//   returnMaxLength,
-//   returnNumber,
-// } from "@/customMethods/globalMethods";
-// import {
-//   computed,
-//   getCurrentInstance,
-//   onBeforeMount,
-//   onMounted,
-//   ref,
-// } from "vue";
-import InputComponent from "./InputComponent.vue";
 import SubmitButton from "@/components/SubmitButton.vue";
-// import { fetchUserAddresses } from "@/API/APIs";
 // import { trackingAddShippingInfo } from "@/eventTracking";
+
 
 const emit = defineEmits(["close", "selectAddress"]);
 const props = defineProps({
   address: Object,
 });
 const route = useRoute();
-// const { proxy } = getCurrentInstance();
+const store = useStore();
 const config = useRuntimeConfig();
 const address = ref({
   address_name: "home",
@@ -176,10 +163,10 @@ const showStateDropDown = ref(false);
 const fetchedState = ref(false);
 
 onBeforeMount(() => {
-  if (store.state.user?.id) {
-    address.value.contact_number = { ...store.state.user?.phone_no };
-    if (/^[a-zA-Z]+$/.test(store.state.user?.full_name)) {
-      address.value.display_name = store.state.user?.full_name;
+  if (store.user?.id) {
+    address.value.contact_number = { ...store.user?.phone_no };
+    if (/^[a-zA-Z]+$/.test(store.user?.full_name)) {
+      address.value.display_name = store.user?.full_name;
     } else {
       address.value.display_name = "";
     }
@@ -397,26 +384,22 @@ async function submitAddress() {
     firstName.value +
     `${lastName.value.length > 0 ? " " + lastName.value : ""}`;
   data = { ...address.value };
-  data.user_id = store.state.user?.id;
+  data.user_id = store.user?.id;
 
   if (data.id) {
     data["address_id"] = data.id;
     delete data.id;
   }
-  try {
-    var response = await axios({
-      method: "PUT",
-      url:
-        proxy.$entityURL +
-        "/api/customer/address" +
-        `${data.address_id ? "/edit" : ""}`,
-      withCredentials: true,
-      data: data,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response) {
+
+  await $fetch(`${config.public.entityURL}/api/customer/address${data.address_id ? "/edit" : ""}`, {
+    method: "PUT",
+    credentials: include,
+    body: data,
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then(async (response) => {
+    if (response.payload) {
       if (!data.address_id) {
         emit("selectAddress", {
           ...address.value,
@@ -429,15 +412,14 @@ async function submitAddress() {
       emit("close");
       await fetchUserAddresses();
       submittingAddress.value = false;
-      // if (!data.id) {
-      //   trackingAddShippingInfo(store.state.cartInfo);
-      // }
     }
-  } catch (err) {
+  }).catch((error) => {
     emit("close");
     submittingAddress.value = false;
+    alert("Oops! there was an error saving your address");
     console.log("Error saving address", err);
-  }
+
+  })
 }
 </script>
 

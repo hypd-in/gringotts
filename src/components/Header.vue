@@ -164,11 +164,12 @@ async function goBack() {
     navigateTo({
       name: "CreatorStore",
       params: {
-        creator_username: creatorUsername,
+        creatorUsername: creatorUsername,
       },
+      replace: true,
     });
   } else {
-    router.go(-1);
+    router.back();
   }
 }
 
