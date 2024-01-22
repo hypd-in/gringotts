@@ -20,8 +20,7 @@
                         getObjectLength(store.giftsEligibleForCart) > 0 &&
                         !store.giftsEligibleForCart[key].gift &&
                         !hideBanner
-                        " v-for="(giftItems, key) in store.giftsEligibleForCart" :key="key"
-                        class="applicable-coupon">
+                        " v-for="(giftItems, key) in store.giftsEligibleForCart" :key="key" class="applicable-coupon">
                         <img src="@/assets/img/gift.svg" alt="" />
 
                         <div class="coupon-info">
@@ -35,8 +34,7 @@
                         </div>
                     </div>
                 </div>
-
-                <router-view class="router-view"></router-view>
+                <NuxtPage class="router-view"></NuxtPage>
             </div>
 
             <div class="seperator"></div>
@@ -111,7 +109,7 @@ import {
 const router = useRouter();
 const route = useRoute();
 
-const store =  useStore()
+const store = useStore()
 
 const creatorStore = useCreatorStore();
 
@@ -167,7 +165,7 @@ onMounted(async () => {
     if (store.user?.id) {
         if (route.query.isExpress && route.name != "CartPayment") {
             if (store.cartInfo?.coupon?.id) {
-                store.updateCartInfo( { coupon: null, coupon_value: null });
+                store.updateCartInfo({ coupon: null, coupon_value: null });
             }
             await getExpressCheckoutProductInfo(
                 route.query.pid,
@@ -193,7 +191,7 @@ onMounted(async () => {
     }
 
     giftInfo.value = await getGiftInfo();
-    store.setBrandWiseGift( { ...giftInfo.value });
+    store.setBrandWiseGift({ ...giftInfo.value });
 });
 
 const noOfCartItems = computed(() => {
@@ -516,7 +514,7 @@ p {
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
-    margin: 72px auto 0;
+    margin: 0 auto 0;
     padding: 16px;
 }
 
@@ -611,13 +609,13 @@ section,
         padding: 0;
         height: calc(100vh - 49px - 69px);
         height: calc(100dvh - 49px - 69px);
-        margin: 49px auto 69px;
+        margin: 0 auto 69px;
         background: var(--background-grey, #f9f9f9);
     }
 
     .cart-wrapper.cart-wrapper-error {
         height: calc(100dvh - 49px - 80px);
-        margin: 49px auto 80px;
+        margin: 0 auto 80px;
     }
 
     .empty-cart-wrapper {

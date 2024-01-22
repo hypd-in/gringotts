@@ -140,7 +140,7 @@
       verifyingEmail.value = true;
       var response = await $fetch(runtimeConfig.publicentityURL + "/api/user/auth/email/check",{
         method: "POST",
-        data: {
+        body: {
           email: userEmail.value,
         },
         credentials:'include',
@@ -203,7 +203,7 @@
       }
       var response = await $fetch(runtimeConfig.public.entityURL + "/api/customer",{
         method: "PUT",
-        data: { ...formData },
+        body: { ...formData },
         credentials:'include',
         headers: {
           "Content-Type": "application/json",

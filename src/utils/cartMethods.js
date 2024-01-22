@@ -60,79 +60,77 @@ async function fetchItemInfo(id) {
   }
 }
 
-// export async function updateVariant(key, variantInfo) {
-//   console.log("UDPATE")
-//   if (key && variantInfo?.id) {
-//     try {
-//       var formData = {
-//         id: store.state.user?.id,
-//         catalog_id: store.state.cartItems[key]?.catalog_info?.id,
-//         old_variant_id: store.state.cartItems[key]?.variant_id,
-//         new_variant_id: variantInfo?.id,
-//       };
-//       var response = await axios({
-//         method: "PUT",
-//         url: entityURL + "/api/app/cart/item/variant",
-//         data: formData,
-//         withCredentials: true,
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       });
-//       if (response.data.payload) {
-//         console.log(response.data.payload)
-//       }
-//     } catch (err) {
-//       console.log("Error updating variant", err);
-//     }
-//   } else {
-//     return null;
-//   }
-// }
+export async function updateVariant(key, variantInfo) {
+  if (key && variantInfo?.id) {
+    try {
+      var formData = {
+        id: store.state.user?.id,
+        catalog_id: store.state.cartItems[key]?.catalog_info?.id,
+        old_variant_id: store.state.cartItems[key]?.variant_id,
+        new_variant_id: variantInfo?.id,
+      };
+      var response = await $fetch(entityURL + "/api/app/cart/item/variant", {
+        method: "PUT",
+        body: formData,
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.payload) {
+        console.log(response.payload);
+      }
+    } catch (err) {
+      console.log("Error updating variant", err);
+    }
+  } else {
+    return null;
+  }
+}
 
-// export async function updateCartItemQuantity(key, updateQuantity) {
-//   if (key && updateQuantity) {
-//     try {
-//       var formData = {
-//         quantity: updateQuantity,
-//         catalog_id: store.state.cartItems[key]?.catalog_info?.id,
-//         variant_id: store.state.cartItems[key]?.variant_id,
-//         id: store.state.user?.id,
-//       };
-//       var response = await axios({
-//         method: "PUT",
-//         url: entityURL + "/api/app/cart/item",
-//         data: formData,
-//         withCredentials: true,
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       });
-//       if (response.data.payload) {
-//         if (store.cartInfo.coupon?.id) {
-//           // Removing Coupon if Coupon min purchase limit is breached
-//           let appliedCoupon = addingCouponElegiblityList([
-//             { ...store.cartInfo.coupon },
-//           ]);
-//           let coupon_info = appliedCoupon[store.cartInfo.coupon.id];
-//           coupon_info = synthesizingCoupon(coupon_info);
-//           if (
-//             store.cartInfo.coupon?.min_purchase_value?.value >
-//             coupon_info.eleigible_items_total -
-//             store.state.cartItems[key].retail_price.value
-//           ) {
-//             await removeCouponFromCart(true);
-//           }
-//         }
-//         await fetchCartInfo();
-//       }
-//     } catch (err) {
-//       console.log("Error updating item quantity", err);
-//     }
-//   } else {
-//     return;
-//   }
-// }
+export async function updateCartItemQuantity(key, updateQuantity) {
+  if (key && updateQuantity) {
+    try {
+      var formData = {
+        quantity: updateQuantity,
+        catalog_id: store.state.cartItems[key]?.catalog_info?.id,
+        variant_id: store.state.cartItems[key]?.variant_id,
+        id: store.state.user?.id,
+      };
+      var response = await axios({
+        method: "PUT",
+        url: entityURL + "/api/app/cart/item",
+        body: formData,
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      if (response.data.payload) {
+        if (store.cartInfo.coupon?.id) {
+          // Removing Coupon if Coupon min purchase limit is breached
+          let appliedCoupon = addingCouponElegiblityList([
+            { ...store.cartInfo.coupon },
+          ]);
+          let coupon_info = appliedCoupon[store.cartInfo.coupon.id];
+          coupon_info = synthesizingCoupon(coupon_info);
+          if (
+            store.cartInfo.coupon?.min_purchase_value?.value >
+            coupon_info.eleigible_items_total -
+              store.state.cartItems[key].retail_price.value
+          ) {
+            await removeCouponFromCart(true);
+          }
+        }
+        await fetchCartInfo();
+      }
+    } catch (err) {
+      console.log("Error updating item quantity", err);
+    }
+  } else {
+    return;
+  }
+}
 
 export async function addLocalStorageItemsToCart() {
   var localCartItems = localStorage.getItem("cart_items");
@@ -164,7 +162,7 @@ export async function addItemToCart(itemInfo) {
       {
         method: "POST",
         parms: params,
-        data: itemInfo,
+        body: itemInfo,
         credentials: "include",
         headers: {
           "Content-Type": "application/json",

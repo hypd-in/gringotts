@@ -88,7 +88,7 @@ async function sendOTP() {
         headers: {
           "Content-Type": "application/json",
         },
-        data: {
+        body: {
           phone_no: {
             prefix: "+91",
             number: props.number,
@@ -128,7 +128,7 @@ async function confirmOTP() {
       headers: {
         "Content-Type": "application/json",
       },
-      data: {
+      body: {
         phone_no: {
           prefix: "+91",
           number: props.number,

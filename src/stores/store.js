@@ -31,7 +31,18 @@ export const useStore = defineStore("store", () => {
 
   const brandTotalCartValue = ref();
 
+  const giftsEligibleForCart = ref({});
+
   // functions
+
+
+  function removeItemFromCart(item) {
+    delete cartItems.value[item.variant_id];
+  }
+
+  function setGiftsEligibleForCart(gifts) {
+    giftsEligibleForCart.value = { ...gifts };
+  }
 
   function saveBrandTotalCartValue(value) {
     brandTotalCartValue.value = value;
@@ -152,7 +163,10 @@ export const useStore = defineStore("store", () => {
     bxgyGetIds,
     brandWiseGifts,
     brandTotalCartValue,
+    giftsEligibleForCart,
 
+    removeItemFromCart,
+    setGiftsEligibleForCart,
     saveBrandTotalCartValue,
     setBrandWiseGift,
     saveBxGyGetIds,

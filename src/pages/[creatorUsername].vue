@@ -85,8 +85,8 @@
                     <div class="sticky-container">
                         <div v-if="botdImages">
                             <div class="botd ban-desk">
-                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000" :touchDrag="true"
-                                    :pauseAutoplayOnHover="true">
+                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000"
+                                    :touchDrag="true" :pauseAutoplayOnHover="true">
                                     <slide v-for="(botdImage, index) in botdImages" :key="index">
                                         <div style="postion: relative">
                                             <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
@@ -97,8 +97,8 @@
                             </div>
 
                             <div class="botd ban-mob">
-                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000" :touchDrag="true"
-                                    :pauseAutoplayOnHover="true" :style="'height: calc(100%)'">
+                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000"
+                                    :touchDrag="true" :pauseAutoplayOnHover="true" :style="'height: calc(100%)'">
                                     <slide v-for="(botdImage, index) in botdImages" :key="index">
                                         <div style="postion: relative">
                                             <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
@@ -723,20 +723,19 @@ function changeTab(options) {
 function follow_author() {
     if (props.user) {
         if (!creator.value.is_followed_by_user) {
-            this.axios({
+            $fetch(runtimeConfig.public.entityURL + "/api/app/customer/influencer/follow", {
                 method: "POST",
-                url: this.$entityURL + "/api/app/customer/influencer/follow",
-                withCredentials: true,
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                 },
-                data: {
+                body: {
                     customer_id: props.user.customer_id,
                     id: creator.value.id,
                 },
             })
                 .then((response) => {
-                    if (response.data.payload) {
+                    if (response.payload) {
                         creator.value["is_followed_by_user"] = true;
                         user_following.value = true;
 
@@ -756,22 +755,21 @@ function follow_author() {
         }
     }
 }
-function unfollow_author() {
+async function unfollow_author() {
     if (creator.value.is_followed_by_user) {
-        this.axios({
+        await $fetch(runtimeConfig.public.entityURL + "/api/app/customer/influencer/unfollow", {
             method: "POST",
-            url: this.$entityURL + "/api/app/customer/influencer/unfollow",
-            withCredentials: true,
+            credentials: 'include',
             headers: {
                 "Content-Type": "application/json",
             },
-            data: {
+            body: {
                 customer_id: props.user.customer_id,
                 id: creator.value.id,
             },
         })
             .then((response) => {
-                if (response.data.payload) {
+                if (response.payload) {
                     creator.value["is_followed_by_user"] = false;
                     user_following.value = false;
                     creatorFollowers.value -= 1;
@@ -1380,7 +1378,7 @@ onBeforeMount(() => {
     cursor: pointer;
 }
 
-section.carousel :deep(ol){
+section.carousel :deep(ol) {
     margin: 0 !important;
 }
 

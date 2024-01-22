@@ -24,6 +24,9 @@ export default defineNuxtConfig({
           orderURL:'https://orderv2.getshitdone.in',
           couponURL:"https://coupon.getshitdone.in",
           checkoutURL:"https://checkout.getshitdone.in",
+          gokwik_env:"sandbox",
+          gokwick_mid:"3mt5u7iijbky068wbs"
+
         }
         : {
           catalogURL: "https://catalog2.hypd.store",
@@ -32,6 +35,8 @@ export default defineNuxtConfig({
           orderURL:'https://orderv2.hypd.store',
           couponURL:"https://coupon.hypd.store",
           checkoutURL:"https://checkout.hypd.store",
+          gokwik_env:"production",
+          gokwick_mid:"3mt5u7iijbky068wba"
         },
   },
   nitro: {

@@ -70,7 +70,7 @@ async function sendOTP() {
         headers: {
           "Content-Type": "application/json",
         },
-        data: {
+        body: {
           phone_no: {
             prefix: "+91",
             number: phoneNumber.value,

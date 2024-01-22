@@ -276,7 +276,7 @@ const runtimeConfig = useRuntimeConfig()
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const { proxy } = getCurrentInstance();
+const creatorStore = useCreatorStore()
 
 // props and emits
 const props = defineProps(["user"]);
@@ -320,37 +320,37 @@ const selectedMethod = ref("");
 const paymentMethods = ref([
   {
     methodName: "Credit/Debit Card",
-    icon: "@/assets/img/icons/payment-icons/CARDS.svg",
+    icon: "@/assets/icons/payment-icons/CARDS.svg",
   },
   {
     methodName: "UPI",
     upiApps: [
       {
         appName: "Google Pay",
-        appIcon: "@/assets/img/icons/gpay.png",
+        appIcon: "@/assets/icons/gpay.png",
       },
       {
         appName: "PhonePe",
-        appIcon: "@/assets/img/icons/phonepe.png",
+        appIcon: "@/assets/icons/phonepe.png",
       },
       {
         appName: "Paytm",
-        appIcon: "@/assets/img/icons/paytm.png",
+        appIcon: "@/assets/icons/paytm.png",
       },
       {
         appName: "Enter UPI ID",
-        appIcon: "@/assets/img/icons/UPI.svg",
+        appIcon: "@/assets/icons/UPI.svg",
       },
     ],
-    icon: "@/assets/img/icons/payment-icons/UPI.svg",
+    icon: "@/assets/icons/payment-icons/UPI.svg",
   },
   {
     methodName: "Net banking",
-    icon: "@/assets/img/icons/payment-icons/NETBANKING.svg",
+    icon: "@/assets/icons/payment-icons/NETBANKING.svg",
   },
   {
     methodName: "Cash on Delivery",
-    icon: "@/assets/img/icons/payment-icons/COD.svg",
+    icon: "@/assets/icons/payment-icons/COD.svg",
   },
 ]);
 const activePaymentMethod = ref("UPI");
@@ -672,7 +672,7 @@ async function checkout() {
       headers: {
         "Content-Type": "application/json",
       },
-      data: formData,
+      body: formData,
       // params: params,
     });
     if (response.payload) {
@@ -819,7 +819,7 @@ async function getUPIAppsLink() {
       headers: {
         "Content-Type": "application/json",
       },
-      data: {
+      body: {
         order_id: orderId.value,
       },
     });
@@ -932,7 +932,7 @@ function sendDetailsToGoKwik(dataArray, orderType) {
           order_type: orderType,
           mid: dataArray[i].data.mid,
           moid: dataArray[i].data.moid,
-          environment: proxy.$gokwik_env,
+          environment: runtimeConfig.public.gokwik_env,
           request_id: dataArray[i].data.request_id,
           gokwik_oid: dataArray[i].data.gokwik_oid,
           showModal: false,
@@ -981,7 +981,7 @@ async function checkCODEligible() {
         ],
       };
 
-      if (store.creator?.info?.id) {
+      if (creatorStore.info?.id) {
         formData.items[0]["source"] = {
           id: store?.creator?.info?.id,
           type: "express_checkout",
@@ -995,7 +995,7 @@ async function checkCODEligible() {
       response = await $fetch(runtimeConfig.public.entityURL + "/api/app/express-checkout/check/cod", {
         method: "POST",
         credentials: 'include',
-        data: formData,
+        body: formData,
         headers: {
           "Content-Type": "application/json",
         },
@@ -1508,8 +1508,8 @@ onMounted(async () => {
     !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
   goKwikData.value = {
     order_type: "non-gk",
-    mid: proxy.$gokwick_mid,
-    environment: proxy.$gokwik_env,
+    mid: runtimeConfig.public.gokwick_mid,
+    environment: runtimeConfig.public.gokwik_env,
     gokwik_oid: "",
   };
   await getBanksList();

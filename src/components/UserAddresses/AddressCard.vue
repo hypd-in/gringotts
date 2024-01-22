@@ -84,7 +84,7 @@ async function selectAddress() {
     var response = await $fetch(runtimeConfig.public.entityURL + "/api/app/cart/address", {
       method: "POST",
       credentials: 'include',
-      data: data,
+      body: data,
       headers: {
         "Content-Type": "application/json",
       },

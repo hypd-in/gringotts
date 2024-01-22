@@ -1,4 +1,5 @@
 import { imitateCartInfo } from "./cartMethods";
+import { getUTMParams } from "./helperMethods";
 
 export async function fetchUserInfo() {
   const store = useStore();
@@ -24,7 +25,7 @@ export async function fetchUserInfo() {
 }
 
 export function synthesizingCoupon(coupon_item) {
-  const store = useStore()
+  const store = useStore();
   let discount = 0;
   let coupon_msg = "";
   let disabled = false;
@@ -260,7 +261,7 @@ export function synthesizingCoupon(coupon_item) {
 }
 
 export async function applyExpressCoupon(coupon_code) {
-  const store = useStore()
+  const store = useStore();
   coupon_code = coupon_code.trim();
   if (coupon_code.length < 3) {
     return;
@@ -284,7 +285,7 @@ export async function applyExpressCoupon(coupon_code) {
       {
         method: "POST",
         credentials: "include",
-        data: formData,
+        body: formData,
         headers: {
           "Content-Type": "application/json",
         },
@@ -310,8 +311,64 @@ export async function applyExpressCoupon(coupon_code) {
   }
 }
 
+export async function addItemToWishlist(itemInfo) {
+  const store = useStore();
+  var formData = {
+    user_id: store.user.id,
+    wishlisted_catalog: {
+      catalog_id: itemInfo.catalog_id || itemInfo.id,
+    },
+  };
+  if (itemInfo?.source) {
+    formData.wishlisted_catalog.source = { ...itemInfo?.source };
+  } else if (store.creator.info?.id) {
+    formData.wishlisted_catalog.source = {
+      id: store.creator?.info?.id,
+      type: "creator_store",
+    };
+  }
+  if (store.user?.id) {
+    var params = getUTMParams();
+    try {
+      var response = await $fetch(
+        useRuntimeConfig().public.entityURL + "/api/v2/app/wishlist",
+        {
+          method: "PUT",
+          credentials:'include',
+          params: params,
+          body: formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.payload) {
+        await fetchWishlistedProducts();
+
+        // uncomment later
+        // trackingWishlistingProducts(itemInfo);
+      }
+    } catch (err) {
+      console.log("Error Adding item to Wishlist", err);
+      return;
+    }
+  } else {
+    var flag = confirm("You're not logged in, Let's get you logged in first?");
+    if (flag) {
+      router.push({
+        name: "login",
+        query: {
+          redirection_url: router.currentRoute.fullPath,
+        },
+      });
+    } else {
+      return;
+    }
+  }
+}
+
 export async function applyCartCoupon(coupon_code) {
-  const store = useStore()
+  const store = useStore();
   coupon_code = coupon_code.trim();
   if (coupon_code.length < 3) {
     return;
@@ -330,7 +387,7 @@ export async function applyCartCoupon(coupon_code) {
       {
         method: "POST",
         credentials: "include",
-        data: formData,
+        body: formData,
         headers: {
           "Content-Type": "application/json",
         },
@@ -476,18 +533,21 @@ function getRetailPrice(item, brandWiseCartItems) {
 }
 
 export async function updateUser() {
-  const router = useRouter()
-  const store = useStore()
+  const router = useRouter();
+  const store = useStore();
   try {
-    var response = await $fetch( useRuntimeConfig().public.entityURL + "/api/me?isWeb=true", {
-      method: "POST",
-      credentials:'include',
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    var response = await $fetch(
+      useRuntimeConfig().public.entityURL + "/api/me?isWeb=true",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (response.payload) {
-       store.saveUserInfo(response.payload.data);
+      store.saveUserInfo(response.payload.data);
       if (!router.currentRoute.value.query.isExpress) {
         await fetchCartInfo();
         await fetchWishlistedProducts();
@@ -501,7 +561,7 @@ export async function updateUser() {
 }
 
 function getQuantity(item, brandWiseCartItems) {
-  const store = useStore()
+  const store = useStore();
   if (
     store.cartInfo?.coupon?.type == "bxgy" &&
     item?.coupon_applied &&
@@ -527,7 +587,7 @@ function getQuantity(item, brandWiseCartItems) {
 }
 
 export async function calculateShippingCharges() {
-  const store = useStore()
+  const store = useStore();
   if (store.cartInfo?.shipping_charges_value) {
     store.updateCartInfo({
       grand_total: {
@@ -570,7 +630,7 @@ export async function calculateShippingCharges() {
 }
 
 export function calculatingShippingChargesForLocalItems() {
-  const store = useStore()
+  const store = useStore();
   let shipping_charges = {};
   Object.keys(store.brandWiseCartItems).forEach((brand_id) => {
     shipping_charges[brand_id] = {
@@ -698,7 +758,7 @@ export async function saveBrandWiseCart(items) {
 
 export async function removeCouponFromCart(bypassCart) {
   let router = useRouter();
-  const store = useStore()
+  const store = useStore();
   // For Express
   if (router.currentRoute.value.query.isExpress) {
     let itemsArray = store.cartInfo.items;
