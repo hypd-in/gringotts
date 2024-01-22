@@ -1,5 +1,5 @@
 import { imitateCartInfo } from "./cartMethods";
-import { getUTMParams } from "./helperMethods";
+import { getUTMParams, createCouponsMap } from "./helperMethods";
 
 export async function fetchUserInfo() {
   const store = useStore();
@@ -827,65 +827,6 @@ export async function fetchAllCoupons() {
   } catch (error) {
     console.log(error);
   }
-}
-
-export function createCouponsMap(coupons) {
-  const store = useStore();
-  var obj = {
-    cart: [],
-  };
-  coupons.forEach((coupon) => {
-    if (coupon.applicable_on.name == "cart") {
-      obj["cart"] = [...new Set([...obj["cart"], coupon])];
-    } else if (
-      coupon.applicable_on.name == "brand" ||
-      coupon.applicable_on.name == "catalog"
-    ) {
-      coupon.applicable_on.ids.forEach((id) => {
-        if (!obj[id]) {
-          obj[id] = [];
-        }
-        obj[id] = [...new Set([...obj[id], coupon])];
-      });
-    } else if (coupon.applicable_on?.name == "bxgy") {
-      coupon.applicable_on.bxgy?.buy_ids?.forEach((id) => {
-        if (!obj[id]) {
-          obj[id] = [];
-        }
-        obj[id] = [...new Set([...obj[id], coupon])];
-      });
-
-      coupon.applicable_on.bxgy?.get_ids?.forEach((id) => {
-        if (!obj[id]) {
-          obj[id] = [];
-        }
-        obj[id] = [...new Set([...obj[id], coupon])];
-      });
-    } else if (coupon.applicable_on?.name == "bundle") {
-      if (
-        coupon.applicable_on.bundle?.catalog_ids &&
-        coupon.applicable_on.bundle?.catalog_ids?.length > 0
-      ) {
-        coupon.applicable_on.bundle?.catalog_ids?.forEach((id) => {
-          if (!obj[id]) {
-            obj[id] = [];
-          }
-          obj[id] = [...new Set([...obj[id], coupon])];
-        });
-      } else if (
-        coupon.applicable_on.bundle?.brand_id &&
-        !coupon.applicable_on.bundle.catalog_ids
-      ) {
-        if (!obj[coupon.applicable_on.bundle?.brand_id]) {
-          obj[coupon.applicable_on.bundle?.brand_id] = [];
-        }
-        obj[coupon.applicable_on.bundle?.brand_id] = [
-          ...new Set([...obj[coupon.applicable_on.bundle?.brand_id], coupon]),
-        ];
-      }
-    }
-  });
-  store.saveCouponsMap({ ...obj });
 }
 
 export function addingCouponElegiblityList(couponsPayload) {
