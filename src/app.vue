@@ -33,6 +33,7 @@ if (route.params.creatorUsername) {
     "/api/app/influencer/username/" +
     route.params.creatorUsername,
     {
+      key:"influencer_info_app",
       methods: "GET",
       headers: {
         "Content-Type": "application/json",

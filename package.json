@@ -23,6 +23,8 @@
   "dependencies": {
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.5.1",
-    "pinia": "^2.1.7"
+    "node": "^21.2.0",
+    "pinia": "^2.1.7",
+    "vue3-carousel": "^0.3.1"
   }
 }
