@@ -58,7 +58,6 @@
 </template>
 
 <script setup>
-const { proxy } = getCurrentInstance();
 const store = useStore();
 
 const timeout = ref(null);

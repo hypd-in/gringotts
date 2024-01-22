@@ -22,6 +22,7 @@ export default defineNuxtConfig({
           entityURL: "https://entity.getshitdone.in",
           cmsURL: 'https://cms.getshitdone.in',
           couponURL: "https://coupon.getshitdone.in",
+          orderURL: "https://orderv2.getshitdone.in",
           
         }
         : {
@@ -29,6 +30,7 @@ export default defineNuxtConfig({
           entityURL: "https://entity.hypd.store",
           cmsURL: 'https://cms.hypd.store',
           couponURL: "https://coupon.hypd.store",
+          orderURL: "https://orderv2.hypd.store",
         },
   },
   nitro: {

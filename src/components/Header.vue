@@ -82,7 +82,8 @@
         </button>
       </div>
       <div class="header-items">
-        <button @click="goToExplore" v-if="route.params.creatorUsername || creatorStore?.info?.username" class="search">
+        <button @click="goToExplore"
+          v-if="route.params.creatorUsername || creatorStore?.info?.username || getCreatorUserName()" class="search">
           <ExploreButton :class="{ dark: darkMode }" />
         </button>
         <button @click="toggleWishlist" class="wishlist">
@@ -198,12 +199,13 @@ function goToCart() {
     name: "CartItems",
   });
 }
-function goToExplore() {
-  if (route.params.creatorUsername) {
-    navigateTo({
+async function goToExplore() {
+  var creatorUsername = route.params.creatorUsername || await getCreatorUserName();
+  if (creatorUsername) {
+    await navigateTo({
       name: "HypdExplore",
       params: {
-        creatorUsername: route.params.creatorUsername
+        creatorUsername: creatorUsername
       },
       query: {
         query: searchInputQuery.value,

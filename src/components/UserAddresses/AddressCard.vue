@@ -46,10 +46,6 @@
 </template>
 
 <script setup>
-// import { fetchCartInfo, fetchUserAddresses } from "@/API/APIs";
-import { getCurrentInstance, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
 const props = defineProps({
   address: Object,
 });
@@ -57,7 +53,6 @@ const emit = defineEmits(["edit", "remove", "goBack"]);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-// const { proxy } = getCurrentInstance();
 const config = useRuntimeConfig();
 
 const addressIcon = ref({
