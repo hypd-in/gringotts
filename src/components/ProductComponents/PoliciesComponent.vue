@@ -51,6 +51,7 @@ if (product.info?.brand_id) {
   const { data: brand, pending: fetchingBrandInfo } = await useFetch(
     `${runtimeConfig.public.entityURL}/api/app/brand/${product.info.brand_id}`,
     {
+      key:'brand_info',
       method: "GET",
       headers: {
         "Content-Type": "application/json",

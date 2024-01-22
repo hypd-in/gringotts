@@ -1,4 +1,7 @@
 export default defineNuxtConfig({
+  build: {
+    transpile: ['vue-ssr-carousel/nuxt'],
+  },
   devtools: {
     enabled: true,
     timeline: {
@@ -12,20 +15,21 @@ export default defineNuxtConfig({
   },
   srcDir: "src",
   runtimeConfig: {
-    public: {
-      catalogURL: "https://catalogv2.getshitdone.in",
-      entityURL: "https://entity.getshitdone.in",
-      couponURL: "https://coupon.getshitdone.in",
-    },
-    // process.env.NODE_ENV != "production"
-    //   ? {
-    //       catalogURL: "https://catalogv2.getshitdone.in",
-    //       entityURL: "https://entity.getshitdone.in",
-    //     }
-    //   : {
-    //       catalogURL: "https://catalog2.hypd.store",
-    //       entityURL: "https://entity.hypd.store",
-    //     },
+    public:
+      process.env.NODE_ENV != "production"
+        ? {
+          catalogURL: "https://catalogv2.getshitdone.in",
+          entityURL: "https://entity.getshitdone.in",
+          cmsURL: 'https://cms.getshitdone.in',
+          couponURL: "https://coupon.getshitdone.in",
+          
+        }
+        : {
+          catalogURL: "https://catalog2.hypd.store",
+          entityURL: "https://entity.hypd.store",
+          cmsURL: 'https://cms.hypd.store',
+          couponURL: "https://coupon.hypd.store",
+        },
   },
   nitro: {
     preset: "node-cluster",
