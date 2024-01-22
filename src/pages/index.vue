@@ -11,8 +11,6 @@ definePageMeta({
   layout: "standalone"
 })
 
-
-
 </script>
 
 <style></style>

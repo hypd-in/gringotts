@@ -334,7 +334,7 @@ export async function addItemToWishlist(itemInfo) {
         useRuntimeConfig().public.entityURL + "/api/v2/app/wishlist",
         {
           method: "PUT",
-          credentials:'include',
+          credentials: "include",
           params: params,
           body: formData,
           headers: {
@@ -956,6 +956,38 @@ export function addingCouponElegiblityList(couponsPayload) {
   return coupons;
 }
 
+export async function fetchUserAddresses() {
+  const store = useStore();
+  if (!store.user.id) {
+    return;
+  }
+  await $fetch(
+    `${useRuntimeConfig().public.entityURL}/api/customer/${
+      store.user?.id
+    }/address`,
+    {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  )
+    .then((response) => {
+      var addressObject = response.payload?.reduce((obj, address) => {
+        return {
+          ...obj,
+          [address.id]: address,
+        };
+      }, {});
+      store.saveUserAddresses(addressObject);
+      console.log(store.addresses);
+    })
+    .catch((error) => {
+      console.log("Error fetching user addresses", error);
+    });
+}
+
 export async function saveVariants(items) {
   items.forEach(async (item) => {
     item["variants"] = await item.catalog_info?.variants?.reduce(
@@ -970,6 +1002,32 @@ export async function saveVariants(items) {
   });
 
   return items;
+}
+
+export async function removeItemFromWishlist(itemInfo) {
+  const store = useStore();
+  if (store.user.id) {
+    var formData = {
+      user_id: store.user?.id,
+      catalog_id: itemInfo.catalog_id || itemInfo.id,
+    };
+    await $fetch(`${useRuntimeConfig().public.entityURL}/api/v2/app/wishlist`, {
+      method: "DELETE",
+      credentials: "include",
+      body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then(async (response) => {
+        if (response.payload) {
+          await fetchWishlistedProducts();
+        }
+      })
+      .catch((error) => {
+        console.log("Error removing item form cart", error);
+      });
+  }
 }
 
 export async function getBrandInfoFromBrandId(brand_id) {

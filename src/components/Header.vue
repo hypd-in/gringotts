@@ -1,7 +1,9 @@
 <template>
   <div class="header">
     <section class="desktop-header">
-      <div class="logo">HYPD.</div>
+      <div @click="navigate" class="logo">
+        HYPD
+      </div>
       <div class="search-input-bar">
         <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
           xmlns="http://www.w3.org/2000/svg">
@@ -68,7 +70,7 @@
         <DropDown @close="showDropDown = false" v-if="showDropDown" />
       </div>
     </section>
-    <!-- <Wishlist @close="toggleWishlist" v-if="showWishlist" /> -->
+    <Wishlist @close="toggleWishlist" v-if="showWishlist" />
     <section class="mobile-header">
       <div class="back-btn">
         <button @click="goBack" class="back">
@@ -116,7 +118,7 @@
 
 <script setup>
 import DropDown from "~/components/HeaderDropDown.vue";
-// import Wishlist from "@/components/WishlistComponent.vue";
+import Wishlist from "@/components/WishlistComponent.vue";
 import ExploreButton from "@/components/ExploreComponents/ExploreButton.vue";
 import { getCreatorUserName } from "~/utils/helperMethods";
 
@@ -127,7 +129,7 @@ const props = defineProps({
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const product = useProductStore();
+// const product = useProductStore();
 const creatorStore = useCreatorStore();
 
 const searchInputQuery = ref("");
@@ -138,17 +140,36 @@ const noOfCartItems = computed(() => {
   return store.cartInfo.items?.length || 0;
 });
 
+async function navigate() {
+  var creatorUsername = await getCreatorUserName();
+  if (creatorUsername) {
+    navigateTo(
+      {
+        name: "CreatorStore",
+        params: {
+          creatorUsername: creatorUsername
+        }
+      }
+    )
+  } else {
+    navigateTo(
+      { name: "Index" }
+    )
+  }
+}
+
 async function goBack() {
   if (!router.options.history.state.back) {
     var creatorUsername = await getCreatorUserName();
     navigateTo({
       name: "CreatorStore",
       params: {
-        creator_username: creatorUsername,
+        creatorUsername: creatorUsername,
       },
+      replace: true,
     });
   } else {
-    router.go(-1);
+    router.back();
   }
 }
 
@@ -181,7 +202,9 @@ function goToExplore() {
   if (route.params.creatorUsername) {
     navigateTo({
       name: "HypdExplore",
-      params: route.params.creatorUsername,
+      params: {
+        creatorUsername: route.params.creatorUsername
+      },
       query: {
         query: searchInputQuery.value,
       },
@@ -206,11 +229,11 @@ function openDropDown() {
 <style scoped>
 @media only screen and (max-width: 520px) {
   .header {
+    z-index: 52 !important;
     height: 58px !important;
   }
 
   .mobile-header {
-    z-index: 52;
     display: flex !important;
     align-items: center;
     justify-content: space-between;
@@ -228,7 +251,7 @@ function openDropDown() {
 
 .header {
   position: relative;
-  z-index: 2;
+  z-index: 53;
   height: 72px;
   border-bottom: 1px solid var(--primary-border-color);
 }
@@ -252,11 +275,12 @@ function openDropDown() {
 }
 
 .desktop-header .logo {
-  color: #13141b;
+  color: #13141b !important;
   font-family: Ginger-Regular;
+  cursor: pointer;
   font-size: 24px;
   line-height: 20px;
-  cursor: pointer;
+
 }
 
 .search-input-bar {
@@ -358,7 +382,7 @@ input::placeholder {
 }
 
 button {
-  padding: 4px;
+  /* padding: 4px; */
   background: var(--plian-white, #fff);
   border-radius: 8px;
   box-sizing: border-box;

@@ -1,7 +1,7 @@
 <template>
   <div class="address-card" :class="{
     'selected-address':
-      store.state.cartInfo?.shipping_address?.id == address.id &&
+      store.cartInfo?.shipping_address?.id == address.id &&
       (route.name == 'CartPayment' || route.name == 'CartItems'),
   }">
     <div class="address-type">
@@ -35,7 +35,7 @@
 
     <div v-if="route.name == 'CartItems' || route.name == 'CartPayment'" @click="selectAddress" class="checkbox" :class="{
       'selected-checkbox':
-        store.state.cartInfo?.shipping_address?.id == address.id,
+        store.cartInfo?.shipping_address?.id == address.id,
     }">
       <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
         <path d="M1.32507 3.99996L4.43807 7.11296L10.6751 0.886963" stroke="white" stroke-width="1.5"
@@ -46,8 +46,6 @@
 </template>
 
 <script setup>
-import { fetchCartInfo } from "@/utils/globalAPIs";
-import { ref } from "vue";
 
 const props = defineProps({
   address: Object,
@@ -56,12 +54,13 @@ const emit = defineEmits(["edit", "remove", "goBack"]);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const runtimeConfig = useRuntimeConfig()
+// const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 
 const addressIcon = ref({
-  home: require("@/assets/icons/address/home-address.svg"),
-  other: require("@/assets/icons/address/home-address.svg"),
-  office: require("@/assets/icons/address/office-address.svg"),
+  home: "/_nuxt/assets/icons/address/home-address.svg",
+  other: "/_nuxt/assets/icons/address/home-address.svg",
+  office: "/_nuxt/assets/icons/address/office-address.svg",
 });
 
 function manipulateAddress(type) {
@@ -79,30 +78,31 @@ async function selectAddress() {
   }
   var data = { ...props.address };
   data["address_id"] = props.address?.id;
-  data["id"] = store.state.user?.id;
-  try {
-    var response = await $fetch(runtimeConfig.public.entityURL + "/api/app/cart/address", {
-      method: "POST",
-      credentials: 'include',
-      body: data,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.payload) {
-      store.updateCartInfo({
-        ...store?.cartInfo,
-        shipping_address: {
-          ...props.address,
-          user_id: store.user?.id,
-        },
-      });
-      emit("goBack");
-      await fetchCartInfo();
-    }
-  } catch (err) {
-    console.log(err);
-  }
+  data["id"] = store.user?.id;
+  // try {
+  //   var response = await axios({
+  //     method: "POST",
+  //     url: proxy.$entityURL + "/api/app/cart/address",
+  //     withCredentials: true,
+  //     data: data,
+  //     headers: {
+  //       "Content-Type": "application/json",
+  //     },
+  //   });
+  //   if (response.data.payload) {
+  //     store.dispatch("updateCartInfo", {
+  //       ...store?.cartInfo,
+  //       shipping_address: {
+  //         ...props.address,
+  //         user_id: store.user?.id,
+  //       },
+  //     });
+  //     emit("goBack");
+  //     await fetchCartInfo();
+  //   }
+  // } catch (err) {
+  //   console.log(err);
+  // }
 }
 </script>
 

@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-// import { addItemToWishlist, removeItemFromWishlist } from "@/API/APIs";
 import Button from "@/components/SubmitButton.vue";
 // import { addItemToCart } from "@/customMethods/cartMethods";
 // import { trackingAddToCart } from "@/eventTracking";
@@ -56,7 +55,7 @@ async function toggleWishlist() {
         type: "creator_store",
       },
     };
-    // await addItemToWishlist(itemInfo);
+    await addItemToWishlist(itemInfo);
   } else {
     await removeItemFromWishlist(productStore.info);
   }

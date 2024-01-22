@@ -1,5 +1,4 @@
 export default defineNuxtConfig({
-  modules: ["@pinia/nuxt"],
   build: {
     transpile: ['vue-ssr-carousel/nuxt'],
   },
@@ -9,6 +8,7 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
+  modules: ["@pinia/nuxt", "@nuxt/image"],
   ssr: true,
   devServer: {
     port: 8080,

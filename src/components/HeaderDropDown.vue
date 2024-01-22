@@ -36,8 +36,7 @@
 
 <script setup>
 // import { logoutUser } from "@/API/APIs";
-import { computed, ref } from "vue";
-// import AddressComponent from "@/components/UserAddresses/AddressComponent.vue"
+import AddressComponent from "@/components/UserAddresses/AddressComponent.vue"
 
 const emit = defineEmits(["close"]);
 const router = useRouter();

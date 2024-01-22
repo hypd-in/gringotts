@@ -8,7 +8,6 @@
 
 import * as API from "@/utils/globalAPIs.js";
 
-
 import { clearLocalCartItems } from "@/utils/cartMethods.js"
 
 const route = useRoute();
@@ -21,6 +20,8 @@ const cart_details = ref()
 const wishlisted_items = ref([])
 const cart_items = ref([])
 const level_one_categories = ref([])
+
+
 
 if (route.params.creatorUsername) {
   const { data, pending: loadingCreatorInfo } = await useFetch(
@@ -43,7 +44,7 @@ onBeforeMount(async () => {
   if (store.user.id) {
     clearLocalCartItems();
     await API.fetchCartInfo();
-    
+
     // tracking.trackingUser();
   } else {
     if (route.query.isExpress) {
@@ -76,8 +77,6 @@ onMounted(async () => {
   })
 
   let hotSellingProducts = [...response?.payload];
-  console.log(hotSellingProducts)
-
   store.saveHotSellingProducts(hotSellingProducts)
 
   // uncomment later
