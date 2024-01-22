@@ -1,6 +1,6 @@
 <template>
-  <div>
-    {{ route.params.id }} product from {{ route.params.creatorUsername }}'s store
+  <div class="product-page-container">
+    <ProductView class="product-view" />
   </div>
 </template>
 
@@ -47,6 +47,7 @@ useSeoMeta({
 });
 
 </script>
+
 
 <style scoped>
 .product-view {

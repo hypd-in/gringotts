@@ -212,15 +212,16 @@ const goToProduct = computed(() => {
         title: props.itemInfo?.name,
       },
     }
-  } else {
-    obj = {
-      name: "product",
-      params: { id: props.itemInfo?.id },
-      query: {
-        title: props.itemInfo?.name,
-      },
-    }
   }
+  // else {
+  //   obj = {
+  //     name: "Product",
+  //     params: { id: props.itemInfo?.id },
+  //     query: {
+  //       title: props.itemInfo?.name,
+  //     },
+  //   }
+  // }
   return obj;
 })
 
