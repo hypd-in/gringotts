@@ -54,7 +54,6 @@ const emit = defineEmits(["edit", "remove", "goBack"]);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-// const { proxy } = getCurrentInstance();
 const config = useRuntimeConfig();
 
 const addressIcon = ref({

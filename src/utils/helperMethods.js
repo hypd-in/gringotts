@@ -16,24 +16,6 @@ export function getObjectLength(value) {
   }
 }
 
-export function returnAlphabets(event) {
-  if (event.inputType == "insertFromPaste") {
-    var result = "";
-    event.target.value.split("").forEach((value) => {
-      if (/^[a-zA-Z]+$/.test(value)) {
-        result += value;
-      }
-    });
-    return result;
-  }
-
-  if (/^[a-zA-Z]+$/.test(event.target.value)) {
-    return event.target.value;
-  } else {
-    return event.target.value?.replace(event.data, "");
-  }
-}
-
 export function convertToINR(value) {
   return new Intl.NumberFormat("en-IN", {
     style: "currency",
@@ -219,7 +201,7 @@ export function createCouponsMap(coupons) {
       }
     }
   });
-  store.saveCouponsMap({ ...obj });
+  store.saveCouponsMap(obj);
 }
 
 export function defaultProfileImage() {

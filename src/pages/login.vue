@@ -113,7 +113,7 @@ import { fetchUserInfo, fetchCartInfo } from "~/utils/globalAPIs";
 import OTP from "~/components/OtpInput.vue";
 import SubmitButton from "~/components/SubmitButton.vue";
 import Footer from "~/components/Footer.vue";
-// import { returnMaxLength, returnNumber } from "~/Helpers/helperMethods";
+import { returnMaxLength, returnNumber } from "~/utils/helperMethods";
 
 const phone_no = ref("");
 const config = useRuntimeConfig();

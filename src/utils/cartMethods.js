@@ -7,6 +7,9 @@ import {
   calculatingShippingChargesForLocalItems,
 } from "@/utils/globalAPIs";
 
+
+import { getUTMParams } from "./helperMethods";
+
 // import {
 //   addingCouponElegiblityList,
 //   getUTMParams,

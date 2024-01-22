@@ -3,25 +3,29 @@ import { getUTMParams, createCouponsMap } from "./helperMethods";
 
 export async function fetchUserInfo() {
   const store = useStore();
-  await $fetch(`${useRuntimeConfig().public.entityURL}/api/me`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((response) => {
-      if (response.payload) {
-        console.log(response.payload, "RESPOSNE");
-        store.saveUserInfo(response.payload);
-        fetchWishlistedProducts();
-        return response.payload;
+
+  try {
+    let response = await $fetch(
+      `${useRuntimeConfig().public.entityURL}/api/me`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    })
-    .catch((err) => {
-      console.log("Error fetching user info", err);
-      return null;
-    });
+    );
+
+    if (response.payload) {
+      console.log(response.payload, "RESPOSNE");
+      store.saveUserInfo(response.payload);
+      fetchWishlistedProducts();
+      return response.payload;
+    }
+  } catch (err) {
+    console.log("Error fetching user info", err);
+    return null;
+  }
 }
 
 export function synthesizingCoupon(coupon_item) {
