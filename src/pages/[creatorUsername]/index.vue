@@ -4,7 +4,6 @@
             <img src="@/assets/img/loaders/H..png" alt="" />
         </div>
         <div id="creator-store-section">
-
             <div id="creator-store-section-hide">
                 <div v-if="noUserFound">
                     <div class="no-user">
@@ -115,15 +114,16 @@
                             }" @click="changeTab('CreatorCollections')">
                                 Collections
                             </div>
-                            <div :class="{ 'active-creator-contents': route.name == 'CreatorSpotlight' }"
-                                @click="changeTab('CreatorSpotlight')">
+                            <div :class="{
+                                'active-creator-contents': route.name == 'CreatorSpotlight',
+                            }" @click="changeTab('CreatorSpotlight')">
                                 Spotlight
                             </div>
                         </div>
                     </div>
 
                     <!-- pages -->
-                    <NuxtPage />
+                    <NuxtPage :name="currentPage"/>
 
                     <!-- Funding news -->
                     <div class="funding-news">
@@ -588,25 +588,30 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
-  
-  
+
 <script setup>
+definePageMeta({
+    name: "CreatorStore",
+    layout: "public",
+});
 // import * as tracking from "../eventTracking";
-import { getReplacedSource, defaultProfileImage, optimizeImage } from "~/utils/helperMethods";
+import {
+    getReplacedSource,
+    defaultProfileImage,
+    optimizeImage,
+} from "~/utils/helperMethods";
 
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide } from 'vue3-carousel'
-
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide } from "vue3-carousel";
 
 const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 const creatorStore = useCreatorStore();
 
-const creator = ref({})
+const creator = ref({});
 
 if (route.params.creatorUsername) {
     const { data, pending: loadingCreatorInfo } = await useFetch(
@@ -624,8 +629,13 @@ if (route.params.creatorUsername) {
     creatorStore.saveCreatorInfo(data?.value?.payload);
 }
 
-const props = defineProps(["isDesktop", "wishlisted_items", "user", "cart_items"])
-const emits = defineEmits(["loadingPage"])
+const props = defineProps([
+    "isDesktop",
+    "wishlisted_items",
+    "user",
+    "cart_items",
+]);
+const emits = defineEmits(["loadingPage"]);
 
 useSeoMeta({
     title: `${creatorStore.info.name} | HYPD`,
@@ -637,22 +647,21 @@ useSeoMeta({
     twitterCard: "summary_large_image",
 });
 
-const isLoading = ref(false)
-const username = ref(null)
-const user_following = ref(null)
-const noUserFound = ref(false)
-const creatorFollowers = ref(0)
-const botdImages = ref(null)
-const botd = ref(true)
-const botdData = ref([])
-const current_slide = ref(0)
-
+const isLoading = ref(false);
+const username = ref(null);
+const user_following = ref(null);
+const noUserFound = ref(false);
+const creatorFollowers = ref(0);
+const botdImages = ref(null);
+const botd = ref(true);
+const botdData = ref([]);
+const current_slide = ref(0);
+const currentPage = ref("CreatorCollections");
 
 // computed
 const creatorProfilePic = computed(() => {
     return optimizeImage(creator.value?.profile_image?.src, 350);
-})
-
+});
 
 function readMore() {
     window.open(
@@ -660,12 +669,10 @@ function readMore() {
     );
 }
 
-
 function redirectToBWB(path) {
     let url = path.split(this.$base)[1];
     window.open(`${this.$base}/${creator.value.username}${url}`, "_self");
 }
-
 
 // Checking Device Width while re-sizing to change BOTD Image
 function checkDevice() {
@@ -705,7 +712,7 @@ function checkDevice() {
     }, 500);
 
     // updating creator here, so all the botd calc are done and bio does not flicker.
-    creator.value = { ...creatorStore.info }
+    creator.value = { ...creatorStore.info };
 }
 
 function updateCarousel(payload) {
@@ -713,7 +720,8 @@ function updateCarousel(payload) {
 }
 
 function changeTab(options) {
-    router.push({ name: options })
+    currentPage.value = options;
+    router.push({ name: options });
     document.getElementById("creator-store-section").scrollTop = {
         top: 0,
         behavior: "smooth",
@@ -723,17 +731,20 @@ function changeTab(options) {
 function follow_author() {
     if (props.user) {
         if (!creator.value.is_followed_by_user) {
-            $fetch(runtimeConfig.public.entityURL + "/api/app/customer/influencer/follow", {
-                method: "POST",
-                credentials: 'include',
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: {
-                    customer_id: props.user.customer_id,
-                    id: creator.value.id,
-                },
-            })
+            $fetch(
+                runtimeConfig.public.entityURL + "/api/app/customer/influencer/follow",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: {
+                        customer_id: props.user.customer_id,
+                        id: creator.value.id,
+                    },
+                }
+            )
                 .then((response) => {
                     if (response.payload) {
                         creator.value["is_followed_by_user"] = true;
@@ -757,17 +768,20 @@ function follow_author() {
 }
 async function unfollow_author() {
     if (creator.value.is_followed_by_user) {
-        await $fetch(runtimeConfig.public.entityURL + "/api/app/customer/influencer/unfollow", {
-            method: "POST",
-            credentials: 'include',
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: {
-                customer_id: props.user.customer_id,
-                id: creator.value.id,
-            },
-        })
+        await $fetch(
+            runtimeConfig.public.entityURL + "/api/app/customer/influencer/unfollow",
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: {
+                    customer_id: props.user.customer_id,
+                    id: creator.value.id,
+                },
+            }
+        )
             .then((response) => {
                 if (response.payload) {
                     creator.value["is_followed_by_user"] = false;
@@ -781,21 +795,23 @@ async function unfollow_author() {
 async function getBOTD() {
     emits("loadingPage", true);
     try {
-        let response = await $fetch(runtimeConfig.public.entityURL + "/api/app/bwb", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-        response = response.payload
+        let response = await $fetch(
+            runtimeConfig.public.entityURL + "/api/app/bwb",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            }
+        );
+        response = response.payload;
         if (response) {
             botdData.value = response;
         }
         checkDevice();
-    }
-    catch (err) {
-        console.log(err)
+    } catch (err) {
+        console.log(err);
     } finally {
         setTimeout(() => {
             emits("loadingPage", false);
@@ -806,12 +822,11 @@ async function getBOTD() {
 onMounted(() => {
     // Attaching Listener on while component is mounted
     window.addEventListener("resize", checkDevice);
-})
+});
 
 onBeforeMount(() => {
     getBOTD();
-})
-
+});
 </script>
 <style scoped>
 /* funding news css */
@@ -1401,7 +1416,6 @@ section.carousel :deep(ol) {
 }
 
 @media screen and (max-width: 480px) {
-
     .botd {
         /* position: relative; */
         margin: 18px 0 0;
@@ -1539,6 +1553,3 @@ section.carousel :deep(ol) {
     overflow: hidden;
 }
 </style>
-  
-  
-  

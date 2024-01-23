@@ -51,9 +51,9 @@ const props = defineProps({
   address: Object,
 });
 const emit = defineEmits(["edit", "remove", "goBack"]);
+const store = useStore();
 const router = useRouter();
 const route = useRoute();
-const store = useStore();
 const config = useRuntimeConfig();
 
 const addressIcon = ref({
@@ -78,30 +78,29 @@ async function selectAddress() {
   var data = { ...props.address };
   data["address_id"] = props.address?.id;
   data["id"] = store.user?.id;
-  // try {
-  //   var response = await axios({
-  //     method: "POST",
-  //     url: proxy.$entityURL + "/api/app/cart/address",
-  //     withCredentials: true,
-  //     data: data,
-  //     headers: {
-  //       "Content-Type": "application/json",
-  //     },
-  //   });
-  //   if (response.data.payload) {
-  //     store.dispatch("updateCartInfo", {
-  //       ...store?.cartInfo,
-  //       shipping_address: {
-  //         ...props.address,
-  //         user_id: store.user?.id,
-  //       },
-  //     });
-  //     emit("goBack");
-  //     await fetchCartInfo();
-  //   }
-  // } catch (err) {
-  //   console.log(err);
-  // }
+  try {
+    var response = await $fetch(config.public.entityURL + "/api/app/cart/address", {
+      method: "POST",
+      credentials: 'include',
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    if (response.payload) {
+      store.updateCartInfo({
+        ...store?.cartInfo,
+        shipping_address: {
+          ...props.address,
+          user_id: store.user?.id,
+        },
+      });
+      emit("goBack");
+      await fetchCartInfo();
+    }
+  } catch (err) {
+    console.log(err);
+  }
 }
 </script>
 

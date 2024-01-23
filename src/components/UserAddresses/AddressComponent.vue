@@ -40,13 +40,13 @@
 </template>
 
 <script setup>
-// import { fetchCartInfo, fetchUserAddresses } from "@/API/APIs";
+import { fetchCartInfo, fetchUserAddresses } from "@/utils/globalAPIs";
 import AddressCard from "./AddressCard.vue";
 import EditAddress from "./EditAddress.vue";
 
 const emits = defineEmits(["close"]);
 const route = useRoute();
-const router = useRouter();
+const router = useRouter(); 
 const store = useStore();
 const config = useRuntimeConfig();
 onMounted(async () => {
@@ -102,22 +102,25 @@ async function removeAddress(address) {
     user_id: store.user?.id,
     address_id: address?.id,
   }
-  await $fetch(`${config.public.entityURL}/api/customer/address`, {
-    method: "DELETE",
-    params: params,
-    credentials: include,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then(async (response) => {
+  try {
+    let response = await $fetch(`${config.public.entityURL}/api/customer/address`, {
+      method: "DELETE",
+      params: params,
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+
     if (response.payload) {
       await fetchCartInfo();
-      store.removeAddress(address);
+      store.removeUserAddress(address);
     }
-  }).catch((error) => {
+  }
+  catch (err) {
     alert("Oops! there was an error removing this address");
-    console.log("Error removing address", error);
-  })
+    console.log("Error removing address", err);
+  }
 }
 
 async function selectAddress(address) {
@@ -130,21 +133,24 @@ async function selectAddress(address) {
   }
   var data = { ...address };
   data["id"] = store.user?.id;
-  var response = await $fetch(`${config.public.entityURL}/api/app/cart/address`, {
-    method: "POST",
-    credentials: "include",
-    body: data,
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then(async (response) => {
+
+  try {
+    var response = await $fetch(`${config.public.entityURL}/api/app/cart/address`, {
+      method: "POST",
+      credentials: "include",
+      body: data,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
     if (response.payload) {
       await fetchCartInfo();
     }
-  }).catch((error) => {
+  }
+  catch (err) {
     alert("Oops! there was an error selecting this address");
-    console.log("Error selecting address", error);
-  })
+    console.log("Error selecting address", err);
+  }
 }
 </script>
 

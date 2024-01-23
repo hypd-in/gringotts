@@ -5,7 +5,7 @@ export const useStore = defineStore("store", () => {
   const wishlistedItems = ref({});
   const cartInfo = ref({});
   const cartItems = ref({});
-  const addresses = ref([]);
+  const addresses = ref({});
   const exploreCurations = ref({
     curations: [],
     categoryCurations: {},
@@ -36,6 +36,10 @@ export const useStore = defineStore("store", () => {
 
   // functions
 
+
+  function removeUserAddress(address){
+    delete addresses.value[address.id];
+  }
 
   function removeItemFromCart(item) {
     delete cartItems.value[item.variant_id];
@@ -175,6 +179,7 @@ export const useStore = defineStore("store", () => {
     brandTotalCartValue,
     giftsEligibleForCart,
 
+    removeUserAddress,
     removeItemFromCart,
     setGiftsEligibleForCart,
     saveBrandTotalCartValue,

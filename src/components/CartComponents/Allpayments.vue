@@ -249,17 +249,7 @@
 </template>
   
 <script setup>
-import UPIBanks from "./CartComponents/UPIBanks.vue";
 
-import {
-  computed,
-  getCurrentInstance,
-  onMounted,
-  onUnmounted,
-  onUpdated,
-  ref,
-  watch,
-} from "vue";
 import SubmitButton from "@/components/SubmitButton.vue";
 
 // import {
@@ -267,9 +257,10 @@ import SubmitButton from "@/components/SubmitButton.vue";
 //   trackingJuspayRedirection,
 // } from "../eventTracking";
 
-import { brandCODRanges } from "../data/constants";
+import { brandCODRanges } from "../../data/constants";
 import { fetchCartInfo, calculateShippingCharges } from "@/utils/globalAPIs";
 import { getObjectLength, convertToINR } from "@/utils/helperMethods";
+import UPIBanks from "./UPIBanks.vue";
 
 // Global Objects
 const runtimeConfig = useRuntimeConfig()

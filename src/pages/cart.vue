@@ -84,7 +84,7 @@ import AddressComponent from "@/components/UserAddresses/AddressComponent.vue";
 import LoginFlow from "@/components/LoginComponents/LoginFlow.vue";
 import CouponBar from "@/components/CartComponents/CouponBar.vue";
 import PriceInfo from "@/components/CartComponents/PriceInfo.vue";
-import Allpayments from "~/components/Allpayments.vue";
+import Allpayments from "~/components/CartComponents/Allpayments.vue";
 import Submit from "@/components/SubmitButton.vue";
 import EmptyCart from "~/components/CartComponents/EmptyCart.vue";
 import {
@@ -359,7 +359,10 @@ function completePayment() {
                 },
             })
         );
-        trackingBeginCheckout(store.cartInfo);
+
+
+        // uncmnt later
+        // trackingBeginCheckout(store.cartInfo);
     } else if (
         !store.user?.id ||
         !store.user?.full_name ||

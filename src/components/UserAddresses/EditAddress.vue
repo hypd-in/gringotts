@@ -393,7 +393,7 @@ async function submitAddress() {
 
   await $fetch(`${config.public.entityURL}/api/customer/address${data.address_id ? "/edit" : ""}`, {
     method: "PUT",
-    credentials: include,
+    credentials: "include",
     body: data,
     headers: {
       "Content-Type": "application/json",
@@ -403,7 +403,7 @@ async function submitAddress() {
       if (!data.address_id) {
         emit("selectAddress", {
           ...address.value,
-          address_id: response.data.payload.id,
+          address_id: response.payload.id,
         });
       } else {
         delete data?.user_id;
@@ -417,7 +417,7 @@ async function submitAddress() {
     emit("close");
     submittingAddress.value = false;
     alert("Oops! there was an error saving your address");
-    console.log("Error saving address", err);
+    console.log("Error saving address", error);
 
   })
 }
