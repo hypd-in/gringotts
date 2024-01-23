@@ -253,7 +253,8 @@ button {
 }
 
 .cancel-user,
-.cancel-brand {
+.cancel-brand,
+.failed {
   color: #fc404d !important;
   background: #fc404d1a !important;
 }
@@ -262,7 +263,10 @@ button {
   color: #2597df;
   background: #2597df1a;
 }
-
+.initiated{
+  color: #df9e25;
+  background: #df9e251a;
+}
 .order-items .order-item:last-of-type {
   border-bottom: none;
 }
