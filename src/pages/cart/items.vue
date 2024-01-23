@@ -235,7 +235,7 @@ const list_items = computed(() => {
               });
             }
             giftEligibleItems[item.brand_id] = {
-              gift: [],
+              gift: giftEligibleItems[item.brand_id]?.gift ?  [...giftEligibleItems[item.brand_id]?.gift] : [],
             };
             giftEligibleItems[item.brand_id].gift.push({
               ...item,
@@ -283,7 +283,7 @@ const list_items = computed(() => {
           if (item.gift_item && item.quantity == 1) {
             giftEligibleItems[item.brand_id] = {
               ...giftEligibleItems[item.brand_id],
-              gift: [],
+              gift: giftEligibleItems[item.brand_id]?.gift ?  [...giftEligibleItems[item.brand_id]?.gift] : [],
             };
             giftEligibleItems[item.brand_id].gift.push(item);
           }
@@ -291,7 +291,7 @@ const list_items = computed(() => {
           else if (item.gift_item && item.quantity > 1) {
             giftEligibleItems[item.brand_id] = {
               ...giftEligibleItems[item.brand_id],
-              gift: [],
+              gift: giftEligibleItems[item.brand_id]?.gift ?  [...giftEligibleItems[item.brand_id]?.gift] : [],
             };
             giftEligibleItems[item.brand_id].gift.push({
               ...item,

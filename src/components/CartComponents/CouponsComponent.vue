@@ -35,11 +35,11 @@
         </div>
         <div
           class="search-bar"
-          v-if="getObjectLength(store.state.cartCoupons) > 0"
+          v-if="getObjectLength(store.cartCoupons) > 0"
         ></div>
         <div
           class="sub-heading"
-          v-if="getObjectLength(store.state.cartCoupons) > 0"
+          v-if="getObjectLength(store.cartCoupons) > 0"
         >
           Available Coupons:
         </div>
@@ -53,7 +53,7 @@
           />
           <div
             class="empty-screen"
-            v-if="getObjectLength(store.state.cartCoupons) == 0"
+            v-if="getObjectLength(store.cartCoupons) == 0"
           >
             Sorry! There are no offers available for this cart
           </div>
@@ -126,7 +126,7 @@
     position: fixed;
     top: 0;
     right: 0;
-    z-index: 42;
+    z-index: 55;
     padding: 0 16px;
     box-sizing: border-box;
   }

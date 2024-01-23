@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     transpile: ['vue-ssr-carousel/nuxt'],
   },
   devtools: {
-    enabled: true,
+    enabled: false,
     timeline: {
       enabled: true,
     },

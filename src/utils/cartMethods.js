@@ -7,7 +7,6 @@ import {
   calculatingShippingChargesForLocalItems,
 } from "@/utils/globalAPIs";
 
-
 import { getUTMParams } from "./helperMethods";
 
 // import {
@@ -63,25 +62,51 @@ async function fetchItemInfo(id) {
   }
 }
 
+export async function deleteItemFormCart(catalog_id, variant_id) {
+  try {
+    var formData = {
+      catalog_id: catalog_id,
+      id: store.state.user?.id,
+      quantity: 0,
+      variant_id: variant_id,
+    };
+    let response = await $fetch(
+      useRuntimeConfig().public.entityURL + "/api/app/cart/item",
+      {
+        method: "PUT",
+        credentials: "include",
+        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response) {
+      return true;
+    }
+  } catch (error) {}
+}
+
 export async function updateVariant(key, variantInfo) {
+  const store = useStore();
   if (key && variantInfo?.id) {
     try {
       var formData = {
-        id: store.state.user?.id,
-        catalog_id: store.state.cartItems[key]?.catalog_info?.id,
-        old_variant_id: store.state.cartItems[key]?.variant_id,
+        id: store.user?.id,
+        catalog_id: store.cartItems[key]?.catalog_info?.id,
+        old_variant_id: store.cartItems[key]?.variant_id,
         new_variant_id: variantInfo?.id,
       };
       var response = await $fetch(entityURL + "/api/app/cart/item/variant", {
         method: "PUT",
         body: formData,
-        withCredentials: true,
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
       });
       if (response.payload) {
-        console.log(response.payload);
+        fetchCartInfo();
       }
     } catch (err) {
       console.log("Error updating variant", err);
@@ -92,24 +117,27 @@ export async function updateVariant(key, variantInfo) {
 }
 
 export async function updateCartItemQuantity(key, updateQuantity) {
+  const store = useStore();
   if (key && updateQuantity) {
     try {
       var formData = {
         quantity: updateQuantity,
-        catalog_id: store.state.cartItems[key]?.catalog_info?.id,
-        variant_id: store.state.cartItems[key]?.variant_id,
-        id: store.state.user?.id,
+        catalog_id: store.cartItems[key]?.catalog_info?.id,
+        variant_id: store.cartItems[key]?.variant_id,
+        id: store.user?.id,
       };
-      var response = await axios({
-        method: "PUT",
-        url: entityURL + "/api/app/cart/item",
-        body: formData,
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.data.payload) {
+      var response = await $fetch(
+        useRuntimeConfig().public.entityURL + "/api/app/cart/item",
+        {
+          method: "PUT",
+          body: formData,
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.payload) {
         if (store.cartInfo.coupon?.id) {
           // Removing Coupon if Coupon min purchase limit is breached
           let appliedCoupon = addingCouponElegiblityList([
@@ -120,7 +148,7 @@ export async function updateCartItemQuantity(key, updateQuantity) {
           if (
             store.cartInfo.coupon?.min_purchase_value?.value >
             coupon_info.eleigible_items_total -
-              store.state.cartItems[key].retail_price.value
+              store.cartItems[key].retail_price.value
           ) {
             await removeCouponFromCart(true);
           }
@@ -146,7 +174,7 @@ export async function addLocalStorageItemsToCart() {
       if (!Object.keys(store.cartItems)?.includes(item.variant_id)) {
         item = {
           ...item,
-          id: store.state.user?.id,
+          id: store.user?.id,
         };
         await addItemToCart(item);
       }

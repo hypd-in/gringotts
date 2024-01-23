@@ -5,16 +5,6 @@
       <div class="heading">Update Quantity</div>
       <!-- <div class="sub-heading">Units in stock: {{itemQuantity}}</div> -->
       <div class="quantity-listing" :class="{ wiggle: showError != '' }">
-        <!-- <div
-          class="quantity-container"
-          @click="updateItemQuantity(i)"
-          :class="{ 'selected-quantity': i == itemInfo?.quantity }"
-          v-for="i in itemQuantity"
-          :key="i"
-        >
-          {{ i }}
-        </div> -->
-
         <div v-if="!decreasingQuantity" @click="updateItemQuantity(-1)"
           :class="{ 'disabled-btn': itemInfo?.quantity <= 1 }" class="quantity-container decrease-quantity">
           <svg v-if="!decreasingQuantity" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -180,12 +170,12 @@ function closePopup() {
 }
 
 .backdrop {
-  z-index: 41;
+  z-index: 54;
 }
 
 .bottom-sheet-container {
   padding: 0;
-  z-index: 42;
+  z-index: 55;
 }
 
 .error {

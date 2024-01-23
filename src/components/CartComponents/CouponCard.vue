@@ -96,11 +96,7 @@ const goToEligibleProducts = async () => {
                 props.couponInfo.applicable_on.bxgy.get_ids[0]
             );
             router.push({
-                name: "creatorBrandProfile",
-                params: {
-                    creator_username: creator_username,
-                    name: brand_info.username,
-                },
+                name: "BrandProfile",
             });
         } else if (props.couponInfo.applicable_on.bxgy?.sub_type == "catalog") {
             store.saveBxGyGetIds([
@@ -122,11 +118,7 @@ const goToEligibleProducts = async () => {
             props.couponInfo.applicable_on.ids[0]
         );
         router.push({
-            name: "creatorBrandProfile",
-            params: {
-                creator_username: creator_username,
-                name: brand_info.username,
-            },
+            name: "BrandProfile",
         });
     }
 };

@@ -1,4 +1,4 @@
-import { imitateCartInfo } from "./cartMethods";
+import { imitateCartInfo, deleteItemFormCart } from "./cartMethods";
 import { getUTMParams, createCouponsMap } from "./helperMethods";
 
 export async function fetchUserInfo() {
@@ -17,7 +17,6 @@ export async function fetchUserInfo() {
     );
 
     if (response.payload) {
-      console.log(response.payload, "RESPOSNE");
       store.saveUserInfo(response.payload);
       fetchWishlistedProducts();
       return response.payload;
@@ -479,13 +478,20 @@ export async function fetchWishlistedProducts() {
   }
 }
 
-export async function fetchCartInfo() {
+export async function fetchCartInfo(bypass) {
+  const router = useRouter();
   const store = useStore();
-  if (!store.user?.id) {
-    return;
-  } else {
-    await $fetch(
-      `${useRuntimeConfig().public.entityURL}/api/app/v2/cart/${store.user.id}`,
+  if (
+    (router.currentRoute.value.query.isExpress || !store.user?.id) &&
+    !bypass
+  ) {
+    return null;
+  }
+  try {
+    var response = await $fetch(
+      useRuntimeConfig().public.entityURL +
+        "/api/app/v2/cart/" +
+        store.user?.id,
       {
         method: "GET",
         credentials: "include",
@@ -493,26 +499,44 @@ export async function fetchCartInfo() {
           "Content-Type": "application/json",
         },
       }
-    )
-      .then(async (response) => {
-        if (response.payload) {
-          store.saveCartInfo(response.payload);
-          if (response.payload?.items && response.payload?.items?.length > 0) {
-            var items = await saveVariants(response.payload?.items);
-            var cartItemsObject = {};
-            cartItemsObject = items?.reduce(
-              (obj, item) => Object.assign(obj, { [item.variant_id]: item }),
-              {}
-            );
-            store.saveCartItems(cartItemsObject);
-          } else {
-            store.saveCartItems({});
+    );
+    if (response.payload) {
+      let updateCartFlag = false;
+      if (response.data?.payload?.items) {
+        for (const [index, item] of response?.payload?.items?.entries()) {
+          let flag = false;
+          for (const [index, variant] of item.catalog_info.variants.entries()) {
+            if (variant.id == item.variant_id) {
+              flag = true;
+            }
+          }
+          if (!flag) {
+            updateCartFlag = true;
+            await deleteItemFormCart(item.catalog_id, item.variant_id);
           }
         }
-      })
-      .catch((err) => {
-        console.log("Error fetching cart info", err);
-      });
+        if (updateCartFlag) {
+          await fetchCartInfo(bypass);
+          return;
+        }
+      }
+      store.saveCartInfo(response.payload);
+      if (response.payload?.items && response.payload?.items?.length > 0) {
+        var items = await saveVariants(response.payload?.items);
+        var cartItemsObject = items?.reduce(
+          (obj, item) => Object.assign(obj, { [item.variant_id]: item }),
+          {}
+        );
+        store.saveCartItems(cartItemsObject);
+        saveBrandWiseCart(response.payload?.items);
+      } else {
+        store.saveCartItems({});
+      }
+    }
+    return response.payload;
+  } catch (error) {
+    console.log(error);
+    return null;
   }
 }
 
@@ -712,6 +736,7 @@ export function calculatingShippingChargesForLocalItems() {
 
 export async function saveBrandWiseCart(items) {
   let router = useRouter();
+  const store = useStore();
   // Save brand wise cart
   var brandWiseCartItems = {};
   var brandCODEligibility = {
@@ -776,15 +801,20 @@ export async function removeCouponFromCart(bypassCart) {
   }
   // For cart
   try {
-    const response = await axios({
-      method: "DELETE",
-      url: entityURL + "/api/app/cart/" + store.user.id + "/coupon",
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.data.payload) {
+    const response = await $fetch(
+      useRuntimeConfig().public.entityURL +
+        "/api/app/cart/" +
+        store.user.id +
+        "/coupon",
+      {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.payload) {
       if (!bypassCart) {
         await fetchCartInfo();
       }
@@ -926,7 +956,6 @@ export async function fetchUserAddresses() {
         };
       }, {});
       store.saveUserAddresses(addressObject);
-      console.log(store.addresses);
     })
     .catch((error) => {
       console.log("Error fetching user addresses", error);

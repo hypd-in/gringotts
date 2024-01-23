@@ -64,11 +64,16 @@
 </template>
 
 <script setup>
+definePageMeta({
+  name:"BrandProfile"
+})
+
+
 const nuxtApp = useNuxtApp();
 console.log("fuck yay", nuxtApp.payload?.data?.brand_profile_info, "HELP FUCK");
 
 import { getReplacedSource } from "~/utils/helperMethods.js";
-import { getBrandInfoFromUsername } from "../../../API/brandProfile.js";
+// import { getBrandInfoFromUsername } from "../../../API/brandProfile.js";
 
 const route = useRoute();
 const brandUsername = route.params.brandUsername;
