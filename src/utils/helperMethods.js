@@ -87,7 +87,7 @@ export function getCookie(name) {
 }
 
 export async function getCreatorUserName(id) {
-  const route = useRoute();
+  const router = useRouter();
   const creatorStore = useCreatorStore();
   if (
     JSON.parse(getCookie("creators")) &&
@@ -98,8 +98,8 @@ export async function getCreatorUserName(id) {
   if (creatorStore?.info?.username) {
     return creatorStore?.info?.username;
   }
-  if (route.params.creator_username) {
-    return route.params.creator_username;
+  if (router.currentRoute.value.params.creator_username) {
+    return router.currentRoute.value.params.creator_username;
   }
   if (localStorage.getItem("creatorInfo") != null) {
     var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
@@ -107,7 +107,10 @@ export async function getCreatorUserName(id) {
   }
   let payload = null;
 
-  let creator_id = id || route.params.creator_id || route.params.creatorId;
+  let creator_id =
+    id ||
+    router.currentRoute.value.params.creator_id ||
+    router.currentRoute.value.params.creatorId;
 
   if (id) {
     payload = await getInfluencerById(creator_id);

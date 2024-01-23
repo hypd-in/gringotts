@@ -13,7 +13,7 @@
 import OrderCard from "@/components/OrderListing/OrderCard.vue";
 definePageMeta({
   name: "Orders",
-  layout: "public",
+  layout: "parent-layout",
   middleware: "auth"
 })
 const observer = ref(null);
@@ -41,6 +41,9 @@ async function fetchUserOrders() {
     }).then((response) => {
       if (response.payload) {
         store.saveUserOrders(response.payload);
+        store.updateOrdersPageCount(store.orders.page + 1);
+      } else {
+        observer.value.unobserve(target.value);
       }
     })
   }
@@ -52,17 +55,8 @@ async function callback(entries) {
       await fetchUserOrders();
     }
   }
-  // entries.forEach(async (entry) => {
-  //   if (entry.isIntersecting) {
-  //     console.log("Fetching Orders");
-  //     await fetchUserOrders();
-  //   }
-  // });
 }
 
-watch(store.user, (newValue, oldValue) => {
-  console.log(newValue, oldValue);
-})
 onMounted(async () => {
   if (target.value) {
     observer.value = addingObserver(target.value, callback)
@@ -102,6 +96,6 @@ h2.heading {
   font-family: 'Urbanist-Bold';
   font-size: 24px;
   line-height: 32px;
-  padding: 0 16px;
+  padding: 0 16px 16px;
 }
 </style>

@@ -45,8 +45,8 @@ async function getCollections() {
       creatorStore.saveCollectionPage(collectionPage.value)
     }
     else if (response.payload == null) {
-      if (observer && target.value) {
-        observer.unobserve(target.value);
+      if (observer.value && target.value) {
+        observer.value.unobserve(target.value);
       }
     }
   }

@@ -241,7 +241,7 @@ async function getCategoryInfoById(subCollection, collectionId) {
 }
 function unobserveTarget() {
   if (observer.value && target.value) {
-    observer.unobserve(target.value);
+    observer.value.unobserve(target.value);
   }
 }
 

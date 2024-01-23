@@ -15,10 +15,12 @@ const userInfo = ref({});
 onBeforeMount(async () => {
   if (!store.user.id) {
     var user = await fetchUserInfo();
-    await fetchCartInfo();
     if (user?.id) {
       userInfo.value = { ...user };
     }
+  } else {
+    await fetchCartInfo();
+    fetchWishlistedProducts();
   }
 });
 

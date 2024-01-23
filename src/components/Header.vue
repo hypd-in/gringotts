@@ -52,35 +52,46 @@
           </div>
           <span>Cart</span>
         </button>
-        <button @click="openDropDown" :class="{ 'sign-in-btn': !store.user?.id }" class="profile-desktop action-btn">
-          <span v-if="!store.user?.id">Sign in</span>
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path
-              d="M18.1399 21.62C17.2599 21.88 16.2199 22 14.9999 22H8.99986C7.77986 22 6.73986 21.88 5.85986 21.62C6.07986 19.02 8.74986 16.97 11.9999 16.97C15.2499 16.97 17.9199 19.02 18.1399 21.62Z"
-              stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path
-              d="M15 2H9C4 2 2 4 2 9V15C2 18.78 3.14 20.85 5.86 21.62C6.08 19.02 8.75 16.97 12 16.97C15.25 16.97 17.92 19.02 18.14 21.62C20.86 20.85 22 18.78 22 15V9C22 4 20 2 15 2ZM12 14.17C10.02 14.17 8.42 12.56 8.42 10.58C8.42 8.60002 10.02 7 12 7C13.98 7 15.58 8.60002 15.58 10.58C15.58 12.56 13.98 14.17 12 14.17Z"
-              stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path
-              d="M15.5799 10.58C15.5799 12.56 13.9799 14.17 11.9999 14.17C10.0199 14.17 8.41992 12.56 8.41992 10.58C8.41992 8.60002 10.0199 7 11.9999 7C13.9799 7 15.5799 8.60002 15.5799 10.58Z"
-              stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-          </svg>
-          <span v-if="store.user?.id"> Profile </span>
-        </button>
+        <ClientOnly>
+          <button @click="openDropDown" :class="{ 'sign-in-btn': !store.user?.id }" class="profile-desktop action-btn">
+            <span v-if="!store.user?.id">Sign in</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path
+                d="M18.1399 21.62C17.2599 21.88 16.2199 22 14.9999 22H8.99986C7.77986 22 6.73986 21.88 5.85986 21.62C6.07986 19.02 8.74986 16.97 11.9999 16.97C15.2499 16.97 17.9199 19.02 18.1399 21.62Z"
+                stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M15 2H9C4 2 2 4 2 9V15C2 18.78 3.14 20.85 5.86 21.62C6.08 19.02 8.75 16.97 12 16.97C15.25 16.97 17.92 19.02 18.14 21.62C20.86 20.85 22 18.78 22 15V9C22 4 20 2 15 2ZM12 14.17C10.02 14.17 8.42 12.56 8.42 10.58C8.42 8.60002 10.02 7 12 7C13.98 7 15.58 8.60002 15.58 10.58C15.58 12.56 13.98 14.17 12 14.17Z"
+                stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M15.5799 10.58C15.5799 12.56 13.9799 14.17 11.9999 14.17C10.0199 14.17 8.41992 12.56 8.41992 10.58C8.41992 8.60002 10.0199 7 11.9999 7C13.9799 7 15.5799 8.60002 15.5799 10.58Z"
+                stroke="#000" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span v-if="store.user?.id"> Profile </span>
+          </button>
+        </ClientOnly>
         <DropDown @close="showDropDown = false" v-if="showDropDown" />
       </div>
     </section>
     <Wishlist @close="toggleWishlist" v-if="showWishlist" />
     <section class="mobile-header">
-      <div class="back-btn">
-        <button @click="goBack" class="back">
+      <ClientOnly>
+        <div v-if="showMenu" class="hamburger">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M23 12L2 12" stroke="#13141B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
-            <path d="M2 12C5.25 11 7.25 9 8 6" stroke="#13141B" stroke-width="1.5" stroke-linecap="round" />
-            <path d="M2 12C5.25 13 7.25 15 8 18" stroke="#13141B" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M3 7H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M3 12H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" />
+            <path d="M3 17H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" />
           </svg>
-        </button>
-      </div>
+        </div>
+        <div v-else class="back-btn">
+          <button @click="goBack" class="back">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M23 12L2 12" stroke="#13141B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M2 12C5.25 11 7.25 9 8 6" stroke="#13141B" stroke-width="1.5" stroke-linecap="round" />
+              <path d="M2 12C5.25 13 7.25 15 8 18" stroke="#13141B" stroke-width="1.5" stroke-linecap="round" />
+            </svg>
+          </button>
+        </div>
+      </ClientOnly>
       <div class="header-items">
         <button @click="goToExplore"
           v-if="route.params.creatorUsername || creatorStore?.info?.username || getCreatorUserName()" class="search">
@@ -122,9 +133,11 @@ import DropDown from "~/components/HeaderDropDown.vue";
 import Wishlist from "@/components/WishlistComponent.vue";
 import ExploreButton from "@/components/ExploreComponents/ExploreButton.vue";
 import { getCreatorUserName } from "~/utils/helperMethods";
+import SideDrawer from "~/components/SideDrawer.vue";
 
 const props = defineProps({
   darkMode: Boolean,
+  showMenu: Boolean,
 });
 
 const router = useRouter();

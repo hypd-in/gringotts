@@ -41,7 +41,6 @@
 
 <script setup>
 // import { fetchCartInfo, fetchUserAddresses } from "@/API/APIs";
-import { useRoute } from "vue-router";
 import AddressCard from "./AddressCard.vue";
 import EditAddress from "./EditAddress.vue";
 

@@ -11,7 +11,6 @@ export async function fetchUserInfo() {
     .then((response) => {
       if (response.payload) {
         store.saveUserInfo(response.payload);
-        fetchWishlistedProducts();
         return response.payload;
       }
     })
@@ -226,4 +225,28 @@ export async function fetchAllCoupons() {
     .catch((error) => {
       console.log("Error fetching coupons", error);
     });
+}
+
+export async function getInfluencerById(creatorId) {
+  try {
+    const response = await $fetch(
+      `${useRuntimeConfig().public.entityURL}/api/app/influencer/${creatorId}`,
+      {
+        method: "GET",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const creatorInfo = { ...response.payload };
+    if (creatorInfo && !creatorInfo?.profile_image) {
+      creatorInfo["profile_image"] = {
+        src: defaultProfileImage(),
+      };
+    }
+    return { ...creatorInfo };
+  } catch (error) {
+    console.log("error: ", error);
+  }
 }
