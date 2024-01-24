@@ -73,7 +73,7 @@
 <script setup>
 
 definePageMeta({
-    name: "CartItems",
+    name: "Cart",
 });
 
 

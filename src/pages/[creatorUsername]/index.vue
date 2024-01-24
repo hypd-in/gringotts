@@ -1,7 +1,7 @@
 <template>
     <div class="creator-store">
         <div v-show="isLoading" class="page-loader">
-            <img src="@/assets/img/loaders/H..png" alt="" />
+            <img src="@/assets/loaders/H..png" alt="" />
         </div>
         <div id="creator-store-section">
             <div id="creator-store-section-hide">
