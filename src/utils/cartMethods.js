@@ -9,12 +9,6 @@ import {
 
 import { getUTMParams } from "./helperMethods";
 
-// import {
-//   addingCouponElegiblityList,
-//   getUTMParams,
-//   synthesizingCoupon,
-// } from "./globalMethods";
-
 let couponURL;
 let catalogURL;
 let cmsURL;
@@ -143,6 +137,7 @@ export async function updateCartItemQuantity(key, updateQuantity) {
           let appliedCoupon = addingCouponElegiblityList([
             { ...store.cartInfo.coupon },
           ]);
+
           let coupon_info = appliedCoupon[store.cartInfo.coupon.id];
           coupon_info = synthesizingCoupon(coupon_info);
           if (

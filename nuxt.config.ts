@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   build: {
-    transpile: ['vue-ssr-carousel/nuxt'],
+    transpile: ["vue-ssr-carousel/nuxt"],
   },
   devtools: {
     enabled: false,
@@ -18,26 +18,25 @@ export default defineNuxtConfig({
     public:
       process.env.NODE_ENV != "production"
         ? {
-          catalogURL: "https://catalogv2.getshitdone.in",
-          entityURL: "https://entity.getshitdone.in",
-          cmsURL: 'https://cms.getshitdone.in',
-          orderURL:'https://orderv2.getshitdone.in',
-          couponURL:"https://coupon.getshitdone.in",
-          checkoutURL:"https://checkout.getshitdone.in",
-          gokwik_env:"sandbox",
-          gokwick_mid:"3mt5u7iijbky068wbs"
-
-        }
+            catalogURL: "https://catalogv2.getshitdone.in",
+            entityURL: "https://entity.getshitdone.in",
+            cmsURL: "https://cms.getshitdone.in",
+            orderURL: "https://orderv2.getshitdone.in",
+            couponURL: "https://coupon.getshitdone.in",
+            checkoutURL: "https://checkout.getshitdone.in",
+            gokwik_env: "sandbox",
+            gokwick_mid: "3mt5u7iijbky068wbs",
+          }
         : {
-          catalogURL: "https://catalog2.hypd.store",
-          entityURL: "https://entity.hypd.store",
-          cmsURL: 'https://cms.hypd.store',
-          orderURL:'https://orderv2.hypd.store',
-          couponURL:"https://coupon.hypd.store",
-          checkoutURL:"https://checkout.hypd.store",
-          gokwik_env:"production",
-          gokwick_mid:"3mt5u7iijbky068wba"
-        },
+            catalogURL: "https://catalog2.hypd.store",
+            entityURL: "https://entity.hypd.store",
+            cmsURL: "https://cms.hypd.store",
+            orderURL: "https://orderv2.hypd.store",
+            couponURL: "https://coupon.hypd.store",
+            checkoutURL: "https://checkout.hypd.store",
+            gokwik_env: "production",
+            gokwick_mid: "3mt5u7iijbky068wba",
+          },
   },
   nitro: {
     preset: "node-cluster",
@@ -113,10 +112,20 @@ export default defineNuxtConfig({
           href: "https://www.hypd.store",
         },
         {
-          rel: 'icon',
-          type: 'image/png',
-          href: '/favicon.ico'
-        }
+          rel: "icon",
+          type: "image/png",
+          href: "/favicon.ico",
+        },
+      ],
+      script: [
+        {
+          defer: true,
+          src:
+            process.env.NODE_ENV != "production"
+              ? "https://sandbox.juspay.in/pay-v3.js"
+              : "https://api.juspay.in/pay-v3.js",
+          type: "text/javascript",
+        },
       ],
     },
   },

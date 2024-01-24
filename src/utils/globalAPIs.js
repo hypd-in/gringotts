@@ -148,7 +148,13 @@ export function synthesizingCoupon(coupon_item) {
       ) {
         Object.values(store.cartItems).forEach((item) => {
           if (coupon_item?.eligible_ids?.brand[item.brand_id]) {
-            bxgy_item_count += 1 * item.quantity;
+            if (item.gift_item && item.quantity == 1) {
+              bxgy_item_count += 0;
+            } else if (item.gift_item && item.quantity > 1) {
+              bxgy_item_count += 1 * (item.quantity - item.gift_item.quantity);
+            } else {
+              bxgy_item_count += 1 * item.quantity;
+            }
           }
         });
       } else if (coupon_item.applicable_on.bxgy.sub_type == "catalog") {

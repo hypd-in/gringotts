@@ -11,12 +11,13 @@
   
 <script setup>
 const props = defineProps(["brandIcon", "brandName", "activeApp", "isBank", "bankObj"])
+const emit = defineEmits(["selectActiveApp"])
 
 function selectActive() {
-    if (this.isBank) {
-        this.$emit("selectActiveApp", this.bankObj);
+    if (props.isBank) {
+        emit("selectActiveApp", props.bankObj);
     } else {
-        this.$emit("selectActiveApp", this.brandName);
+        emit("selectActiveApp", props.brandName);
     }
 }
 </script>

@@ -675,10 +675,12 @@ async function checkout() {
       checkingOut.value = false;
       emits("transactionLoader", true);
       addCartToLocalStorage();
-      trackingAddPaymentInfo(
-        store.cartInfo.paymentMethod,
-        store.cartInfo
-      );
+      
+      // uncmnt later
+      // trackingAddPaymentInfo(
+      //   store.cartInfo.paymentMethod,
+      //   store.cartInfo
+      // );
     }
   } catch (err) {
     console.log("Error while checking out", err);
@@ -725,11 +727,13 @@ async function checkoutWithJuspay() {
     isPaying.value = true;
     emits("transactionLoader", true);
 
-    trackingJuspayRedirection(
-      activePaymentMethod.value,
-      orderId.value,
-      store.cartInfo.grand_total.value
-    );
+
+    // uncmnt later
+    // trackingJuspayRedirection(
+    //   activePaymentMethod.value,
+    //   orderId.value,
+    //   store.cartInfo.grand_total.value
+    // );
 
     Juspay.Setup({
       payment_form: "#payment_form",
@@ -784,11 +788,13 @@ async function checkoutWithJuspay() {
   else if (activePaymentMethod.value == "Credit/Debit Card") {
     isPaying.value = true;
     paymentLoader.value = true;
-    trackingJuspayRedirection(
-      activePaymentMethod.value,
-      orderId.value,
-      store.cartInfo.grand_total.value
-    );
+
+    // uncmnt later
+    // trackingJuspayRedirection(
+    //   activePaymentMethod.value,
+    //   orderId.value,
+    //   store.cartInfo.grand_total.value
+    // );
     setTimeout(() => {
       juspayButton.value[0].click();
     }, 100);
