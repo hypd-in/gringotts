@@ -18,8 +18,9 @@
     <!-- Ends -->
 
     <!-- Desktop Netbanking List -->
-    <div class="desktop-net-banking">
-      <div class="banks-container" v-show="activePaymentMethod == 'Net banking' && showBanks">
+    <div class="desktop-net-banking" v-show="activePaymentMethod == 'Net banking' && showBanks">
+      <div class="backdrop" @click="showBanks = false"></div>
+      <div class="banks-container">
         <div class="bank" @click="selectActiveBank({ name: bankName, value: bankValue })"
           v-for="(bankName, bankValue) of netbankingBanks" :key="bankName">
           {{ bankName }}
@@ -675,7 +676,7 @@ async function checkout() {
       checkingOut.value = false;
       emits("transactionLoader", true);
       addCartToLocalStorage();
-      
+
       // uncmnt later
       // trackingAddPaymentInfo(
       //   store.cartInfo.paymentMethod,
@@ -1601,6 +1602,10 @@ onMounted(async () => {
 }
 
 /* desktop */
+.backdrop {
+  z-index: 53;
+}
+
 .banks-container {
   height: 400px;
   bottom: 12px;
