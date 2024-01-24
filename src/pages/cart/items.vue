@@ -34,7 +34,7 @@
           :showAvailableCoupons="!store.cartInfo.coupon" />
         <div v-if="!!store.cartCoupons[key] && !store.cartInfo?.coupon" class="applicable-coupons-listing">
           <div class="applicable-coupon">
-            <img src="@/assets/icons/common/coupon-tag.svg" alt="" />
+            <img src="@/assets/icons/misc/coupon-tag.svg" alt="" />
 
             <div class="coupon-info">
               <h5>

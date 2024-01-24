@@ -6,7 +6,7 @@
         <button class="submit-button loading" v-if="loading && !disabledState">
             <!-- <div></div>
         <div>{{ processingText }}</div> -->
-            <img src="../assets/loaders/Rolling-white.svg" alt="" />
+            <img src="@/assets/loaders/rolling-white.svg" alt="" />
         </button>
         <button class="submit-button disabled_button" v-if="disabledState && !loading">
             {{ defaultText }}

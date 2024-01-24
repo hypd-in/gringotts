@@ -16,26 +16,26 @@
 
           <section class="line-2">
             <div class="prev-1">
-              <img src="../assets/LoginView/2.png" alt="" />
+              <img src="../assets/login/2.png" alt="" />
               <div>
                 <div class="prev-3">
-                  <img src="../assets/LoginView/1.png" alt="" />
+                  <img src="../assets/login/1.png" alt="" />
                 </div>
               </div>
             </div>
             <div class="prev-2">
               <div class="circle">
                 <div class="outer">
-                  <img src="../assets/LoginView/Star1.svg" alt="" />
+                  <img src="../assets/login/Star1.svg" alt="" />
                 </div>
                 <div class="inner">
-                  <img src="../assets/LoginView/Star2.svg" alt="" />
+                  <img src="../assets/login/Star2.svg" alt="" />
                 </div>
                 <div class="center">
-                  <img src="../assets/LoginView/creator-store.svg" alt="" />
+                  <img src="../assets/login/creator-store.svg" alt="" />
                 </div>
               </div>
-              <img src="../assets/LoginView/3.png" alt="" />
+              <img src="../assets/login/3.png" alt="" />
             </div>
           </section>
           <div class="shop-text-icon" style="margin: 24px 0 24px auto">

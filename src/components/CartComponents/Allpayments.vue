@@ -115,8 +115,8 @@
               }" v-for="card in savedCards" :key="card.cardNumber">
                 <div class="head">
                   <div class="brand">
-                    <img v-show="card.brand == 'VISA'" src="@/assets/icons.cards/visa.svg" alt="" />
-                    <img v-show="card.brand == 'DINERS'" src="@/assets/icons.cards/diners.svg" alt="" />
+                    <img v-show="card.brand == 'VISA'" src="@/assets/icons/cards/visa.svg" alt="" />
+                    <img v-show="card.brand == 'DINERS'" src="@/assets/icons/cards/diners.svg" alt="" />
                   </div>
                   <div class="bank-number">
                     <div class="bank">{{ card.bank }}</div>
@@ -240,7 +240,7 @@
     <!-- Payment Loader -->
     <div class="loader-page" v-if="paymentLoader">
       <div class="container1">
-        <img src="../assets/img/page-loader.svg" alt="" />
+        <img src="@/assets/loaders/page-loader.svg" alt="" />
         <div>
           {{ paymentLoaderText }}
         </div>

@@ -21,7 +21,7 @@
                         !store.giftsEligibleForCart[key].gift &&
                         !hideBanner
                         " v-for="(giftItems, key) in store.giftsEligibleForCart" :key="key" class="applicable-coupon">
-                        <img src="@/assets/img/gift.svg" alt="" />
+                        <img src="@/assets/media/gift.svg" alt="" />
 
                         <div class="coupon-info">
                             <h5>Get Free Product</h5>
