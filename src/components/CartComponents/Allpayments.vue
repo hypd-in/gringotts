@@ -41,7 +41,7 @@
         <div class="payment-tail" :class="{
           'expanded-payment': activePaymentMethod == method.methodName,
         }">
-          <img src="@/assets/img/icons/arrow-down-new.svg" alt="" />
+          <img src="@/assets/icons/misc/arrow-down-new.svg" alt="" />
         </div>
       </div>
       <transition name="expand" enter-stagger="500">
@@ -87,7 +87,7 @@
                     <div class="card-cvv-txt">CVV</div>
                     <div class="flex-together gap-18">
                       <div class="security_code_div"></div>
-                      <img src="@/assets/img/icons/cvv.svg" alt="" />
+                      <img src="@/assets/icons/payment-icons/cvv.svg" alt="" />
                     </div>
                   </div>
                 </div>
@@ -311,37 +311,37 @@ const selectedMethod = ref("");
 const paymentMethods = ref([
   {
     methodName: "Credit/Debit Card",
-    icon: "@/assets/icons/payment-icons/CARDS.svg",
+    icon: "/_nuxt/assets/icons/payment-icons/CARDS.svg",
   },
   {
     methodName: "UPI",
     upiApps: [
       {
         appName: "Google Pay",
-        appIcon: "@/assets/icons/gpay.png",
+        appIcon: "/_nuxt/assets/icons/payment-icons/gpay.png",
       },
       {
         appName: "PhonePe",
-        appIcon: "@/assets/icons/phonepe.png",
+        appIcon: "/_nuxt/assets/icons/payment-icons/phonepe.png",
       },
       {
         appName: "Paytm",
-        appIcon: "@/assets/icons/paytm.png",
+        appIcon: "/_nuxt/assets/icons/payment-icons/paytm.png",
       },
       {
         appName: "Enter UPI ID",
-        appIcon: "@/assets/icons/UPI.svg",
+        appIcon: "/_nuxt/assets/icons/payment-icons/UPI2.svg",
       },
     ],
-    icon: "@/assets/icons/payment-icons/UPI.svg",
+    icon: "/_nuxt/assets/icons/payment-icons/UPI.svg",
   },
   {
     methodName: "Net banking",
-    icon: "@/assets/icons/payment-icons/NETBANKING.svg",
+    icon: "/_nuxt/assets/icons/payment-icons/NETBANKING.svg",
   },
   {
     methodName: "Cash on Delivery",
-    icon: "@/assets/icons/payment-icons/COD.svg",
+    icon: "/_nuxt/assets/icons/payment-icons/COD.svg",
   },
 ]);
 const activePaymentMethod = ref("UPI");
@@ -352,17 +352,17 @@ const topBanks = ref([
   {
     name: "AXIS",
     value: "NB_AXIS",
-    icon: "@/assets/img/icons/axis.png",
+    icon: "/_nuxt/assets/icons/payment-icons/axis.png",
   },
   {
     name: "ICICI",
     value: "NB_ICICI",
-    icon: "@/assets/img/icons/icici.png",
+    icon: "/_nuxt/assets/icons/payment-icons/icici.png",
   },
   {
     name: "SBI",
     value: "NB_SBI",
-    icon: "@/assets/img/icons/sbu.png",
+    icon: "/_nuxt/assets/icons/payment-icons/sbu.png",
   },
 ]);
 const showBanks = ref(false);

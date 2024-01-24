@@ -1,6 +1,6 @@
 <template>
     <div class="empty-cart-container">
-      <img src="../../assets/img/illustrations/no-orders.png" alt="" />
+      <img src="/_nuxt/assets/illustrations/no-orders.png" alt="" />
       <div class="heading">Your Cart Is Empty</div>
       <div class="sub-text">
         You have not added products to your cart, you can visit any creator store
