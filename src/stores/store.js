@@ -58,7 +58,6 @@ export const useStore = defineStore("store", () => {
   }
 
   function saveBrandWiseCartItems(brandWiseCart) {
-    console.log("FDAKKK")
     brandWiseCartItems.value = { ...brandWiseCart };
   }
 
