@@ -8,7 +8,7 @@
       <div class="bar-buttons">
         <!-- <button @click="goToOrderDetails" id="details">Order Details</button>
         | -->
-        <button @click="downloadOrderReceipt" id="download">Download Receipt</button>
+        <button v-if="!['initiated', 'failed'].includes(orderStatus)" @click="downloadOrderReceipt" id="download">Download Receipt</button>
       </div>
     </div>
 

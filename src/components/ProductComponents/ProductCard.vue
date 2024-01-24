@@ -63,6 +63,7 @@ const props = defineProps({
   showButton: Boolean,
   showOffers: Boolean,
   isAffiliate: Boolean,
+  creator: Object,
 });
 const emit = defineEmits(["buttonAction"]);
 const router = useRouter();
@@ -207,6 +208,17 @@ const goToProduct = computed(() => {
       params: {
         id: props.itemInfo?.id,
         creatorUsername: creatorStore?.info?.username,
+      },
+      query: {
+        title: props.itemInfo?.name,
+      },
+    }
+  } else if (props.creator) {
+    obj = {
+      name: "CreatorProduct",
+      params: {
+        id: props.itemInfo?.id,
+        creatorUsername: props.creator?.username,
       },
       query: {
         title: props.itemInfo?.name,

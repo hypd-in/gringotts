@@ -23,7 +23,6 @@ const config = useRuntimeConfig();
 const store = useStore();
 
 async function fetchUserOrders() {
-  console.log(store.user.id);
   if (store.user.id) {
     await $fetch(`${config.public.orderURL}/api/order/user`, {
       method: "POST",

@@ -1,29 +1,31 @@
 <template>
   <div class="order-details-wrapper">
-    <div class="order-details">
+    <div class="order-details" v-if="orderDetails?.id">
       <div class="left-section">
         <h2 class="heading">Order Details</h2>
-        <div class="item-details">
-          <NuxtImg v-if="orderDetails.item?.catalog_info?.featured_image" width="125" height="180"
-            style="border-radius: 12px;" :src="orderDetails.item?.catalog_info?.featured_image?.src"
-            :placeholder="[125, 180, 50, 20]" />
-          <div class="item-info">
-            <h4 class="brand-name">
-              {{ orderDetails?.brand_info?.name }}
-            </h4>
-            <h3 class="item-name">
-              {{ orderDetails?.item?.catalog_info?.name }}
-            </h3>
-            <div class="variant-info">
-              <label>{{ orderDetails?.item?.catalog_info?.variant_type }}</label>: <span>{{
-                orderDetails?.item?.catalog_info?.variant?.attribute }}</span>
-            </div>
-            <div class="quantity-info">
-              <label>Quantity</label>: <span>{{
-                orderDetails?.item?.quantity }}</span>
+        <NuxtLink :to="creatorProduct">
+          <div class="item-details">
+            <NuxtImg v-if="orderDetails.item?.catalog_info?.featured_image" width="125" height="180"
+              style="border-radius: 12px;" :src="orderDetails.item?.catalog_info?.featured_image?.src"
+              :placeholder="[125, 180, 50, 20]" />
+            <div class="item-info">
+              <h4 class="brand-name">
+                {{ orderDetails?.brand_info?.name }}
+              </h4>
+              <h3 class="item-name">
+                {{ orderDetails?.item?.catalog_info?.name }}
+              </h3>
+              <div class="variant-info">
+                <label>{{ orderDetails?.item?.catalog_info?.variant_type }}</label>: <span>{{
+                  orderDetails?.item?.catalog_info?.variant?.attribute }}</span>
+              </div>
+              <div class="quantity-info">
+                <label>Quantity</label>: <span>{{
+                  orderDetails?.item?.quantity }}</span>
+              </div>
             </div>
           </div>
-        </div>
+        </NuxtLink>
       </div>
       <div class="right-section">
         <div class="card order-status-card">
@@ -35,8 +37,8 @@
               <p class="status-date" v-if="orderDetails?.order_status">on {{
                 formatDateWithTime(orderDetails?.order_status?.created_at) }}</p>
             </div>
-            <button class="reorder">Re Order</button>
-            <!-- <button class="track-order"></button> -->
+            <button v-if="showReorder" class="reorder">Re Order</button>
+            <button v-else-if="showTrackOrder" @click="openTracking" class="track-order">Track Order</button>
           </section>
           <section :class="orderStatus" v-if="!['cancel-user', 'cancel-brand'].includes(orderStatus)"
             class="order-status-info">
@@ -59,7 +61,7 @@
               }}</span>
             </div>
             <div class="payment-mode">
-              <label>Payment Mode:</label><span>{{ paymentMode }}</span>
+              <label>Payment Mode:</label><span style="color: var(--green);">{{ paymentMode }}</span>
             </div>
           </section>
           <section class="order-price-info">
@@ -72,7 +74,8 @@
               <h5 class="amount">{{ convertToINR(finalPrice) }}</h5>
             </div>
             <div class="buttons">
-              <!-- <button></button> -->
+              <button v-if="!['initiated', 'failed'].includes(orderStatus)" class="download">Download Receipt</button>
+              <button class="price-details">Price Details</button>
             </div>
           </section>
         </div>
@@ -98,16 +101,16 @@
 
         <div class="card brand-creator-card">
           <section class="brand-info" v-if="orderDetails?.brand_info">
-            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;" v-if="orderDetails?.brand_info?.logo?.src"
-              :src="orderDetails?.brand_info?.logo?.src" />
+            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
+              v-if="orderDetails?.brand_info?.logo?.src" :src="orderDetails?.brand_info?.logo?.src" />
             <div class="brand-name">
               <label>Fullfilled By</label>
               <h5 style="font-family: Urbanist-Bold;">{{ orderDetails?.brand_info?.name }}</h5>
             </div>
           </section>
           <section v-if="creatorInfo?.id" class="creator-info">
-            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;" v-if="creatorInfo?.profile_image?.src"
-              :src="creatorInfo?.profile_image?.src" />
+            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
+              v-if="creatorInfo?.profile_image?.src" :src="creatorInfo?.profile_image?.src" />
             <div class="brand-name">
               <label>Curated for you by</label>
               <h5 style="font-family: Urbanist-Bold;">{{ creatorInfo?.name }}</h5>
@@ -116,21 +119,71 @@
         </div>
       </div>
     </div>
+
+    <section class="similar-products" v-if="similarProducts?.length">
+      <h2 class="section-heading">Products you might like</h2>
+      <div class="product-listing horizontal-listing">
+        <ProductCard :itemInfo="product" v-for="product in similarProducts" :creator="creatorInfo" :key="product.id" />
+      </div>
+    </section>
+
+    <NuxtPage />
   </div>
 </template>
 
 <script setup>
+import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 definePageMeta({
   name: "OrderDetails",
   layout: "default",
 })
 
 const route = useRoute();
+const store = useStore();
 const config = useRuntimeConfig();
 const orderDetails = ref({});
 const creatorInfo = ref({});
+const similarProducts = ref([]);
 const orderStatus = computed(() => {
   return orderDetails.value?.order_status?.code;
+})
+
+const showReorder = computed(() => {
+  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value)) {
+    return true;
+  } else {
+    return false;
+  }
+})
+
+const showTrackOrder = computed(() => {
+  if (['confirmed', 'tracking-id-generated', 'shipped', 'out-for-delivery'].includes(orderStatus.value)) {
+    return true;
+  } else {
+    return false;
+  }
+})
+
+const creatorProduct = computed(() => {
+  if (orderDetails.value?.item?.catalog_info?.id) {
+    if (creatorInfo.value?.username) {
+      return {
+        name: "CreatorProduct",
+        params: {
+          creatorUsername: creatorInfo.value?.username,
+          id: orderDetails.value.item.catalog_info.id,
+        }
+      }
+    } else {
+      return {
+        name: "CreatorProduct",
+        params: {
+          creatorUsername: 'hypd_store',
+          id: orderDetails.value.item.catalog_info.id,
+        }
+      }
+    }
+  }
 })
 
 const savings = computed(() => {
@@ -198,6 +251,12 @@ const statusBasedText = ref({
   }
 })
 
+function openTracking() {
+  navigateTo({
+    name: "OrderTracking",
+  })
+}
+
 function formatDate(orderDate) {
   var date = new Date(orderDate);
   return new Intl.DateTimeFormat('en-IN', {
@@ -230,16 +289,37 @@ async function fetchOrderDetails() {
     })
     if (response.payload) {
       orderDetails.value = { ...response.payload };
+      store.saveOrderDetails(orderDetails.value);
       if (orderDetails.value.item?.source?.id) {
         var creator = await getInfluencerById(orderDetails.value.item?.source?.id);
         if (creator) {
           creatorInfo.value = { ...creator };
         }
       }
+      await fetchSimilarProducts(orderDetails.value?.item?.catalog_info?.id);
     }
   } catch (error) {
     alert("Error fetching order details");
     console.log("Error fetching order details", error);
+  }
+}
+
+async function fetchSimilarProducts(id) {
+  try {
+    var response = await $fetch(`${config.public.catalogURL}/api/app/catalog/similar`, {
+      method: "GET",
+      params: {
+        query: id,
+      },
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    if (response.payload) {
+      similarProducts.value = [...response.payload];
+    }
+  } catch (error) {
+    console.log("Error fetching errors", error);
   }
 }
 
@@ -267,7 +347,7 @@ onBeforeMount(async () => {
     align-items: center !important;
   }
 
-  .item-info{
+  .item-info {
     max-width: calc(100%) !important;
   }
 
@@ -403,9 +483,19 @@ button:hover {
 button.reorder {
   border: 1px solid var(--primary-orange);
   border-radius: 12px;
-  /* width: 180px; */
   padding: 12px 32px;
   color: var(--primary-orange);
+}
+
+button.track-order {
+  color: var(--plain-white);
+  border: 1px solid var(--primary-orange);
+  border-radius: 12px;
+  padding: 12px 32px;
+  background: var(--primary-orange);
+  border: 1px solid var(--primary-orange);
+  box-sizing: border-box;
+  user-select: none;
 }
 
 h6.status {
@@ -430,6 +520,10 @@ h6.cancel-brand {
 
 h6.confirmed {
   color: var(--dark-blue);
+}
+
+h6.initiated {
+  color: #df9e25;
 }
 
 .status-date {
@@ -494,11 +588,30 @@ section.help button {
   font-family: 'Urbanist-Bold';
 }
 
-.order-price-info h5.amount {
+.order-price-info h5.amount,
+.order-price-info .total-amount label {
   font-family: Urbanist-Bold;
   font-size: 16px;
-  line-height: 24px;
+  line-height: 28px;
   letter-spacing: 0.4px;
+}
+
+button.download {
+  font: normal normal normal 12px/16px Urbanist-Medium;
+  letter-spacing: 0px;
+  color: #2597df;
+  white-space: nowrap;
+}
+
+button.price-details {
+  width: 100%;
+  letter-spacing: -0.3px;
+  font: normal normal normal 12px/16px Urbanist-Bold;
+  text-transform: uppercase;
+  color: #a9a9a9;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .delivery-details label {
@@ -519,5 +632,34 @@ h5.contact {
   align-items: center;
   gap: 12px;
   letter-spacing: -0.35px;
+}
+
+section.similar-products {
+  border-top: 1px solid var(--primary-border-color);
+}
+
+h2.section-heading {
+  font-family: Urbanist-Bold;
+  font-size: 18px;
+  line-height: 21px;
+  margin: 16px 0;
+}
+
+.horizontal-listing {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  overflow: auto hidden;
+  padding: 0 16px 16px;
+}
+
+.horizontal-listing::-webkit-scrollbar {
+  height: 3px;
+  width: 3px;
+  background: #dedede;
+}
+
+.horizontal-listing::-webkit-scrollbar-thumb {
+  background: var(--primary-dark);
 }
 </style>
