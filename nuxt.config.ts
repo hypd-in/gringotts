@@ -16,7 +16,7 @@ export default defineNuxtConfig({
   srcDir: "src",
   runtimeConfig: {
     public:
-      process.env.NODE_ENV == "production"
+      process.env.NODE_ENV != "production"
         ? {
             catalogURL: "https://catalogv2.getshitdone.in",
             entityURL: "https://entity.getshitdone.in",
@@ -121,7 +121,7 @@ export default defineNuxtConfig({
         {
           defer: true,
           src:
-            process.env.NODE_ENV == "production"
+            process.env.NODE_ENV != "production"
               ? "https://sandbox.juspay.in/pay-v3.js"
               : "https://api.juspay.in/pay-v3.js",
           type: "text/javascript",
