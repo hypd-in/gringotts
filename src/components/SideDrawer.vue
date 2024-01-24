@@ -1,11 +1,11 @@
 <template>
   <div class="side-drawer">
     <section class="user-info-wrapper">
-      <NuxtImg class="profile-image" style="border-radius: 16px; object-fit: cover;" placeholder="~/assets/illustrations/default_user.png" v-if="userProfileImage"
+      <NuxtImg class="profile-image" style="border-radius: 16px; object-fit: cover;" :placeholder="[30, 30, 50, 20]" v-if="userProfileImage"
         :src="userProfileImage" />
       <div class="user-info">
         <h2>{{ userFullName }}</h2>
-        <h3 class="pt-7">
+        <h3>
           {{
             `${store.user?.phone_no?.prefix} ${store.user?.phone_no?.number}`
           }}
@@ -50,15 +50,7 @@
     </section>
 
     <button v-if="!showAddresses" @click="emit('closeDrawer')" class="close-btn">
-      <svg width="38" height="37" viewBox="0 0 38 37" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <g id="Close">
-          <g id="add">
-            <path id="Union 1" fill-rule="evenodd" clip-rule="evenodd"
-              d="M25.2851 27.7525L18.8104 21.2779L12.3372 27.7511C11.5706 28.5177 10.3288 28.5177 9.56258 27.7514C8.79717 26.986 8.79716 25.7442 9.5637 24.9777L16.0369 18.5044L9.56229 12.0298C8.79717 11.2647 8.79717 10.0206 9.56258 9.25517C10.3291 8.48864 11.5721 8.48977 12.3372 9.25489L18.8118 15.7295L25.2851 9.25631C26.0516 8.48976 27.2934 8.48976 28.0588 9.25517C28.8251 10.0214 28.8251 11.2632 28.0585 12.0298L21.5853 18.503L28.0599 24.9777C28.8254 25.7431 28.8254 26.9849 28.0588 27.7514C27.2934 28.5168 26.0505 28.518 25.2851 27.7525Z"
-              fill="#13141B" stroke="#FAFAFA" stroke-width="0.6" />
-          </g>
-        </g>
-      </svg>
+      <img src="~/assets//icons/misc/close.svg" alt="">
     </button>
 
     <AddressComponent @close="toggleMyAddresses" v-if="showAddresses" />
@@ -69,7 +61,6 @@
 // import { logoutUser } from "@/API/APIs";
 // import ImageFrame from "../ImageFrame.vue";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue";
-// import { getReplacedSource } from "@/customMethods/globalMethods";
 
 const route = useRoute();
 const router = useRouter();
@@ -77,11 +68,12 @@ const store = useStore();
 const creatorStore = useCreatorStore();
 const emit = defineEmits(["closeDrawer"]);
 
+
 const userProfileImage = computed(() => {
   if (store.user?.profile_image?.src) {
     return getReplacedSource(store.user?.profile_image?.src);
   } else {
-    return "/assets/illustrations/default_user.png";
+    return "/illustrations/default_user.png"
   }
 });
 
@@ -156,8 +148,8 @@ function logout() {
 .side-drawer {
   position: fixed;
   top: 0;
-  /* left: -100vw;
-  left: -100dvw; */
+  left: -100vw;
+  left: -100dvw;
   transition: all 0.45s ease;
   width: 100vw;
   height: 100vh;
@@ -179,7 +171,7 @@ function logout() {
   gap: 12px;
   align-items: center;
   justify-content: flex-start;
-  margin: 64px 0 0;
+  margin: 42px 0 0;
 }
 
 .user-info-wrapper .profile-image {
@@ -197,9 +189,9 @@ p {
 
 h2 {
   color: #12141b;
-  font-family: Urbanist-Bold;
-  font-size: 21px;
-  line-height: 21px;
+  font-family: Urbanist-SemiBold;
+  font-size: 18px;
+  line-height: 24px;
   letter-spacing: -0.21px;
 }
 
@@ -207,7 +199,7 @@ h3 {
   color: #585858;
   font-family: Edmondsans-M;
   font-size: 16px;
-  line-height: 21px;
+  line-height: 24px;
 }
 
 .link {
@@ -235,13 +227,13 @@ section.menu-items {
 
   white-space: nowrap;
   color: #585858;
-  font-family: Urbanist-Bold;
-  font-size: 21px;
-  line-height: 21px;
+  font-family: Urbanist-SemiBold;
+  font-size: 18px;
+  line-height: 24px;
   letter-spacing: -0.21px;
 
   width: calc(100dvw - 32px);
-  padding: 21px 0;
+  padding: 16px 0;
   border-top: 1px dashed rgba(0, 0, 0, 0.2);
 }
 
@@ -264,8 +256,8 @@ section.menu-items {
 }
 
 .item-wrapper .icon {
-  width: 24px;
-  height: 24px;
+  width: 18px;
+  height: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -283,6 +275,7 @@ section.logout {
   width: calc(100% - 32px);
   box-sizing: border-box;
   background: var(--plain-white, #fff);
+  padding: 0 0 0;
 }
 
 button.logout-btn {
@@ -313,9 +306,14 @@ button.close-btn {
   top: 16px;
   right: 21px;
   z-index: 21;
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   background: var(--plain-white, #fff);
   box-sizing: border-box;
+}
+
+button.close-btn svg{
+  width: 24spx;
+  height: 24px;
 }
 </style>

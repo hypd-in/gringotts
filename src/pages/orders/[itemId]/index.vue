@@ -100,21 +100,23 @@
         </div>
 
         <div class="card brand-creator-card">
-          <section class="brand-info" v-if="orderDetails?.brand_info">
+          <section class="brand-info" @click="navigateToBrandPage" v-if="orderDetails?.brand_info">
             <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
               v-if="orderDetails?.brand_info?.logo?.src" :src="orderDetails?.brand_info?.logo?.src" />
             <div class="brand-name">
               <label>Fullfilled By</label>
               <h5 style="font-family: Urbanist-Bold;">{{ orderDetails?.brand_info?.name }}</h5>
             </div>
+            <img class="go-to" src="~/assets/icons/misc/arrow-right.svg" alt="" srcset="">
           </section>
-          <section v-if="creatorInfo?.id" class="creator-info">
+          <section v-if="creatorInfo?.id" class="creator-info" @click="navigateToCreatorStore">
             <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
               v-if="creatorInfo?.profile_image?.src" :src="creatorInfo?.profile_image?.src" />
             <div class="brand-name">
               <label>Curated for you by</label>
               <h5 style="font-family: Urbanist-Bold;">{{ creatorInfo?.name }}</h5>
             </div>
+            <img class="go-to" src="~/assets/icons/misc/arrow-right.svg" alt="" srcset="">
           </section>
         </div>
       </div>
@@ -278,6 +280,25 @@ function formatDateWithTime(statusDate) {
   }).format(date);
 }
 
+function navigateToBrandPage() {
+  console.log(orderDetails.value.brand_info);
+  // navigateTo({
+  //   name: "BrandPage",
+  //   params: {
+  //     brandUsername: orderDetails.value?.brand_info?.username
+  //   }
+  // })
+}
+
+function navigateToCreatorStore() {
+  navigateTo({
+    name: "CreatorStore",
+    params: {
+      creatorUsername: creatorInfo.value?.username
+    }
+  })
+}
+
 async function fetchOrderDetails() {
   try {
     var response = await $fetch(`${config.public.orderURL}/api/order/item/${route.params.itemId}`, {
@@ -359,7 +380,6 @@ onBeforeMount(async () => {
 .order-details-wrapper {
   max-width: 1024px;
   margin: 0 auto;
-  padding: 16px;
   box-sizing: border-box;
 
   font-family: Urbanist-Bold;
@@ -375,6 +395,7 @@ onBeforeMount(async () => {
   justify-content: space-between;
   box-sizing: border-box;
   column-gap: 16px;
+  padding: 16px;
 }
 
 .left-section {
@@ -628,21 +649,32 @@ h5.contact {
 }
 
 .brand-creator-card section {
-  display: flex;
+  display: grid;
+  grid-template-columns: 48px auto auto;
+
   align-items: center;
   gap: 12px;
   letter-spacing: -0.35px;
+  /* width: calc(100% - 32px); */
+  box-sizing: border-box;
+}
+
+.go-to {
+  width: 16px;
+  height: 16px;
+  justify-self: flex-end;
 }
 
 section.similar-products {
   border-top: 1px solid var(--primary-border-color);
+  padding: 16px 0;
 }
 
 h2.section-heading {
   font-family: Urbanist-Bold;
   font-size: 18px;
   line-height: 21px;
-  margin: 16px 0;
+  padding: 16px;
 }
 
 .horizontal-listing {

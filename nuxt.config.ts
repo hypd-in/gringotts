@@ -23,6 +23,7 @@ export default defineNuxtConfig({
           cmsURL: 'https://cms.getshitdone.in',
           couponURL: "https://coupon.getshitdone.in",
           orderURL: "https://orderv2.getshitdone.in",
+          cdn: "cdn.getshitdone.in",
           
         }
         : {
@@ -31,6 +32,7 @@ export default defineNuxtConfig({
           cmsURL: 'https://cms.hypd.store',
           couponURL: "https://coupon.hypd.store",
           orderURL: "https://orderv2.hypd.store",
+          cdn: "cdn.hypd.store",
         },
   },
   nitro: {

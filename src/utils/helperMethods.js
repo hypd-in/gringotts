@@ -1,9 +1,42 @@
-export function optimizeImage(image) {
-  return image;
+export function optimizeImage(imageURL, resolution) {
+  if (imageURL) {
+    const hostName = new URL(imageURL).hostname;
+    if (hostName == "d3d92s7oewgbjx.cloudfront.net") {
+      let newURL = imageURL.replace(hostName, useRuntimeConfig().public.cdn);
+      if (resolution) {
+        newURL = newURL + "?height=" + resolution;
+      }
+      return newURL;
+    }
+    if (hostName.endsWith("shopify.com")) {
+      let url = imageURL.split(".");
+      url[url.length - 2] = url[url.length - 2] + `_${resolution}x`;
+      return url.join(".");
+    } else {
+      return imageURL;
+    }
+  }
 }
 
-export function getReplacedSource(src) {
-  return src;
+export function getReplacedSource(source) {
+  let newhostName;
+  const filter = "/filters:strip_exif";
+  if (process.env.NODE_ENV != "production") {
+    newhostName = "cdn.getshitdone.in";
+  } else {
+    newhostName = "cdn.hypd.store";
+  }
+  let hostName = "d3d92s7oewgbjx.cloudfront.net";
+  if (source?.includes(hostName)) {
+    let newURL = source.replace(hostName, newhostName);
+
+    if (newURL.includes(filter)) {
+      newURL = newURL + "?height=" + "550";
+    }
+    return newURL;
+  } else {
+    return source;
+  }
 }
 
 export function getObjectLength(value) {
