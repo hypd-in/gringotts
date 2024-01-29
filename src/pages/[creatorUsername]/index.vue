@@ -108,20 +108,21 @@
 
                         <div class="creator-contents">
                             <div :class="{
-                                'active-creator-contents': route.name == 'CreatorCollections',
-                            }" @click="changeTab('CreatorCollections')">
+                                'active-creator-contents': route.query.active == 'collections',
+                            }" @click="changeTab('collections')">
                                 Collections
                             </div>
                             <div :class="{
-                                'active-creator-contents': route.name == 'CreatorSpotlight',
-                            }" @click="changeTab('CreatorSpotlight')">
+                                'active-creator-contents': route.query.active == 'spotlight',
+                            }" @click="changeTab('spotlight')">
                                 Spotlight
                             </div>
                         </div>
                     </div>
 
                     <!-- pages -->
-                    <NuxtPage />
+                    <collections v-if="route.query.active == 'collections'" />
+                    <spotlight v-if="route.query.active == 'spotlight'" />
 
                     <!-- Funding news -->
                     <div class="funding-news">
@@ -604,6 +605,9 @@ import {
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide } from "vue3-carousel";
 
+import collections from "./collections.vue";
+import spotlight from "./spotlight.vue";
+
 const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
@@ -654,7 +658,6 @@ const botdImages = ref(null);
 const botd = ref(true);
 const botdData = ref([]);
 const current_slide = ref(0);
-const currentPage = ref("CreatorCollections");
 
 // computed
 const creatorProfilePic = computed(() => {
@@ -718,8 +721,14 @@ function updateCarousel(payload) {
 }
 
 function changeTab(options) {
-    currentPage.value = options;
-    router.push({ name: options });
+
+    router.replace({
+        name: "CreatorStore", params: {
+            creatorUsername: route.params.creatorUsername
+        }, query: {
+            active: options
+        }
+    });
     document.getElementById("creator-store-section").scrollTop = {
         top: 0,
         behavior: "smooth",
@@ -818,6 +827,13 @@ async function getBOTD() {
 }
 
 onMounted(() => {
+    router.replace({
+        name: "CreatorStore", params: {
+            creatorUsername: route.params.creatorUsername
+        }, query: {
+            active: 'collections'
+        }
+    });
     // Attaching Listener on while component is mounted
     window.addEventListener("resize", checkDevice);
 });
