@@ -9,7 +9,6 @@
                     <div class="no-user">
                         No creator was found with username '{{ username }}'.
                     </div>
-                    <!-- <FooterHypd /> -->
                 </div>
                 <div v-if="creator">
                     <div class="creator-info">
@@ -80,7 +79,6 @@
                         </div>
                     </div>
                     <!-- If BOTD Exists -->
-
                     <div class="sticky-container">
                         <div v-if="botdImages">
                             <div class="botd ban-desk">
@@ -123,7 +121,7 @@
                     </div>
 
                     <!-- pages -->
-                    <NuxtPage :name="currentPage"/>
+                    <NuxtPage />
 
                     <!-- Funding news -->
                     <div class="funding-news">
