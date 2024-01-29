@@ -26,3 +26,5 @@ export const brandCODRanges = {
     }
   };
   
+
+  console.log(process.env.NODE_ENV, "PROCESS")
