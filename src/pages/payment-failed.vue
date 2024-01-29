@@ -52,7 +52,10 @@ onMounted(() => {
     creatorInfo.value =
       Object.values(creators)[Object.values(creators).length - 1];
   } else if (creatorStore.info) {
-    creatorInfo.value = { ...creatorStore.info };
+    creatorInfo.value = {
+      ...creatorStore.info,
+      creatorName: creatorStore.info.username,
+    };
   }
 });
 
@@ -134,6 +137,8 @@ function goToCreatorStore() {
   background: transparent;
   width: 100%;
   cursor: pointer;
+
+  max-width: 300px;
 }
 
 .desktop_wrapper {

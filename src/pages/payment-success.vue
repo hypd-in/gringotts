@@ -42,6 +42,7 @@ const creatorInfo = ref({});
 const store = useStore();
 
 const creatorStore = useCreatorStore();
+
 const route = useRoute();
 
 const emit = defineEmits(["getCartInfo"]);
@@ -108,10 +109,13 @@ function fbqPurchaseTracking() {
 //Tracking End
 
 onMounted(() => {
-  if (!this.$store.state?.creator?.creatorName) {
+  if (!creatorStore.info.id) {
     creatorInfo.value = JSON.parse(localStorage.getItem("creatorInfo"));
   } else {
-    creatorInfo.value = { ...creatorStore.info };
+    creatorInfo.value = {
+      ...creatorStore.info,
+      creatorName: creatorStore.info.username,
+    };
   }
 
   // uncmnt later
@@ -168,7 +172,7 @@ onMounted(() => {
 
 onBeforeMount(() => {
   emit("getCartInfo");
-  if (route.query.orderID) {
+  if (!route.query.orderID) {
     router.push("/");
   }
 });
