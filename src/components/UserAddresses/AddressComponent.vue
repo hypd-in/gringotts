@@ -164,7 +164,7 @@ async function selectAddress(address) {
   position: absolute;
   right: 0;
   top: 0;
-  z-index: 41;
+  z-index: 54;
   width: 100%;
   max-width: 520px;
   height: 100%;
