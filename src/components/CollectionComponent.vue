@@ -1,7 +1,8 @@
 <template>
     <!-- drafted item class for drafted -->
     <div class="collection-wrapper">
-        <ImageFrame v-if="item.image" :src="optimizeImage(item.image.src, 350)" :alt="item.name + ' by ' + creatorStore.info.name" />
+        <ImageFrame v-if="item.image" :src="optimizeImage(item.image.src, 350)"
+            :alt="item.name + ' by ' + creatorStore.info.name" />
         <div v-else-if="item.default_image" class="default-image">
             <img class="catalog-image" v-for="(image, index) in item.default_image" :src="optimizeImage(image.src, 350)"
                 alt="" :key="`default_image_${index}`" />
@@ -20,30 +21,25 @@ const props = defineProps(["item"])
 const creatorStore = useCreatorStore()
 
 function goToManageCollection() {
-    if (this.item.collection_type == "affiliate") {
+    console.log(props.item, "I")
+    if (props.item.collection_type == "affiliate") {
         router.push({
-            name: "CreatorAffiliateCollection",
+            name: "AffiliateCollection",
             params: {
-                creator_username: this.creator?.creator_username,
-                collection_id: this.item.id,
-                collection: JSON.stringify(this.item),
+                collectionId: props.item.id,
             },
             query: {
-                title: this.item.name,
+                title: props.item.name,
             },
         });
     } else {
         router.push({
             name: "CreatorCollection",
             params: {
-                id: this.item.id,
-                creator: JSON.stringify(this.creator),
-                name: this.item.slug,
-                collection_id: this.item.id,
-                collection: JSON.stringify(this.item),
+                collectionId: props.item.id,
             },
             query: {
-                title: this.item.name,
+                title: props.item.name,
             },
         });
     }
