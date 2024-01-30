@@ -1044,6 +1044,10 @@ function increasingSlider() {
   updateSliderTwo(monthlyPosts.value);
 };
 
+function updateScrollPosition() {
+  scrollPosition.value = window.scrollY; 
+}
+
 function addingObserver() {
   let options = {
     rootMargin: "0px",
@@ -1257,8 +1261,9 @@ function callback_8(entries) {
 
 onMounted(() => {
   calculatingCreatorCount();
-  updateSliderOne();
-  updateSliderTwo();
+  updateSliderOne(0);
+  updateSliderTwo(10);
+  document.addEventListener("scroll", updateScrollPosition)
   addingObserver();
 })
 
