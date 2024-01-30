@@ -144,7 +144,7 @@ async function goToBrandProfile() {
     name: "BrandProfile",
     params: {
       creatorUsername: creatorStore?.info?.username,
-      brand: productStore?.info?.brand_info?.username,
+      brandUsername: productStore?.info?.brand_info?.username,
     },
   });
 }

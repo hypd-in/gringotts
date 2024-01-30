@@ -39,7 +39,8 @@
                 </div>
                 <div class="price-info">
                   <label for="">Price</label>
-                  <p>{{ convertToINR(item?.total_price?.value) }}</p>
+                  <p v-if="!item.gift_item">{{ convertToINR(item?.total_price?.value) }}</p>
+                  <p v-else-if="item.gift_item?.value">{{ convertToINR(item?.gift_item?.value) }}</p>
                 </div>
                 <div class="variant-info">
                   <label for="">Qty.</label>
