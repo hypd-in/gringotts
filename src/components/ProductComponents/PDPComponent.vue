@@ -75,7 +75,7 @@
             <div class="specification" v-if="productInfo.specs?.length > 0">
               <h2>Product Specification</h2>
               <ul>
-                <li class="list" v-for="spec in productInfo?.specs" :key="spec.name">
+                <li class="list" v-for="spec in productInfo?.specs" :key="spec.value">
                   <span>{{ spec.name }} : {{ spec.value }}</span>
                 </li>
               </ul>
