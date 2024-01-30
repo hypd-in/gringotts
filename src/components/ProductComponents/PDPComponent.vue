@@ -237,14 +237,14 @@ async function getProductOffers() {
   }
 }
 
-function shareProduct() {
+async function shareProduct() {
   var shareObject = {};
   if (product.info?.name) {
     shareObject["title"] = creator.info
       ? `${creator.info?.name} | ${product.info.name} | Hypd Store`
       : `${product.info?.name} | Hypd Store`;
   }
-  shareObject["url"] = `${proxy.$base}/${route.params.creator_username || getCreatorUserName(creator?.info?.id)
+  shareObject["url"] = `${config.public.base}/${route.params.creatorUsername || await getCreatorUserName(creator.info?.id)
     }/product/${product.info?.id}?title=${product.info?.name}`;
 
   if (navigator.canShare) {

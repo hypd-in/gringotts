@@ -78,6 +78,7 @@
         </div>
       </section>
       <section class="mobile-header">
+        <div class="left-section">
           <div @click="toggleSideDrawer" v-if="showMenu" class="hamburger">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M3 7H21" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" />
@@ -95,6 +96,8 @@
               </svg>
             </button>
           </div>
+          <h5 class="title" v-if="pageTitle">{{ pageTitle }}</h5>
+        </div>
         <div class="header-items">
           <button @click="goToExplore"
             v-if="route.params.creatorUsername || creatorStore?.info?.username || getCreatorUserName()" class="search">
@@ -159,6 +162,29 @@ const showWishlist = ref(false);
 const noOfCartItems = computed(() => {
   return store.cartInfo.items?.length || 0;
 });
+
+const pageTitle = computed(() => {
+  if (route.query?.title) {
+    return route.query?.title;
+  }
+  switch (route?.name) {
+    case 'Orders': {
+      return 'Your Orders';
+    }
+
+    case 'OrderDetails': {
+      return 'Order Details';
+    }
+
+    case 'HypdExplore': {
+      return 'Explore';
+    }
+
+    default: {
+      return null;
+    }
+  }
+})
 
 function toggleSideDrawer() {
   openSideDrawer.value = !openSideDrawer.value;
@@ -253,9 +279,9 @@ function openDropDown() {
 
 <style scoped>
 @media only screen and (max-width: 520px) {
-  .header {
+  .header-wrapper {
     z-index: 52 !important;
-    height: 58px !important;
+    height: 48px !important;
   }
 
   .mobile-header {
@@ -264,27 +290,44 @@ function openDropDown() {
     justify-content: space-between;
     padding: 12px;
     box-sizing: border-box;
-    background: none;
+    background: var(--plian-white, #fff);
     width: 100dvw;
     height: 100%;
-    position: sticky;
-    top: 0;
-    left: 0;
+  }
+
+  .hamburger,
+  .back-btn {
+    width: 24px;
+    height: 24px;
+  }
+
+  .left-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   .desktop-header {
     display: none !important;
   }
+
+  h5.title {
+    font-family: Urbanist-Bold;
+    font-size: 18px;
+    letter-spacing: 0.4px;
+    line-height: 24px;
+    display: block !important;
+  }
 }
 
-.header-wrapper{
-  position: relative;
-}
-.header {
+.header-wrapper {
+  /* position: relative; */
   position: sticky;
+  top: 0;
   z-index: 53;
-  height: 72px;
   border-bottom: 1px solid var(--primary-border-color);
+  height: 72px;
+  background: var(--plian-white);
 }
 
 .slide-in-menu {
@@ -381,6 +424,12 @@ input::placeholder {
   align-items: center;
   justify-content: flex-end;
   gap: 24px;
+}
+
+h5.title {
+  display: none;
+  margin: 0;
+  padding: 0;
 }
 
 .action-btn {

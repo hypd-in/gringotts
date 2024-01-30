@@ -1,6 +1,6 @@
 export default defineNuxtConfig({
   build: {
-    transpile: ['vue-ssr-carousel/nuxt'],
+    transpile: ["vue-ssr-carousel/nuxt"],
   },
   devtools: {
     enabled: true,
@@ -18,22 +18,23 @@ export default defineNuxtConfig({
     public:
       process.env.NODE_ENV != "production"
         ? {
-          catalogURL: "https://catalogv2.getshitdone.in",
-          entityURL: "https://entity.getshitdone.in",
-          cmsURL: 'https://cms.getshitdone.in',
-          couponURL: "https://coupon.getshitdone.in",
-          orderURL: "https://orderv2.getshitdone.in",
-          cdn: "cdn.getshitdone.in",
-          
-        }
+            catalogURL: "https://catalogv2.getshitdone.in",
+            entityURL: "https://entity.getshitdone.in",
+            cmsURL: "https://cms.getshitdone.in",
+            couponURL: "https://coupon.getshitdone.in",
+            orderURL: "https://orderv2.getshitdone.in",
+            cdn: "cdn.getshitdone.in",
+            base: "https://hypdstore.getshitdone.in",
+          }
         : {
-          catalogURL: "https://catalog2.hypd.store",
-          entityURL: "https://entity.hypd.store",
-          cmsURL: 'https://cms.hypd.store',
-          couponURL: "https://coupon.hypd.store",
-          orderURL: "https://orderv2.hypd.store",
-          cdn: "cdn.hypd.store",
-        },
+            catalogURL: "https://catalog2.hypd.store",
+            entityURL: "https://entity.hypd.store",
+            cmsURL: "https://cms.hypd.store",
+            couponURL: "https://coupon.hypd.store",
+            orderURL: "https://orderv2.hypd.store",
+            cdn: "cdn.hypd.store",
+            base: "https://www.hypd.store",
+          },
   },
   nitro: {
     preset: "node-cluster",
@@ -109,10 +110,10 @@ export default defineNuxtConfig({
           href: "https://www.hypd.store",
         },
         {
-          rel: 'icon',
-          type: 'image/png',
-          href: '/favicon.ico'
-        }
+          rel: "icon",
+          type: "image/png",
+          href: "/favicon.ico",
+        },
       ],
     },
   },

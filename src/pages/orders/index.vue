@@ -67,15 +67,13 @@ onMounted(async () => {
 <style scoped>
 @media only screen and (max-width: 520px) {
   h2.heading {
-    position: fixed;
+    /* position: fixed;
     top: 16px;
     left: 48px;
     z-index: 52;
-    font-size: 18px !important;
-    letter-spacing: 0.4px !important;
-    line-height: 24px !important;
     padding: 0 !important;
-    vertical-align: middle;
+    vertical-align: middle; */
+    display: none !important;
   }
 }
 
