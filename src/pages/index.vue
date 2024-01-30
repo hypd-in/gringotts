@@ -2971,6 +2971,8 @@ onUpdated(() => {
 
   .footer-content {
     margin: 30px 16px 0;
+    column-gap: 0px !important;
+    grid-template-columns: 100% !important;
   }
 
   .path-1 img {
