@@ -375,6 +375,10 @@ onBeforeMount(async () => {
   .order-status-card {
     width: calc(100dvw - 32px);
   }
+
+  h2.heading{
+    display: none !important;
+  }
 }
 
 .order-details-wrapper {

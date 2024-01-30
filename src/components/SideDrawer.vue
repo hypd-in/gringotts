@@ -117,7 +117,7 @@ function toggleMyAddresses() {
 
 function goToEditProfile() {
   navigateTo({
-    name: "YourProfile",
+    name: "EditProfile",
   });
 }
 

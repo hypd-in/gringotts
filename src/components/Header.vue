@@ -180,6 +180,10 @@ const pageTitle = computed(() => {
       return 'Explore';
     }
 
+    case 'EditProfile': {
+      return  "Edit Profile"
+    }
+
     default: {
       return null;
     }
