@@ -108,25 +108,11 @@ export function addingObserver(target, callback) {
   return observer;
 }
 
-export function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie?.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-}
-
 export async function getCreatorUserName(id) {
   const router = useRouter();
   const creatorStore = useCreatorStore();
-  if (
-    JSON.parse(getCookie("creators")) &&
-    JSON.parse(getCookie("creators"))[id]
-  ) {
-    return JSON.parse(getCookie("creators"))[id].username;
+  if (useCookie("creators").value && useCookie("creators").value[id]) {
+    return useCookie("creators").value[id].username;
   }
   if (creatorStore?.info?.username) {
     return creatorStore?.info?.username;
@@ -134,7 +120,7 @@ export async function getCreatorUserName(id) {
   if (router.currentRoute.value.params.creator_username) {
     return router.currentRoute.value.params.creator_username;
   }
-  if (localStorage.getItem("creatorInfo") != null) {
+  if (localStorage && localStorage.getItem("creatorInfo") != null) {
     var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
     return creatorInfo?.creatorName;
   }
@@ -149,9 +135,9 @@ export async function getCreatorUserName(id) {
     payload = await getInfluencerById(creator_id);
     return payload.username;
   }
-  if (getCookie("creators")) {
-    return Object.values(JSON.parse(getCookie("creators")))[
-      Object.values(JSON.parse(getCookie("creators"))).length - 1
+  if (useCookie("creators").value) {
+    return Object.values(useCookie("creators").value)[
+      Object.values(useCookie("creators").value).length - 1
     ].username;
   }
   return "hypd_store";

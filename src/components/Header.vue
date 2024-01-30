@@ -181,7 +181,17 @@ const pageTitle = computed(() => {
     }
 
     case 'EditProfile': {
-      return  "Edit Profile"
+      return "Edit Profile"
+    }
+
+    case 'ContactUs': {
+      return "Contact Us"
+    }
+    case 'PrivacyPolicy': {
+      return "Privacy Policy"
+    }
+    case 'TermsAndConditions': {
+      return "Terms & Conditions"
     }
 
     default: {
@@ -317,10 +327,14 @@ function openDropDown() {
 
   h5.title {
     font-family: Urbanist-Bold;
-    font-size: 18px;
+    font-size: 16px;
     letter-spacing: 0.4px;
     line-height: 24px;
     display: block !important;
+    max-width: 160px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
 }
 

@@ -1045,7 +1045,7 @@ function increasingSlider() {
 };
 
 function updateScrollPosition() {
-  scrollPosition.value = window.scrollY; 
+  scrollPosition.value = window.scrollY;
 }
 
 function addingObserver() {
@@ -1466,6 +1466,8 @@ onUpdated(() => {
   top: 48px;
   width: 100vw;
   z-index: 13;
+  backdrop-filter: blur(4px);
+  background: #00000030;
 }
 
 .landing-page-header {
@@ -3029,11 +3031,6 @@ onUpdated(() => {
 
   .creator-count {
     font-size: 98px;
-  }
-
-  .header-wrapper-login {
-    backdrop-filter: blur(4px);
-    background: #00000030;
   }
 
   .creator-collage {

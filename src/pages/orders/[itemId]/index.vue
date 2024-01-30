@@ -174,6 +174,9 @@ const creatorProduct = computed(() => {
         params: {
           creatorUsername: creatorInfo.value?.username,
           id: orderDetails.value.item.catalog_info.id,
+        },
+        query: {
+          title: orderDetails.value.item.catalog_info.name
         }
       }
     } else {
@@ -182,6 +185,9 @@ const creatorProduct = computed(() => {
         params: {
           creatorUsername: 'hypd_store',
           id: orderDetails.value.item.catalog_info.id,
+        },
+        query: {
+          title: orderDetails.value.item.catalog_info.name
         }
       }
     }
