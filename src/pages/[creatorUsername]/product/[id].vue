@@ -32,6 +32,22 @@ if (route.params.id) {
   }
 }
 
+if (route.params.creatorUsername && !creatorStore.info?.id) {
+  const { data, pending: loadingCreatorInfo } = await useFetch(
+    config.public.entityURL +
+    "/api/app/influencer/username/" +
+    route.params.creatorUsername,
+    {
+      key: "influencer_info_app",
+      methods: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  creatorStore.saveCreatorInfo(data?.value?.payload);
+}
+
 useSeoMeta({
   title: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
   ogTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
