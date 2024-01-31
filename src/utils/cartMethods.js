@@ -36,7 +36,7 @@ if (process.browser) {
 //   entityURL = "https://entity.hypd.store";
 //   orderURL = "https://order2.hypd.store";
 //   trackingURL = "https://tracking.getshitdone.in";
-}
+// }
 async function fetchItemInfo(id) {
   try {
     var response = await $fetch(catalogURL + "/api/app/catalog/" + id, {
