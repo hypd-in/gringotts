@@ -74,7 +74,6 @@ const creatorImage = computed(() => {
 
 async function goToBrandPage() {
   var creatorUsername = await getCreatorUserName();
-  console.log(creatorUsername);
   if (brandInfo.value?.username) {
     navigateTo({
       name: "BrandProfile",

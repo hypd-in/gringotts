@@ -83,7 +83,7 @@ async function addToCart() {
   if (store.user?.id) {
     itemInfo["id"] = store.user.id;
     addingToCart.value = true;
-    // await addItemToCart(itemInfo);
+    await addItemToCart(itemInfo);
     addingToCart.value = false;
   } else {
     if (localStorage.getItem("cart_items") != null) {
@@ -131,10 +131,9 @@ function buyNow() {
 }
 
 function goToCart() {
-  console.log("GO TO CART");
-  // router.push({
-  //   name: "CartItems",
-  // });
+  navigateTo({
+    name: "CartItems",
+  })
 }
 </script>
 
