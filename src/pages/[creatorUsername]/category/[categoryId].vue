@@ -10,7 +10,7 @@
     <div class="curation-container">
       <div class="curation-products">
         <h2 class="heading">{{ route.query.title }}</h2>
-        <div class="product-listing-wrapper" v-if="categoryInfo.data.length > 0">
+        <div class="product-listing-wrapper" v-if="categoryInfo.data?.length > 0">
           <ProductCard v-for="product in categoryInfo.data" :key="product?.id" :itemInfo="product" />
         </div>
       </div>
