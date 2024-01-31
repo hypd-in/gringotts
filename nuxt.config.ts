@@ -3,7 +3,7 @@ export default defineNuxtConfig({
     transpile: ["vue-ssr-carousel/nuxt"],
   },
   devtools: {
-    enabled: true,
+    enabled: false,
     timeline: {
       enabled: true,
     },
@@ -16,24 +16,30 @@ export default defineNuxtConfig({
   srcDir: "src",
   runtimeConfig: {
     public:
-      process.env.NODE_ENV != "production"
+      process.env.NODE_ENV !== "production"
         ? {
             catalogURL: "https://catalogv2.getshitdone.in",
             entityURL: "https://entity.getshitdone.in",
             cmsURL: "https://cms.getshitdone.in",
-            couponURL: "https://coupon.getshitdone.in",
             orderURL: "https://orderv2.getshitdone.in",
+            couponURL: "https://coupon.getshitdone.in",
             cdn: "cdn.getshitdone.in",
             base: "https://hypdstore.getshitdone.in",
+            checkoutURL: "https://checkout.getshitdone.in",
+            gokwik_env: "sandbox",
+            gokwick_mid: "3mt5u7iijbky068wbs",
           }
         : {
             catalogURL: "https://catalog2.hypd.store",
             entityURL: "https://entity.hypd.store",
             cmsURL: "https://cms.hypd.store",
-            couponURL: "https://coupon.hypd.store",
             orderURL: "https://orderv2.hypd.store",
+            couponURL: "https://coupon.hypd.store",
             cdn: "cdn.hypd.store",
             base: "https://www.hypd.store",
+            checkoutURL: "https://checkout.hypd.store",
+            gokwik_env: "production",
+            gokwick_mid: "3mt5u7iijbky068wba",
           },
   },
   nitro: {
@@ -113,6 +119,41 @@ export default defineNuxtConfig({
           rel: "icon",
           type: "image/png",
           href: "/favicon.ico",
+        },
+      ],
+      script: [
+        {
+          defer: true,
+          src:
+            process.env.NODE_ENV == "production"
+              ? "https://sandbox.juspay.in/pay-v3.js"
+              : "https://api.juspay.in/pay-v3.js",
+          type: "text/javascript",
+        },
+        {
+          children: `! function (t, e) {
+            var o, n, p, r;
+            e.__SV || (window.posthog = e, e._i = [], e.init = function (i, s, a) {
+              function g(t, e) {
+                var o = e.split(".");
+                2 == o.length && (t = t[o[0]], e = o[1]), t[e] = function () {
+                  t.push([e].concat(Array.prototype.slice.call(arguments, 0)))
+                }
+              } (p = t.createElement("script")).type = "text/javascript", p.async = !0, p.src = s.api_host + "/static/array.js", (r = t.getElementsByTagName("script")[0]).parentNode.insertBefore(p, r);
+              var u = e;
+              for (void 0 !== a ? u = e[a] = [] : a = "posthog", u.people = u.people || [], u.toString = function (t) {
+                var e = "posthog";
+                return "posthog" !== a && (e += "." + a), t || (e += " (stub)"), e
+              }, u.people.toString = function () {
+                return u.toString(1) + ".people (stub)"
+              }, o = "capture identify alias people.set people.set_once set_config register register_once unregister opt_out_capturing has_opted_out_capturing opt_in_capturing reset isFeatureEnabled onFeatureFlags getFeatureFlag getFeatureFlagPayload reloadFeatureFlags group updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures getActiveMatchingSurveys getSurveys onSessionId".split(" "), n = 0; n < o.length; n++) g(u, o[n]);
+              e._i.push([i, s, a])
+            }, e.__SV = 1)
+          }(document, window.posthog || []);
+          posthog.init('phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2', {
+            api_host: 'https://app.posthog.com'
+          }) `,
+          type: "text/javascript",
         },
       ],
     },

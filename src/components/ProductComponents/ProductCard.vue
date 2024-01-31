@@ -192,7 +192,7 @@ const discount = computed(() => {
   }
 });
 
-const goToProduct = computed(async () => {
+const goToProduct = computed(() => {
   var obj = {};
   if (props.isAffiliate) {
     let link = props.itemInfo.hypd_link.split("/");
@@ -230,7 +230,6 @@ const goToProduct = computed(async () => {
       name: "CreatorProduct",
       params: {
         id: props.itemInfo?.id,
-        creatorUsername: await getCreatorUserName()
       },
       query: {
         title: props.itemInfo?.name,

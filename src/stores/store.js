@@ -5,7 +5,7 @@ export const useStore = defineStore("store", () => {
   const wishlistedItems = ref({});
   const cartInfo = ref({});
   const cartItems = ref({});
-  const addresses = ref([]);
+  const addresses = ref({});
   const orders = ref({
     userOrders: [],
     page: 0,
@@ -21,10 +21,70 @@ export const useStore = defineStore("store", () => {
     products: [],
     page: 0,
   });
+
+  const brandWiseGifts = ref({});
+
   const couponsMap = ref({});
   const bxgyCoupons = ref([]);
+  const bxgyGetIds = ref([]);
+  const cartCoupons = ref({});
+
+  const allCoupons = ref([]);
+  const brandWiseCartItems = ref({});
+
   const hotSellingProducts = ref([]);
   const exploreAnimation = ref(false);
+
+  const brandTotalCartValue = ref();
+
+  const giftsEligibleForCart = ref({});
+
+  const cartItemsFailSuccess = ref([]);
+
+  // functions
+
+  function saveCartItemsFailSuccess(items) {
+    cartItemsFailSuccess.value = [...items];
+  }
+
+  function removeUserAddress(address) {
+    delete addresses.value[address.id];
+  }
+
+  function removeItemFromCart(item) {
+    delete cartItems.value[item.variant_id];
+  }
+
+  function setGiftsEligibleForCart(gifts) {
+    giftsEligibleForCart.value = { ...gifts };
+  }
+
+  function saveBrandTotalCartValue(value) {
+    brandTotalCartValue.value = value;
+  }
+
+  function setBrandWiseGift(gifts) {
+    brandWiseGifts.value = { ...gifts };
+  }
+
+  function saveBrandWiseCartItems(brandWiseCart) {
+    brandWiseCartItems.value = { ...brandWiseCart };
+  }
+
+  function saveBxGyGetIds(ids) {
+    bxgyGetIds.value = [...ids];
+  }
+
+  function saveAllCoupons(coupons) {
+    allCoupons.value = [...coupons];
+    bxgyCoupons.value = coupons.filter((coupon) => {
+      return coupon.applicable_on.name == "bxgy";
+    });
+  }
+
+  function saveCouponsObject(coupons) {
+    cartCoupons.value = { ...coupons };
+  }
 
   function saveUserInfo(userInfo) {
     user.value = { ...userInfo };
@@ -36,6 +96,10 @@ export const useStore = defineStore("store", () => {
 
   function saveCartInfo(info) {
     cartInfo.value = { ...info };
+  }
+
+  function updateCartInfo(info) {
+    cartInfo.value = { ...cartInfo.value, ...info };
   }
 
   function saveCartItems(items) {
@@ -131,9 +195,29 @@ export const useStore = defineStore("store", () => {
     bxgyCoupons,
     hotSellingProducts,
     exploreAnimation,
+    cartCoupons,
+    allCoupons,
+    brandWiseCartItems,
+    bxgyGetIds,
+    brandWiseGifts,
+    brandTotalCartValue,
+    giftsEligibleForCart,
+    cartItemsFailSuccess,
+
+    saveCartItemsFailSuccess,
+    removeUserAddress,
+    removeItemFromCart,
+    setGiftsEligibleForCart,
+    saveBrandTotalCartValue,
+    setBrandWiseGift,
+    saveBxGyGetIds,
+    saveBrandWiseCartItems,
+    saveAllCoupons,
+    saveCouponsObject,
     saveUserInfo,
     saveWishlistedItems,
     saveCartInfo,
+    updateCartInfo,
     saveCartItems,
     updateCartInfo,
     saveUserAddresses,

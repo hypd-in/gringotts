@@ -1,4 +1,4 @@
-import { getData, setData } from 'nuxt-storage/local-storage';
+import { getData, setData } from "nuxt-storage/local-storage";
 
 export function optimizeImage(imageURL, resolution) {
   if (imageURL) {
@@ -110,11 +110,42 @@ export function addingObserver(target, callback) {
   return observer;
 }
 
+export function getUTMParams() {
+  var params = useCookie("params");
+  return params;
+}
+
+export function splitCookieValue(value, valueSeperator, keySeperator) {
+  var obj = {};
+  if (value && valueSeperator) {
+    let seperatedValue = value.split(valueSeperator);
+
+    seperatedValue.forEach((val) => {
+      let keyValuePair = val.split(keySeperator);
+      obj[keyValuePair[0]] = keyValuePair[1];
+    });
+    return obj;
+  }
+}
+export function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie?.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
 export async function getCreatorUserName(id) {
   const router = useRouter();
   const creatorStore = useCreatorStore();
-  if (useCookie("creators").value && useCookie("creators").value[id]) {
-    return useCookie("creators").value[id].username;
+
+  const creatorCookie = useCookie("creators");
+  console.log(creatorCookie, creatorStore.info);
+  if (creatorCookie.value && creatorCookie.value[id]) {
+    return creatorCookie.value[id].username;
   }
   if (creatorStore?.info?.username) {
     return creatorStore?.info?.username;
@@ -137,13 +168,14 @@ export async function getCreatorUserName(id) {
     payload = await getInfluencerById(creator_id);
     return payload.username;
   }
-  if (useCookie("creators").value) {
-    return Object.values(useCookie("creators").value)[
-      Object.values(useCookie("creators").value).length - 1
+  if (creatorCookie.value) {
+    return Object.values(creatorCookie.value)[
+      Object.values(creatorCookie.value).length - 1
     ].username;
   }
   return "hypd_store";
 }
+
 export function createCouponsMap(coupons) {
   const store = useStore();
   var obj = {

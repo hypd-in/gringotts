@@ -6,9 +6,6 @@
 </template>
 
 <script setup>
-definePageMeta({
-  name: "CreatorCollections",
-});
 
 import CollectionComponent from '~/components/CollectionComponent.vue';
 import { addingObserver } from "~/utils/helperMethods";
