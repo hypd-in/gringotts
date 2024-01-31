@@ -671,8 +671,8 @@ function readMore() {
 }
 
 function redirectToBWB(path) {
-    let url = path.split(this.$base)[1];
-    window.open(`${this.$base}/${creator.value.username}${url}`, "_self");
+    let url = path.split(runtimeConfig.public.base)[1];
+    window.open(`${runtimeConfig.public.base}/${creatorStore.info.username}${url}`, "_self");
 }
 
 // Checking Device Width while re-sizing to change BOTD Image
@@ -843,6 +843,11 @@ onBeforeMount(() => {
 });
 </script>
 <style scoped>
+
+.creator-store{
+    max-width:1180px;
+    margin: 0 auto;
+}
 /* funding news css */
 .emoji-text {
     display: flex;
@@ -1118,7 +1123,7 @@ onBeforeMount(() => {
 
 .creator-info {
     margin: 10px auto;
-    max-width: 980px;
+    max-width: 1180px;
 }
 
 .creator-info-container {
@@ -1253,7 +1258,7 @@ onBeforeMount(() => {
 
     .creator-info {
         margin: 10px auto 10px;
-        max-width: 980px;
+        max-width: 1180px;
     }
 
     .creator-title {
@@ -1401,7 +1406,7 @@ onBeforeMount(() => {
 
 .botd {
     /* position: relative; */
-    max-width: 980px;
+    max-width:1180px;
     margin: 0 0 0 18px;
     width: calc(100% - 36px);
     cursor: pointer;
@@ -1516,18 +1521,7 @@ section.carousel :deep(ol) {
     overflow: hidden;
 }
 
-.collection-contents {
-    min-height: calc(100dvh - 334px);
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(283px, 1fr));
-    gap: 15px;
-    row-gap: 16px;
-    padding-bottom: 20px;
-    justify-items: center;
-    max-width: 980px;
-    margin: 16px 0 0 0;
-    width: 100dvw;
-}
+
 
 .slide-in-menu {
     left: 0vw !important;
