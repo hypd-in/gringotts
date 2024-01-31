@@ -692,6 +692,7 @@ async function checkout() {
 
   if (activePaymentMethod.value == "Cash on Delivery") {
     sendDetailsToGoKwik(response.payload.go_kwik, "cod");
+    store.saveCartItemsFailSuccess([...store.cartInfo.items])
   } else if (orderId.value && activePaymentMethod.value != "Cash on Delivery") {
     if (skipPayment.value) {
       paymentLoader.value = false;
@@ -759,6 +760,7 @@ async function checkoutWithJuspay() {
         isPaying.value = false;
         paymentLoader.value = false;
         emits("transactionLoader", false);
+        store.saveCartItemsFailSuccess([...store.cartInfo.items])
         router.push("/payment-failed?orderID=" + orderId.value);
       },
     });
@@ -881,6 +883,7 @@ async function orderConfirmation() {
 
       // stops checking transaction status
       clearInterval(paymentStatusInterval.value);
+      store.saveCartItemsFailSuccess([...store.cartInfo.items])
       router.push("/payment-failed?orderID=" + orderId.value);
       window.removeEventListener("focus", orderConfirmation, true);
     } else if (response.payload == "confirmed") {
@@ -896,6 +899,7 @@ async function orderConfirmation() {
         "&order_amount=" +
         `${store.cartInfo.grand_total.value}`
       );
+      store.saveCartItemsFailSuccess([...store.cartItems])
       await fetchCartInfo();
     }
 

@@ -13,11 +13,7 @@
         <button class="primary-button mt-60" @click="reviewPayment">
           Review Payment Method
         </button>
-        <button
-          v-if="creatorStore.info.id"
-          class="secondary-button mt-20"
-          @click="goToCreatorStore"
-        >
+        <button v-if="creatorInfo.creatorName" class="secondary-button mt-20" @click="goToCreatorStore">
           Back To Home
         </button>
       </div>
@@ -28,14 +24,13 @@
 <script setup>
 import { fetchCartInfo } from "@/utils/globalAPIs";
 
-import { getCookie } from "@/utils/helperMethods";
-
 const creatorInfo = ref({});
 const isExpress = ref(null);
 
 const router = useRouter();
 const route = useRoute();
 const creatorStore = useCreatorStore();
+const store = useStore()
 
 onBeforeMount(async () => {
   isExpress.value = JSON.parse(localStorage.getItem("isExpress"));
@@ -46,16 +41,20 @@ onBeforeMount(async () => {
   }
 });
 
-onMounted(() => {
-  if (getCookie("creators")) {
-    let creators = JSON.parse(getCookie("creators"));
-    creatorInfo.value =
-      Object.values(creators)[Object.values(creators).length - 1];
-  } else if (creatorStore.info) {
+onMounted(async () => {
+  if (creatorStore.info.id) {
     creatorInfo.value = {
       ...creatorStore.info,
       creatorName: creatorStore.info.username,
     };
+  } else if (!creatorStore.info.id && store.cartItemsFailSuccess.length > 0) {
+    let { username } = await getInfluencerById(store.cartItemsFailSuccess[store.cartItemsFailSuccess.length - 1].source.id)
+    creatorInfo.value = {
+      creatorName: username
+    }
+  } else {
+
+    creatorInfo.value = { creatorName: await getCreatorUserName() }
   }
 });
 
@@ -77,7 +76,7 @@ function goToCreatorStore() {
   router.replace({
     name: "CreatorStore",
     params: {
-      creatorUsername: creatorInfo.value.username,
+      creatorUsername: creatorInfo.value.creatorName,
     },
   });
 }

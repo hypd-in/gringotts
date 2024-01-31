@@ -34,10 +34,15 @@ export const useStore = defineStore("store", () => {
 
   const giftsEligibleForCart = ref({});
 
+  const cartItemsFailSuccess = ref([]);
+
   // functions
 
+  function saveCartItemsFailSuccess(items) {
+    cartItemsFailSuccess.value = [...items];
+  }
 
-  function removeUserAddress(address){
+  function removeUserAddress(address) {
     delete addresses.value[address.id];
   }
 
@@ -178,7 +183,9 @@ export const useStore = defineStore("store", () => {
     brandWiseGifts,
     brandTotalCartValue,
     giftsEligibleForCart,
+    cartItemsFailSuccess,
 
+    saveCartItemsFailSuccess,
     removeUserAddress,
     removeItemFromCart,
     setGiftsEligibleForCart,

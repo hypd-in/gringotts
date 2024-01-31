@@ -10,11 +10,7 @@
             getCreatorDetails
           }}!
         </div>
-        <button
-          v-if="creatorInfo && creatorInfo.creatorName"
-          class="primary-button mt-60"
-          @click="goToCreatorStore"
-        >
+        <button v-if="creatorInfo && creatorInfo.creatorName" class="primary-button mt-60" @click="goToCreatorStore">
           Continue Shopping
         </button>
         <button class="secondary-button mt-20" @click="goToOrders">
@@ -27,6 +23,8 @@
 
 <script setup>
 import { fetchCartInfo } from "@/utils/globalAPIs";
+import { getCreatorUserName } from "@/utils/helperMethods"
+import { getInfluencerById } from "@/utils/globalAPIs";
 
 // import {
 //   trackingClickEvent,
@@ -108,14 +106,19 @@ function fbqPurchaseTracking() {
 }
 //Tracking End
 
-onMounted(() => {
-  if (!creatorStore.info.id) {
-    creatorInfo.value = JSON.parse(localStorage.getItem("creatorInfo"));
-  } else {
+onMounted(async () => {
+  if (creatorStore.info.id) {
     creatorInfo.value = {
       ...creatorStore.info,
       creatorName: creatorStore.info.username,
     };
+  } else if (!creatorStore.info.id && store.cartItemsFailSuccess.length > 0) {
+    let name = await getInfluencerById(store.cartItemsFailSuccess[store.cartItemsFailSuccess.length - 1].source.id)
+    creatorInfo.value = {
+      creatorName: name.username
+    }
+  } else {
+    creatorInfo.value = await getCreatorUserName()
   }
 
   // uncmnt later
