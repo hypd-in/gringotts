@@ -3,7 +3,6 @@ import { getUTMParams, createCouponsMap } from "./helperMethods";
 
 export async function fetchUserInfo() {
   const store = useStore();
-
   try {
     let response = await $fetch(
       `${useRuntimeConfig().public.entityURL}/api/me`,
@@ -414,29 +413,29 @@ export async function applyCartCoupon(coupon_code) {
   }
 }
 
-export async function getInfluencerById(creator_id) {
-  try {
-    const response = await $fetch(
-      useRuntimeConfig().public.entityURL + "/api/app/influencer/" + creator_id,
-      {
-        method: "GET",
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-    const creator_info = { ...response.payload };
-    if (creator_info && !creator_info?.profile_image) {
-      creator_info["profile_image"] = {
-        src: defaultProfileImage(),
-      };
-    }
-    return { ...creator_info };
-  } catch (error) {
-    console.log("error: ", error);
-  }
-}
+// export async function getInfluencerById(creator_id) {
+//   try {
+//     const response = await $fetch(
+//       useRuntimeConfig().public.entityURL + "/api/app/influencer/" + creator_id,
+//       {
+//         method: "GET",
+//         credentials: "include",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+//     const creator_info = { ...response.payload };
+//     if (creator_info && !creator_info?.profile_image) {
+//       creator_info["profile_image"] = {
+//         src: defaultProfileImage(),
+//       };
+//     }
+//     return { ...creator_info };
+//   } catch (error) {
+//     console.log("error: ", error);
+//   }
+// }
 
 export async function logoutUser(redirectionPath) {
   console.log(useRuntimeConfig().public.entityURL + "/api/user/auth/logout");
@@ -515,7 +514,7 @@ export async function fetchWishlistedProducts() {
 }
 
 export async function fetchCartInfo(bypass) {
-  const router = useRouter();
+  let router = useRouter();
   const store = useStore();
   if (
     (router.currentRoute.value.query.isExpress || !store.user?.id) &&
@@ -597,7 +596,7 @@ function getRetailPrice(item, brandWiseCartItems) {
 }
 
 export async function updateUser() {
-  const router = useRouter();
+  let router = useRouter();
   const store = useStore();
   try {
     var response = await $fetch(
@@ -1057,5 +1056,58 @@ export async function getBrandInfoFromBrandId(brand_id) {
     }
   } catch (err) {
     console.log(err);
+  }
+}
+
+export async function getInfluencerById(creatorId) {
+  try {
+    const response = await $fetch(
+      `${useRuntimeConfig().public.entityURL}/api/app/influencer/${creatorId}`,
+      {
+        method: "GET",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    const creatorInfo = { ...response.payload };
+    if (creatorInfo && !creatorInfo?.profile_image) {
+      creatorInfo["profile_image"] = {
+        src: defaultProfileImage(),
+      };
+    }
+    return { ...creatorInfo };
+  } catch (error) {
+    console.log("error: ", error);
+  }
+}
+
+export async function logoutUser(redirectionPath) {
+  const router = useRouter();
+  var logoutConfirm = confirm("Are you sure, you want to log out from HYPD?");
+  if (!logoutConfirm) {
+    return;
+  } else {
+    try {
+      var response = await $fetch(
+        `${useRuntimeConfig().public.entityURL}/api/user/auth/logout`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        if (redirectionPath) {
+          await navigateTo(redirectionPath);
+        }
+        router.go();
+      }
+    } catch (err) {
+      console.log("Error logging out", err);
+    }
   }
 }

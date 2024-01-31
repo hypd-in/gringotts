@@ -159,7 +159,6 @@ const sendOTP = async () => {
       }
     );
     if (response.payload) {
-      console.log("Sending OTP", response.payload);
       generatingOTP.value = false;
       enterOTP.value = true;
       startTimer();
@@ -195,18 +194,19 @@ const confirmOTP = async (otpValue) => {
       submittingOTP.value = false;
       await fetchUserInfo();
       await fetchCartInfo();
-      // await fetchCartInfo();
-      // console.log(useCookie("creators"));
       if (redirect) {
         navigateTo({
           path: `${redirect}`,
           replace: true,
         });
       }
-      // else if (getCookie("creators")) {
-      //   let creator = Object.values(JSON.parse(getCookie("creators")));
-      //   router.replace(`/${creator[0].username}`);
-      // }
+      else if (useCookie("creators").value) {
+        let creator = Object.values(useCookie("creators").value);
+        navigateTo({
+          path: `${creator[0].username}`,
+          replace: true,
+        })
+      }
       else {
         navigateTo({ path: '/', replace: true })
       }

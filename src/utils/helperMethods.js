@@ -1,11 +1,44 @@
-import { getInfluencerById } from "./globalAPIs";
+import { getData, setData } from "nuxt-storage/local-storage";
 
-export function optimizeImage(image) {
-  return image;
+export function optimizeImage(imageURL, resolution) {
+  if (imageURL) {
+    const hostName = new URL(imageURL).hostname;
+    if (hostName == "d3d92s7oewgbjx.cloudfront.net") {
+      let newURL = imageURL.replace(hostName, useRuntimeConfig().public.cdn);
+      if (resolution) {
+        newURL = newURL + "?height=" + resolution;
+      }
+      return newURL;
+    }
+    if (hostName.endsWith("shopify.com")) {
+      let url = imageURL.split(".");
+      url[url.length - 2] = url[url.length - 2] + `_${resolution}x`;
+      return url.join(".");
+    } else {
+      return imageURL;
+    }
+  }
 }
 
-export function getReplacedSource(src) {
-  return src;
+export function getReplacedSource(source) {
+  let newhostName;
+  const filter = "/filters:strip_exif";
+  if (process.env.NODE_ENV != "production") {
+    newhostName = "cdn.getshitdone.in";
+  } else {
+    newhostName = "cdn.hypd.store";
+  }
+  let hostName = "d3d92s7oewgbjx.cloudfront.net";
+  if (source?.includes(hostName)) {
+    let newURL = source.replace(hostName, newhostName);
+
+    if (newURL.includes(filter)) {
+      newURL = newURL + "?height=" + "550";
+    }
+    return newURL;
+  } else {
+    return source;
+  }
 }
 
 export function getObjectLength(value) {
@@ -78,15 +111,10 @@ export function addingObserver(target, callback) {
 }
 
 export function getUTMParams() {
-  var params = new URLSearchParams();
-  var utmCookieParams = splitCookieValue(getCookie("utmParams"), "&", "=");
-  for (const key in utmCookieParams) {
-    if (utmCookieParams?.hasOwnProperty(key)) {
-      params.append(key, utmCookieParams[key]);
-    }
-  }
+  var params = useCookie("params");
   return params;
 }
+
 export function splitCookieValue(value, valueSeperator, keySeperator) {
   var obj = {};
   if (value && valueSeperator) {
@@ -111,26 +139,30 @@ export function getCookie(name) {
 }
 
 export async function getCreatorUserName(id) {
-  const route = useRoute();
+  const router = useRouter();
   const creatorStore = useCreatorStore();
 
   const creatorCookie = useCookie("creators");
+  console.log(creatorCookie, creatorStore.info);
   if (creatorCookie.value && creatorCookie.value[id]) {
     return creatorCookie.value[id].username;
   }
   if (creatorStore?.info?.username) {
     return creatorStore?.info?.username;
   }
-  if (route.params.creator_username) {
-    return route.params.creator_username;
+  if (router.currentRoute.value.params.creator_username) {
+    return router.currentRoute.value.params.creator_username;
   }
-  if (localStorage.getItem("creatorInfo") != null) {
-    var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
+  if (getData("creatorInfo") != null) {
+    var creatorInfo = { ...JSON.parse(getData("creatorInfo")) };
     return creatorInfo?.creatorName;
   }
   let payload = null;
 
-  let creator_id = id || route.params.creator_id || route.params.creatorId;
+  let creator_id =
+    id ||
+    router.currentRoute.value.params.creator_id ||
+    router.currentRoute.value.params.creatorId;
 
   if (id) {
     payload = await getInfluencerById(creator_id);

@@ -56,7 +56,7 @@ async function routeToAfflink() {
     }
   }).catch((error) => {
     alert("There was an error routing ")
-    console.log("Error fetching afflink redirection");
+    console.log("Error fetching afflink redirection", error);
   })
 }
 onMounted(async () => {

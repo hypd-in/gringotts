@@ -75,7 +75,7 @@
             <div class="specification" v-if="productInfo.specs?.length > 0">
               <h2>Product Specification</h2>
               <ul>
-                <li class="list" v-for="spec in productInfo?.specs" :key="spec.name">
+                <li class="list" v-for="spec in productInfo?.specs" :key="spec.value">
                   <span>{{ spec.name }} : {{ spec.value }}</span>
                 </li>
               </ul>
@@ -237,14 +237,14 @@ async function getProductOffers() {
   }
 }
 
-function shareProduct() {
+async function shareProduct() {
   var shareObject = {};
   if (product.info?.name) {
     shareObject["title"] = creator.info
       ? `${creator.info?.name} | ${product.info.name} | Hypd Store`
       : `${product.info?.name} | Hypd Store`;
   }
-  shareObject["url"] = `${proxy.$base}/${route.params.creator_username || getCreatorUserName(creator?.info?.id)
+  shareObject["url"] = `${config.public.base}/${route.params.creatorUsername || await getCreatorUserName(creator.info?.id)
     }/product/${product.info?.id}?title=${product.info?.name}`;
 
   if (navigator.canShare) {

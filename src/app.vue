@@ -6,7 +6,7 @@
 
 <script setup>
 
-import * as API from "@/utils/globalAPIs.js";
+// import * as API from "@/utils/globalAPIs.js";
 
 import { clearLocalCartItems } from "@/utils/cartMethods.js"
 
@@ -40,10 +40,10 @@ if (route.params.creatorUsername) {
 }
 
 onBeforeMount(async () => {
-  await API.fetchUserInfo();
+  await fetchUserInfo();
   if (store.user.id) {
     clearLocalCartItems();
-    await API.fetchCartInfo();
+    await fetchCartInfo();
 
     // tracking.trackingUser();
   } else {
@@ -53,14 +53,14 @@ onBeforeMount(async () => {
   }
 
   // Calling Coupons API to fetch Brands for Hot selling Page
-  await API.fetchAllCoupons();
+  await fetchAllCoupons();
   // created
   document.addEventListener("visibilitychange", async () => {
     if (
       document.visibilityState == "visible" &&
       route.query.isExpress
     ) {
-      await API.fetchCartInfo();
+      await fetchCartInfo();
     }
   });
 })

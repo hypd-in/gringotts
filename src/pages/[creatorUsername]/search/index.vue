@@ -241,7 +241,7 @@ async function getCategoryInfoById(subCollection, collectionId) {
 }
 function unobserveTarget() {
   if (observer.value && target.value) {
-    observer.unobserve(target.value);
+    observer.value.unobserve(target.value);
   }
 }
 
@@ -326,7 +326,7 @@ h2 {
 
 .search-section {
   display: none;
-  padding: 16px;
+  padding: 12px 16px;
   box-sizing: border-box;
 }
 

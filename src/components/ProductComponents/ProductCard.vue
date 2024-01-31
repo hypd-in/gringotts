@@ -63,6 +63,7 @@ const props = defineProps({
   showButton: Boolean,
   showOffers: Boolean,
   isAffiliate: Boolean,
+  creator: Object,
 });
 const emit = defineEmits(["buttonAction"]);
 const router = useRouter();
@@ -212,10 +213,24 @@ const goToProduct = computed(() => {
         title: props.itemInfo?.name,
       },
     }
-  } else {
+  } else if (props.creator) {
     obj = {
       name: "CreatorProduct",
-      params: { id: props.itemInfo?.id },
+      params: {
+        id: props.itemInfo?.id,
+        creatorUsername: props.creator?.username,
+      },
+      query: {
+        title: props.itemInfo?.name,
+      },
+    }
+  }
+  else {
+    obj = {
+      name: "CreatorProduct",
+      params: {
+        id: props.itemInfo?.id,
+      },
       query: {
         title: props.itemInfo?.name,
       },

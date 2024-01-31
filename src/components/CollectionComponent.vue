@@ -8,7 +8,7 @@
                 alt="" :key="`default_image_${index}`" />
         </div>
         <div class="collection-name">{{ item.name }}</div>
-        <div class="collection-overlay" @click="goToManageCollection"></div>
+        <div class="collection-overlay" @click="goToManageCollection(item)"></div>
     </div>
 </template>
   
@@ -20,26 +20,29 @@ const router = useRouter()
 const props = defineProps(["item"])
 const creatorStore = useCreatorStore()
 
-function goToManageCollection() {
-    console.log(props.item, "I")
-    if (props.item.collection_type == "affiliate") {
+function goToManageCollection(item) {
+    if (item.collection_type == "affiliate") {
         router.push({
             name: "AffiliateCollection",
             params: {
-                collectionId: props.item.id,
+                creatorUsername: creatorStore?.info?.username,
+                collectionId: item.id,
             },
             query: {
-                title: props.item.name,
+                title: item.name,
             },
         });
     } else {
         router.push({
             name: "CreatorCollection",
             params: {
-                collectionId: props.item.id,
+                id: item.id,
+                creatorUsername: creatorStore?.info?.username,
+                name: item.slug,
+                collectionId: item.id,
             },
             query: {
-                title: props.item.name,
+                title: item.name,
             },
         });
     }

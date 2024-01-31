@@ -24,7 +24,7 @@
       </button>
     </div>
 
-    <div @click="goToCreatorStore" v-if="creatorInfo" class="info-container-wrapper creator-info-wrapper">
+    <div @click="goToCreatorStore" v-if="creatorInfo?.id" class="info-container-wrapper creator-info-wrapper">
       <ImageFrame v-if="creatorImage" class="image" :src="creatorImage" />
       <div class="info-container">
         <span id="info-tag">Curated for you by</span>

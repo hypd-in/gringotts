@@ -22,9 +22,8 @@
 </template>
 
 <script setup>
-import { fetchCartInfo } from "@/utils/globalAPIs";
+import { fetchCartInfo, getInfluencerById } from "@/utils/globalAPIs";
 import { getCreatorUserName } from "@/utils/helperMethods"
-import { getInfluencerById } from "@/utils/globalAPIs";
 
 // import {
 //   trackingClickEvent,

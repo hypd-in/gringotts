@@ -172,6 +172,7 @@ h2 span {
   justify-content: center;
   gap: 6px;
   height: calc(100% - 40px);
+  text-align: center;
 }
 
 h5 {

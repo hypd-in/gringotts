@@ -6,6 +6,11 @@ export const useStore = defineStore("store", () => {
   const cartInfo = ref({});
   const cartItems = ref({});
   const addresses = ref({});
+  const orders = ref({
+    userOrders: [],
+    page: 0,
+  });
+  const orderDetails = ref({});
   const exploreCurations = ref({
     curations: [],
     categoryCurations: {},
@@ -109,6 +114,18 @@ export const useStore = defineStore("store", () => {
     addresses.value = { ...userAddresses };
   }
 
+  function saveUserOrders(data) {
+    orders.value.userOrders = [...orders.value.userOrders, ...data];
+  }
+
+  function updateOrdersPageCount(newPage) {
+    orders.value.page = newPage;
+  }
+
+  function saveOrderDetails(obj) {
+    orderDetails.value = { ...obj };
+  }
+
   function saveExploreCurations(newCurations) {
     exploreCurations.value.curations = [
       ...exploreCurations.value.curations,
@@ -170,6 +187,8 @@ export const useStore = defineStore("store", () => {
     cartInfo,
     cartItems,
     addresses,
+    orders,
+    orderDetails,
     exploreCurations,
     searchProducts,
     couponsMap,
@@ -202,6 +221,9 @@ export const useStore = defineStore("store", () => {
     saveCartItems,
     updateCartInfo,
     saveUserAddresses,
+    saveUserOrders,
+    saveOrderDetails,
+    updateOrdersPageCount,
     saveExploreCurations,
     saveExploreCategoryCurations,
     updateExplorePageCount,

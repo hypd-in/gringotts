@@ -46,7 +46,6 @@
 </template>
 
 <script setup>
-
 const props = defineProps({
   address: Object,
 });
