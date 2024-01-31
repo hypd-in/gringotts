@@ -124,7 +124,7 @@ async function confirmOTP() {
   try {
     var response = await $fetch(runtimeConfig.public.entityURL + "/api/customer/otp/confirm?isWeb=true", {
       method: "POST",
-      withCredentials: true,
+      credentials:'include',
       headers: {
         "Content-Type": "application/json",
       },
@@ -136,7 +136,8 @@ async function confirmOTP() {
         otp: otpInputs.value?.otp,
       },
     });
-    if (response.data.payload) {
+
+    if (response?.payload) {
       submittingOTP.value = false;
       emit("verifyOTP");
       await fetchUserInfo();
@@ -146,7 +147,7 @@ async function confirmOTP() {
       await addLocalStorageItemsToCart();
     }
   } catch (err) {
-    otpInputs.value.clearOTP();
+    otpInputs.value?.clearOTP();
     submittingOTP.value = false;
     console.log("Error verifying OTP", err);
   }
@@ -158,6 +159,9 @@ function goBack() {
 </script>
   
 <style scoped>
+.bottom-sheet-container{
+  z-index: 55 !important;
+}
 .otp-popup {
   max-width: 420px;
 }

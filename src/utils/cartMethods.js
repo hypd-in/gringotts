@@ -45,8 +45,8 @@ async function fetchItemInfo(id) {
       },
     });
 
-    if (response.data.payload) {
-      return response.data.payload;
+    if (response.payload) {
+      return response.payload;
     } else {
       return null;
     }
@@ -160,6 +160,7 @@ export async function updateCartItemQuantity(key, updateQuantity) {
 
 export async function addLocalStorageItemsToCart() {
   var localCartItems = localStorage.getItem("cart_items");
+  const store = useStore()
   if (!localCartItems) {
     return;
   }
@@ -207,6 +208,7 @@ export async function addItemToCart(itemInfo) {
 
 export async function getCartItemsFromLocalStorage() {
   var cartItems = localStorage.getItem("cart_items");
+  const store = useStore()
   if (!cartItems) {
     return;
   }
@@ -237,10 +239,11 @@ export async function getCartItemsFromLocalStorage() {
   imitateCartInfo(items);
   saveBrandWiseCart(items);
   calculatingShippingChargesForLocalItems();
-  store.dispatch("saveCartItems", cartItemsObject);
+  store.saveCartItems( cartItemsObject);
 }
 
 export function imitateCartInfo(items, type) {
+  const store = useStore()
   var cartInfo = {
     items: [],
     coupon_value: null,

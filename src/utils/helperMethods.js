@@ -143,7 +143,6 @@ export async function getCreatorUserName(id) {
   const creatorStore = useCreatorStore();
 
   const creatorCookie = useCookie("creators");
-  console.log(creatorCookie, creatorStore.info);
   if (creatorCookie.value && creatorCookie.value[id]) {
     return creatorCookie.value[id].username;
   }
