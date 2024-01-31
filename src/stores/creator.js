@@ -17,8 +17,6 @@ export const useCreatorStore = defineStore("creator", () => {
 
     // cookie = { ...cookie.value };
 
-    console.log(cookie.value, "COck");
-
     // expiry
     const d = new Date();
     d.setTime(d.getTime() + 365 * 24 * 60 * 60 * 1000);
