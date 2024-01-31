@@ -437,36 +437,6 @@ export async function applyCartCoupon(coupon_code) {
 //   }
 // }
 
-export async function logoutUser(redirectionPath) {
-  console.log(useRuntimeConfig().public.entityURL + "/api/user/auth/logout");
-  const router = useRouter();
-  var logoutConfirm = confirm("Are you sure, you want to log out from HYPD?");
-  if (!logoutConfirm) {
-    return;
-  } else {
-    try {
-      var response = await $fetch(
-        useRuntimeConfig().public.entityURL + "/api/user/auth/logout",
-        {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (response) {
-        if (redirectionPath) {
-          router.push(redirectionPath);
-        }
-        router.go();
-      }
-    } catch (err) {
-      console.log("Error logging out", err);
-    }
-  }
-}
-
 export async function getGiftInfo() {
   try {
     var response = await $fetch(
