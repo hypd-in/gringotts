@@ -82,7 +82,7 @@ onMounted(() => {
   row-gap: 16px;
   padding-bottom: 20px;
   justify-items: center;
-  max-width: 980px;
+  max-width: 1180px;
   margin: 16px 0 0 0;
   width: 100dvw;
 }
