@@ -16,31 +16,32 @@ export default defineNuxtConfig({
   srcDir: "src",
   runtimeConfig: {
     public:
-      process.env.NODE_ENV !== "production"
-        ? {
-            catalogURL: "https://catalogv2.getshitdone.in",
-            entityURL: "https://entity.getshitdone.in",
-            cmsURL: "https://cms.getshitdone.in",
-            orderURL: "https://orderv2.getshitdone.in",
-            couponURL: "https://coupon.getshitdone.in",
-            cdn: "cdn.getshitdone.in",
-            base: "https://hypdstore.getshitdone.in",
-            checkoutURL: "https://checkout.getshitdone.in",
-            gokwik_env: "sandbox",
-            gokwick_mid: "3mt5u7iijbky068wbs",
-          }
-        : {
-            catalogURL: "https://catalog2.hypd.store",
-            entityURL: "https://entity.hypd.store",
-            cmsURL: "https://cms.hypd.store",
-            orderURL: "https://orderv2.hypd.store",
-            couponURL: "https://coupon.hypd.store",
-            cdn: "cdn.hypd.store",
-            base: "https://www.hypd.store",
-            checkoutURL: "https://checkout.hypd.store",
-            gokwik_env: "production",
-            gokwick_mid: "3mt5u7iijbky068wba",
-          },
+      // process.env.NODE_ENV !== "production"
+      //   ?
+      {
+        catalogURL: "https://catalogv2.getshitdone.in",
+        entityURL: "https://entity.getshitdone.in",
+        cmsURL: "https://cms.getshitdone.in",
+        orderURL: "https://orderv2.getshitdone.in",
+        couponURL: "https://coupon.getshitdone.in",
+        cdn: "cdn.getshitdone.in",
+        base: "https://hypdstore.getshitdone.in",
+        checkoutURL: "https://checkout.getshitdone.in",
+        gokwik_env: "sandbox",
+        gokwick_mid: "3mt5u7iijbky068wbs",
+      },
+    // : {
+    //     catalogURL: "https://catalog2.hypd.store",
+    //     entityURL: "https://entity.hypd.store",
+    //     cmsURL: "https://cms.hypd.store",
+    //     orderURL: "https://orderv2.hypd.store",
+    //     couponURL: "https://coupon.hypd.store",
+    //     cdn: "cdn.hypd.store",
+    //     base: "https://www.hypd.store",
+    //     checkoutURL: "https://checkout.hypd.store",
+    //     gokwik_env: "production",
+    //     gokwick_mid: "3mt5u7iijbky068wba",
+    //   },
   },
   nitro: {
     preset: "node-cluster",
