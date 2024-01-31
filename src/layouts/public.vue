@@ -21,7 +21,7 @@ import Footer from "~/components/Footer.vue";
   }
 
   .page-content {
-    min-height: calc(80dvh - 58px) !important;
+    min-height: calc(80dvh - 48px) !important;
   }
 }
 

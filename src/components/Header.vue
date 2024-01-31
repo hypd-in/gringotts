@@ -194,6 +194,14 @@ const pageTitle = computed(() => {
       return "Terms & Conditions"
     }
 
+    case 'CreatorStore': {
+      if (creatorStore.info?.id) {
+        return creatorStore.info?.name;
+      } else {
+        return "Creator Store"
+      }
+    }
+
     default: {
       return null;
     }

@@ -110,7 +110,7 @@ onMounted(async () => {
   background: #eeeeee;
   padding: 12px 16px;
   width: 100%;
-  height: 56px;
+  height: 48px;
   box-sizing: border-box;
 }
 

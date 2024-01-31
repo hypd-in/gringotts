@@ -321,6 +321,7 @@ export async function applyExpressCoupon(coupon_code) {
 
 export async function addItemToWishlist(itemInfo) {
   const store = useStore();
+  const creatorStore = useCreatorStore();
   var formData = {
     user_id: store.user.id,
     wishlisted_catalog: {
@@ -329,9 +330,9 @@ export async function addItemToWishlist(itemInfo) {
   };
   if (itemInfo?.source) {
     formData.wishlisted_catalog.source = { ...itemInfo?.source };
-  } else if (store.creator.info?.id) {
+  } else if (creatorStore.info?.id) {
     formData.wishlisted_catalog.source = {
-      id: store.creator?.info?.id,
+      id: creatorStore?.info?.id,
       type: "creator_store",
     };
   }
