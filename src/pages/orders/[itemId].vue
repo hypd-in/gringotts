@@ -168,7 +168,7 @@ const checkOrderDate = computed(() => {
 });
 
 const showReorder = computed(() => {
-  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value) || ['cancel-brand', 'cancel-user'].includes(itemStatus.value.code)) {
+  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value) || ['cancel-brand', 'cancel-user'].includes(itemStatus.value?.code)) {
     return true;
   } else {
     return false;
