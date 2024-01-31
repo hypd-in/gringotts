@@ -1,4 +1,4 @@
-import { getData, setData } from "nuxt-storage/local-storage";
+// import { getData, setData } from "nuxt-storage/local-storage";
 
 export function optimizeImage(imageURL, resolution) {
   if (imageURL) {
@@ -152,8 +152,8 @@ export async function getCreatorUserName(id) {
   if (router.currentRoute.value.params.creator_username) {
     return router.currentRoute.value.params.creator_username;
   }
-  if (getData("creatorInfo") != null) {
-    var creatorInfo = { ...JSON.parse(getData("creatorInfo")) };
+  if (localStorage.getItem("creatorInfo") != null) {
+    var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
     return creatorInfo?.creatorName;
   }
   let payload = null;
