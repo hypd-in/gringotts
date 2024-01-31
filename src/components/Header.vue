@@ -215,7 +215,7 @@ function goToExplore() {
 function openDropDown() {
   if (!store.user?.id) {
     navigateTo({
-      name: "login",
+      name: "Login",
       query: {
         redirection_url: route.fullPath,
       },

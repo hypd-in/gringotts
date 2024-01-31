@@ -35,13 +35,14 @@
 </template>
 
 <script setup>
-// import { logoutUser } from "@/API/APIs";
+import { logoutUser } from "@/utils/globalAPIs";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue"
 
 const emit = defineEmits(["close"]);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
+const creator = useCreatorStore()
 
 const fullName = computed(() => {
   return store.user.full_name;
@@ -113,12 +114,12 @@ function goToLogin() {
 
 function routeToPath(pathName) {
   if (pathName == "logOut") {
-    // logoutUser({
-    //   name: "creator_store",
-    //   params: {
-    //     creator_username: store.creator.info?.username || "hypd_store",
-    //   },
-    // });
+    logoutUser({
+      name: "CreatorStore",
+      params: {
+        creatorUsername: creator.info?.username || "hypd_store",
+      },
+    });
     return;
   } else if(pathName == 'MyAddresses'){
     toggleAddressComponent();
