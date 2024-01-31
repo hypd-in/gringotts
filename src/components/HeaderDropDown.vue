@@ -41,6 +41,7 @@ const emit = defineEmits(["close"]);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
+const creator = useCreatorStore()
 
 const fullName = computed(() => {
   return store.user.full_name;

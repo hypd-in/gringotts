@@ -17,10 +17,13 @@
 <script setup>
 import { defineProps } from 'vue';
 
+
 const props = defineProps(["defaultText", "processingText", "loading", "disabledState"])
 
+const emit = defineEmits(["submit"])
+
 function submit() {
-    this.$emit("submit");
+    emit("submit");
 }
 
 
