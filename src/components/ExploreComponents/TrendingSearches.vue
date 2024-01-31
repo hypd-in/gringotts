@@ -146,7 +146,6 @@ const trendingSearches = ref([
 ])
 
 function goToThisSearchQuery(query) {
-  console.log(query);
   emits("goToSearch", query)
 }
 

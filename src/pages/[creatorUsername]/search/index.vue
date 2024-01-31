@@ -59,13 +59,14 @@ const page = ref(0);
 const exploreCurations = ref([]);
 const categoryCatalogCuration = ref({});
 const searchQuery = ref("");
+const creatorStore = useCreatorStore();
 
 const target = ref(null);
 const observer = ref(null);
 const fetchingSearchResults = ref(false);
 // const oosItems = ref([]);
 
-onMounted(async () => {
+onMounted(() => {
   if (route.query.query == "") {
     store.resetSearchProducts();
   } else if (route.query.query !== "") {
@@ -75,22 +76,27 @@ onMounted(async () => {
     observer.value = addingObserver(target.value, callback);
   }
 });
-// onBeforeRouteLeave((to, from) => {
-//   if (
-//     from.query.query?.length > 0 &&
-//     !["CreatorProduct", "HypdExplore"].includes(to.name)
-//   ) {
-//     return {
-//       name: "HypdExplore",
-//       params: from.params,
-//       query: {
-//         query: "",
-//       },
-//     };
-//   } else {
-//     return true;
-//   }
-// });
+
+useSeoMeta({
+  title: `HYPD Explore | ${creatorStore.info?.name} `
+})
+onBeforeRouteLeave((to, from) => {
+  if (
+    from.query.query?.length > 0 &&
+    !["CreatorProduct", "HypdExplore", "CartItems"].includes(to.name)
+  ) {
+    return {
+      name: "HypdExplore",
+      params: from.params,
+      query: {
+        query: "",
+      },
+    };
+  } else {
+    return true;
+  }
+});
+
 // onBeforeRouteUpdate(async (to, from) => {
 //   if (to.query.query != from.query.query) {
 //     searchQuery.value = to.query.query;
@@ -100,6 +106,16 @@ onMounted(async () => {
 //     }
 //   }
 // });
+
+onUpdated(async () => {
+  if (route.query.query != searchQuery.value) {
+    searchQuery.value = route.query.query;
+    if (route.query.query?.trim() != '') {
+      store.resetSearchProducts();
+      await searchInput();
+    }
+  }
+})
 
 async function callback(entries) {
   entries.forEach(async (entry) => {
@@ -130,7 +146,7 @@ async function search(query) {
       },
       replace: true,
     });
-    // await searchInput();
+    await searchInput();
   }
 }
 
@@ -168,7 +184,7 @@ async function searchInput() {
       fetchingSearchResults.value = false;
     } else {
       if (observer.value && target.value) {
-        // unobserveTarget();
+        unobserveTarget();
       }
       fetchingSearchResults.value = false;
     }
@@ -177,10 +193,10 @@ async function searchInput() {
   })
 }
 
-function clearInput() {
+async function clearInput() {
   searchQuery.value = "";
   store.resetExploreCurations();
-  navigateTo({
+  await navigateTo({
     name: "HypdExplore",
     params: {
       creatorUsername: route.params.creatorUsername,
@@ -192,8 +208,8 @@ function clearInput() {
   });
 }
 
-function goBack() {
-  navigateTo({
+async function goBack() {
+  await navigateTo({
     name: "CreatorStore",
     params: { creatorUsername: route.params.creator_username },
     replace: true,
@@ -225,7 +241,7 @@ async function getCategoryInfoById(subCollection, collectionId) {
 }
 function unobserveTarget() {
   if (observer.value && target.value) {
-    observer.unobserve(target.value);
+    observer.value.unobserve(target.value);
   }
 }
 
@@ -274,7 +290,7 @@ async function fetchExploreCurations() {
     position: fixed;
     top: 0;
     left: 0;
-    z-index: 32;
+    z-index: 72;
     background: var(--plain-white, #fff);
     width: calc(100dvw);
   }
@@ -286,14 +302,6 @@ async function fetchExploreCurations() {
   .explore-wrapper {
     margin: 0 auto !important;
   }
-
-  .trending-searches {
-    padding: 0 0 16px !important;
-  }
-}
-
-.trending-searches {
-  padding: 16px 0;
 }
 
 .title {
@@ -318,7 +326,7 @@ h2 {
 
 .search-section {
   display: none;
-  padding: 16px;
+  padding: 12px 16px;
   box-sizing: border-box;
 }
 

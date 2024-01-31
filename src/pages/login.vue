@@ -16,26 +16,26 @@
 
           <section class="line-2">
             <div class="prev-1">
-              <img src="../assets/LoginView/2.png" alt="" />
+              <img src="../assets/login/2.png" alt="" />
               <div>
                 <div class="prev-3">
-                  <img src="../assets/LoginView/1.png" alt="" />
+                  <img src="../assets/login/1.png" alt="" />
                 </div>
               </div>
             </div>
             <div class="prev-2">
               <div class="circle">
                 <div class="outer">
-                  <img src="../assets/LoginView/Star1.svg" alt="" />
+                  <img src="../assets/login/Star1.svg" alt="" />
                 </div>
                 <div class="inner">
-                  <img src="../assets/LoginView/Star2.svg" alt="" />
+                  <img src="../assets/login/Star2.svg" alt="" />
                 </div>
                 <div class="center">
-                  <img src="../assets/LoginView/creator-store.svg" alt="" />
+                  <img src="../assets/login/creator-store.svg" alt="" />
                 </div>
               </div>
-              <img src="../assets/LoginView/3.png" alt="" />
+              <img src="../assets/login/3.png" alt="" />
             </div>
           </section>
           <div class="shop-text-icon" style="margin: 24px 0 24px auto">
@@ -113,7 +113,7 @@ import { fetchUserInfo, fetchCartInfo } from "~/utils/globalAPIs";
 import OTP from "~/components/OtpInput.vue";
 import SubmitButton from "~/components/SubmitButton.vue";
 import Footer from "~/components/Footer.vue";
-// import { returnMaxLength, returnNumber } from "~/Helpers/helperMethods";
+import { returnMaxLength, returnNumber } from "~/utils/helperMethods";
 
 const phone_no = ref("");
 const config = useRuntimeConfig();
@@ -159,7 +159,6 @@ const sendOTP = async () => {
       }
     );
     if (response.payload) {
-      console.log("Sending OTP", response.payload);
       generatingOTP.value = false;
       enterOTP.value = true;
       startTimer();
@@ -195,18 +194,19 @@ const confirmOTP = async (otpValue) => {
       submittingOTP.value = false;
       await fetchUserInfo();
       await fetchCartInfo();
-      // await fetchCartInfo();
-      // console.log(useCookie("creators"));
       if (redirect) {
         navigateTo({
           path: `${redirect}`,
           replace: true,
         });
       }
-      // else if (getCookie("creators")) {
-      //   let creator = Object.values(JSON.parse(getCookie("creators")));
-      //   router.replace(`/${creator[0].username}`);
-      // }
+      else if (useCookie("creators").value) {
+        let creator = Object.values(useCookie("creators").value);
+        navigateTo({
+          path: `${creator[0].username}`,
+          replace: true,
+        })
+      }
       else {
         navigateTo({ path: '/', replace: true })
       }

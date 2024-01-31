@@ -141,10 +141,10 @@ async function goToBxgyProducts(offer) {
 }
 async function goToBrandProfile() {
   await navigateTo({
-    name: "creatorBrandProfile",
+    name: "BrandProfile",
     params: {
       creatorUsername: creatorStore?.info?.username,
-      name: productStore?.info?.brand_info?.username,
+      brandUsername: productStore?.info?.brand_info?.username,
     },
   });
 }

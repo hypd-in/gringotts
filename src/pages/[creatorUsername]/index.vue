@@ -1,16 +1,14 @@
 <template>
     <div class="creator-store">
         <div v-show="isLoading" class="page-loader">
-            <img src="@/assets/img/loaders/H..png" alt="" />
+            <img src="@/assets/loaders/H..png" alt="" />
         </div>
         <div id="creator-store-section">
-
             <div id="creator-store-section-hide">
                 <div v-if="noUserFound">
                     <div class="no-user">
                         No creator was found with username '{{ username }}'.
                     </div>
-                    <!-- <FooterHypd /> -->
                 </div>
                 <div v-if="creator">
                     <div class="creator-info">
@@ -81,12 +79,11 @@
                         </div>
                     </div>
                     <!-- If BOTD Exists -->
-
                     <div class="sticky-container">
                         <div v-if="botdImages">
                             <div class="botd ban-desk">
-                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000" :touchDrag="true"
-                                    :pauseAutoplayOnHover="true">
+                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000"
+                                    :touchDrag="true" :pauseAutoplayOnHover="true">
                                     <slide v-for="(botdImage, index) in botdImages" :key="index">
                                         <div style="postion: relative">
                                             <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
@@ -97,8 +94,8 @@
                             </div>
 
                             <div class="botd ban-mob">
-                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000" :touchDrag="true"
-                                    :pauseAutoplayOnHover="true" :style="'height: calc(100%)'">
+                                <carousel class="carousel" v-if="botdImages" :items-to-show="1" :autoplay="2000"
+                                    :touchDrag="true" :pauseAutoplayOnHover="true" :style="'height: calc(100%)'">
                                     <slide v-for="(botdImage, index) in botdImages" :key="index">
                                         <div style="postion: relative">
                                             <img :src="getReplacedSource(botdImage.src)" alt="" class="botdImg"
@@ -111,19 +108,21 @@
 
                         <div class="creator-contents">
                             <div :class="{
-                                'active-creator-contents': route.name == 'CreatorCollections',
-                            }" @click="changeTab('CreatorCollections')">
+                                'active-creator-contents': route.query.active == 'collections',
+                            }" @click="changeTab('collections')">
                                 Collections
                             </div>
-                            <div :class="{ 'active-creator-contents': route.name == 'CreatorSpotlight' }"
-                                @click="changeTab('CreatorSpotlight')">
+                            <div :class="{
+                                'active-creator-contents': route.query.active == 'spotlight',
+                            }" @click="changeTab('spotlight')">
                                 Spotlight
                             </div>
                         </div>
                     </div>
 
                     <!-- pages -->
-                    <NuxtPage />
+                    <collections v-if="route.query.active == 'collections'" />
+                    <spotlight v-if="route.query.active == 'spotlight'" />
 
                     <!-- Funding news -->
                     <div class="funding-news">
@@ -588,25 +587,33 @@
                 </div>
             </div>
         </div>
-
     </div>
 </template>
-  
-  
+
 <script setup>
+definePageMeta({
+    name: "CreatorStore",
+    layout: "public",
+});
 // import * as tracking from "../eventTracking";
-import { getReplacedSource, defaultProfileImage, optimizeImage } from "~/utils/helperMethods";
+import {
+    getReplacedSource,
+    defaultProfileImage,
+    optimizeImage,
+} from "~/utils/helperMethods";
 
-import 'vue3-carousel/dist/carousel.css'
-import { Carousel, Slide, Pagination, Navigation } from 'vue3-carousel'
+import "vue3-carousel/dist/carousel.css";
+import { Carousel, Slide } from "vue3-carousel";
 
+import collections from "./collections.vue";
+import spotlight from "./spotlight.vue";
 
 const route = useRoute();
 const router = useRouter();
 const runtimeConfig = useRuntimeConfig();
 const creatorStore = useCreatorStore();
 
-const creator = ref({})
+const creator = ref({});
 
 if (route.params.creatorUsername) {
     const { data, pending: loadingCreatorInfo } = await useFetch(
@@ -624,8 +631,13 @@ if (route.params.creatorUsername) {
     creatorStore.saveCreatorInfo(data?.value?.payload);
 }
 
-const props = defineProps(["isDesktop", "wishlisted_items", "user", "cart_items"])
-const emits = defineEmits(["loadingPage"])
+const props = defineProps([
+    "isDesktop",
+    "wishlisted_items",
+    "user",
+    "cart_items",
+]);
+const emits = defineEmits(["loadingPage"]);
 
 useSeoMeta({
     title: `${creatorStore.info.name} | HYPD`,
@@ -637,22 +649,20 @@ useSeoMeta({
     twitterCard: "summary_large_image",
 });
 
-const isLoading = ref(false)
-const username = ref(null)
-const user_following = ref(null)
-const noUserFound = ref(false)
-const creatorFollowers = ref(0)
-const botdImages = ref(null)
-const botd = ref(true)
-const botdData = ref([])
-const current_slide = ref(0)
-
+const isLoading = ref(false);
+const username = ref(null);
+const user_following = ref(null);
+const noUserFound = ref(false);
+const creatorFollowers = ref(0);
+const botdImages = ref(null);
+const botd = ref(true);
+const botdData = ref([]);
+const current_slide = ref(0);
 
 // computed
 const creatorProfilePic = computed(() => {
     return optimizeImage(creator.value?.profile_image?.src, 350);
-})
-
+});
 
 function readMore() {
     window.open(
@@ -660,12 +670,10 @@ function readMore() {
     );
 }
 
-
 function redirectToBWB(path) {
     let url = path.split(this.$base)[1];
     window.open(`${this.$base}/${creator.value.username}${url}`, "_self");
 }
-
 
 // Checking Device Width while re-sizing to change BOTD Image
 function checkDevice() {
@@ -705,7 +713,7 @@ function checkDevice() {
     }, 500);
 
     // updating creator here, so all the botd calc are done and bio does not flicker.
-    creator.value = { ...creatorStore.info }
+    creator.value = { ...creatorStore.info };
 }
 
 function updateCarousel(payload) {
@@ -713,7 +721,14 @@ function updateCarousel(payload) {
 }
 
 function changeTab(options) {
-    router.push({ name: options })
+
+    router.replace({
+        name: "CreatorStore", params: {
+            creatorUsername: route.params.creatorUsername
+        }, query: {
+            active: options
+        }
+    });
     document.getElementById("creator-store-section").scrollTop = {
         top: 0,
         behavior: "smooth",
@@ -723,20 +738,22 @@ function changeTab(options) {
 function follow_author() {
     if (props.user) {
         if (!creator.value.is_followed_by_user) {
-            this.axios({
-                method: "POST",
-                url: this.$entityURL + "/api/app/customer/influencer/follow",
-                withCredentials: true,
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                data: {
-                    customer_id: props.user.customer_id,
-                    id: creator.value.id,
-                },
-            })
+            $fetch(
+                runtimeConfig.public.entityURL + "/api/app/customer/influencer/follow",
+                {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: {
+                        customer_id: props.user.customer_id,
+                        id: creator.value.id,
+                    },
+                }
+            )
                 .then((response) => {
-                    if (response.data.payload) {
+                    if (response.payload) {
                         creator.value["is_followed_by_user"] = true;
                         user_following.value = true;
 
@@ -756,22 +773,24 @@ function follow_author() {
         }
     }
 }
-function unfollow_author() {
+async function unfollow_author() {
     if (creator.value.is_followed_by_user) {
-        this.axios({
-            method: "POST",
-            url: this.$entityURL + "/api/app/customer/influencer/unfollow",
-            withCredentials: true,
-            headers: {
-                "Content-Type": "application/json",
-            },
-            data: {
-                customer_id: props.user.customer_id,
-                id: creator.value.id,
-            },
-        })
+        await $fetch(
+            runtimeConfig.public.entityURL + "/api/app/customer/influencer/unfollow",
+            {
+                method: "POST",
+                credentials: "include",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: {
+                    customer_id: props.user.customer_id,
+                    id: creator.value.id,
+                },
+            }
+        )
             .then((response) => {
-                if (response.data.payload) {
+                if (response.payload) {
                     creator.value["is_followed_by_user"] = false;
                     user_following.value = false;
                     creatorFollowers.value -= 1;
@@ -783,21 +802,23 @@ function unfollow_author() {
 async function getBOTD() {
     emits("loadingPage", true);
     try {
-        let response = await $fetch(runtimeConfig.public.entityURL + "/api/app/bwb", {
-            method: "GET",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-        })
-        response = response.payload
+        let response = await $fetch(
+            runtimeConfig.public.entityURL + "/api/app/bwb",
+            {
+                method: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                credentials: "include",
+            }
+        );
+        response = response.payload;
         if (response) {
             botdData.value = response;
         }
         checkDevice();
-    }
-    catch (err) {
-        console.log(err)
+    } catch (err) {
+        console.log(err);
     } finally {
         setTimeout(() => {
             emits("loadingPage", false);
@@ -806,18 +827,20 @@ async function getBOTD() {
 }
 
 onMounted(() => {
+    router.replace({
+        name: "CreatorStore", params: {
+            creatorUsername: route.params.creatorUsername
+        }, query: {
+            active: 'collections'
+        }
+    });
     // Attaching Listener on while component is mounted
     window.addEventListener("resize", checkDevice);
-})
+});
 
 onBeforeMount(() => {
     getBOTD();
-})
-
-onBeforeUnmount(() => {
-    clearInterval(startTimer.value);
-})
-
+});
 </script>
 <style scoped>
 /* funding news css */
@@ -1384,7 +1407,7 @@ onBeforeUnmount(() => {
     cursor: pointer;
 }
 
-section.carousel :deep(ol){
+section.carousel :deep(ol) {
     margin: 0 !important;
 }
 
@@ -1407,7 +1430,6 @@ section.carousel :deep(ol){
 }
 
 @media screen and (max-width: 480px) {
-
     .botd {
         /* position: relative; */
         margin: 18px 0 0;
@@ -1545,6 +1567,3 @@ section.carousel :deep(ol){
     overflow: hidden;
 }
 </style>
-  
-  
-  

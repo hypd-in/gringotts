@@ -1,13 +1,14 @@
 <template>
     <!-- drafted item class for drafted -->
     <div class="collection-wrapper">
-        <ImageFrame v-if="item.image" :src="optimizeImage(item.image.src, 350)" :alt="item.name + ' by ' + creatorStore.info.name" />
+        <ImageFrame v-if="item.image" :src="optimizeImage(item.image.src, 350)"
+            :alt="item.name + ' by ' + creatorStore.info.name" />
         <div v-else-if="item.default_image" class="default-image">
             <img class="catalog-image" v-for="(image, index) in item.default_image" :src="optimizeImage(image.src, 350)"
                 alt="" :key="`default_image_${index}`" />
         </div>
         <div class="collection-name">{{ item.name }}</div>
-        <div class="collection-overlay" @click="goToManageCollection"></div>
+        <div class="collection-overlay" @click="goToManageCollection(item)"></div>
     </div>
 </template>
   
@@ -19,31 +20,29 @@ const router = useRouter()
 const props = defineProps(["item"])
 const creatorStore = useCreatorStore()
 
-function goToManageCollection() {
-    if (this.item.collection_type == "affiliate") {
+function goToManageCollection(item) {
+    if (item.collection_type == "affiliate") {
         router.push({
-            name: "CreatorAffiliateCollection",
+            name: "AffiliateCollection",
             params: {
-                creator_username: this.creator?.creator_username,
-                collection_id: this.item.id,
-                collection: JSON.stringify(this.item),
+                creatorUsername: creatorStore?.info?.username,
+                collectionId: item.id,
             },
             query: {
-                title: this.item.name,
+                title: item.name,
             },
         });
     } else {
         router.push({
             name: "CreatorCollection",
             params: {
-                id: this.item.id,
-                creator: JSON.stringify(this.creator),
-                name: this.item.slug,
-                collection_id: this.item.id,
-                collection: JSON.stringify(this.item),
+                id: item.id,
+                creatorUsername: creatorStore?.info?.username,
+                name: item.slug,
+                collectionId: item.id,
             },
             query: {
-                title: this.item.name,
+                title: item.name,
             },
         });
     }

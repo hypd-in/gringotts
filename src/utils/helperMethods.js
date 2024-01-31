@@ -1,9 +1,44 @@
-export function optimizeImage(image) {
-  return image;
+import { getData, setData } from "nuxt-storage/local-storage";
+
+export function optimizeImage(imageURL, resolution) {
+  if (imageURL) {
+    const hostName = new URL(imageURL).hostname;
+    if (hostName == "d3d92s7oewgbjx.cloudfront.net") {
+      let newURL = imageURL.replace(hostName, useRuntimeConfig().public.cdn);
+      if (resolution) {
+        newURL = newURL + "?height=" + resolution;
+      }
+      return newURL;
+    }
+    if (hostName.endsWith("shopify.com")) {
+      let url = imageURL.split(".");
+      url[url.length - 2] = url[url.length - 2] + `_${resolution}x`;
+      return url.join(".");
+    } else {
+      return imageURL;
+    }
+  }
 }
 
-export function getReplacedSource(src) {
-  return src;
+export function getReplacedSource(source) {
+  let newhostName;
+  const filter = "/filters:strip_exif";
+  if (process.env.NODE_ENV != "production") {
+    newhostName = "cdn.getshitdone.in";
+  } else {
+    newhostName = "cdn.hypd.store";
+  }
+  let hostName = "d3d92s7oewgbjx.cloudfront.net";
+  if (source?.includes(hostName)) {
+    let newURL = source.replace(hostName, newhostName);
+
+    if (newURL.includes(filter)) {
+      newURL = newURL + "?height=" + "550";
+    }
+    return newURL;
+  } else {
+    return source;
+  }
 }
 
 export function getObjectLength(value) {
@@ -21,6 +56,24 @@ export function convertToINR(value) {
     maximumFractionDigits: 0,
     minimumFractionDigits: 0,
   }).format(value);
+}
+
+export function returnAlphabets(event) {
+  if (event.inputType == "insertFromPaste") {
+    var result = "";
+    event.target.value.split("").forEach((value) => {
+      if (/^[a-zA-Z]+$/.test(value)) {
+        result += value;
+      }
+    });
+    return result;
+  }
+
+  if (/^[a-zA-Z]+$/.test(event.target.value)) {
+    return event.target.value;
+  } else {
+    return event.target.value?.replace(event.data, "");
+  }
 }
 
 export function returnMaxLength(event, maxlength) {
@@ -53,47 +106,133 @@ export function addingObserver(target, callback) {
   };
 
   let observer = new IntersectionObserver(callback, options);
-  console.log(observer);
   observer.observe(target);
   return observer;
 }
 
+export function getUTMParams() {
+  var params = useCookie("params");
+  return params;
+}
+
+export function splitCookieValue(value, valueSeperator, keySeperator) {
+  var obj = {};
+  if (value && valueSeperator) {
+    let seperatedValue = value.split(valueSeperator);
+
+    seperatedValue.forEach((val) => {
+      let keyValuePair = val.split(keySeperator);
+      obj[keyValuePair[0]] = keyValuePair[1];
+    });
+    return obj;
+  }
+}
+export function getCookie(name) {
+  var nameEQ = name + "=";
+  var ca = document.cookie?.split(";");
+  for (var i = 0; i < ca.length; i++) {
+    var c = ca[i];
+    while (c.charAt(0) == " ") c = c.substring(1, c.length);
+    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
+  }
+  return null;
+}
+
 export async function getCreatorUserName(id) {
-  // if (
-  //   JSON.parse(getCookie("creators")) &&
-  //   JSON.parse(getCookie("creators"))[id]
-  // ) {
-  //   return JSON.parse(getCookie("creators"))[id].username;
-  // }
-  // if (store.state?.creator?.info?.username) {
-  //   return store.state?.creator?.info?.username;
-  // }
-  // if (router.currentRoute.value.params.creator_username) {
-  //   return router.currentRoute.value.params.creator_username;
-  // }
-  // if (localStorage.getItem("creatorInfo") != null) {
-  //   var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
-  //   return creatorInfo?.creatorName;
-  // }
-  // let payload = null;
+  const router = useRouter();
+  const creatorStore = useCreatorStore();
 
-  // let creator_id =
-  //   id ||
-  //   router.currentRoute.value.params.creator_id ||
-  //   router.currentRoute.value.params.creatorId;
+  const creatorCookie = useCookie("creators");
+  if (creatorCookie.value && creatorCookie.value[id]) {
+    return creatorCookie.value[id].username;
+  }
+  if (creatorStore?.info?.username) {
+    return creatorStore?.info?.username;
+  }
+  if (router.currentRoute.value.params.creator_username) {
+    return router.currentRoute.value.params.creator_username;
+  }
+  if (getData("creatorInfo") != null) {
+    var creatorInfo = { ...JSON.parse(getData("creatorInfo")) };
+    return creatorInfo?.creatorName;
+  }
+  let payload = null;
 
-  // if (id) {
-  //   payload = await getInfluencerById(creator_id);
-  //   return payload.username;
-  // }
-  // if (getCookie("creators")) {
-  //   return Object.values(JSON.parse(getCookie("creators")))[
-  //     Object.values(JSON.parse(getCookie("creators"))).length - 1
-  //   ].username;
-  // }
+  let creator_id =
+    id ||
+    router.currentRoute.value.params.creator_id ||
+    router.currentRoute.value.params.creatorId;
+
+  if (id) {
+    payload = await getInfluencerById(creator_id);
+    return payload.username;
+  }
+  if (creatorCookie.value) {
+    return Object.values(creatorCookie.value)[
+      Object.values(creatorCookie.value).length - 1
+    ].username;
+  }
   return "hypd_store";
 }
 
+export function createCouponsMap(coupons) {
+  const store = useStore();
+  var obj = {
+    cart: [],
+  };
+  coupons.forEach((coupon) => {
+    if (coupon.applicable_on.name == "cart") {
+      obj["cart"] = [...new Set([...obj["cart"], coupon])];
+    } else if (
+      coupon.applicable_on.name == "brand" ||
+      coupon.applicable_on.name == "catalog"
+    ) {
+      coupon.applicable_on.ids.forEach((id) => {
+        if (!obj[id]) {
+          obj[id] = [];
+        }
+        obj[id] = [...new Set([...obj[id], coupon])];
+      });
+    } else if (coupon.applicable_on?.name == "bxgy") {
+      coupon.applicable_on.bxgy?.buy_ids?.forEach((id) => {
+        if (!obj[id]) {
+          obj[id] = [];
+        }
+        obj[id] = [...new Set([...obj[id], coupon])];
+      });
+
+      coupon.applicable_on.bxgy?.get_ids?.forEach((id) => {
+        if (!obj[id]) {
+          obj[id] = [];
+        }
+        obj[id] = [...new Set([...obj[id], coupon])];
+      });
+    } else if (coupon.applicable_on?.name == "bundle") {
+      if (
+        coupon.applicable_on.bundle?.catalog_ids &&
+        coupon.applicable_on.bundle?.catalog_ids?.length > 0
+      ) {
+        coupon.applicable_on.bundle?.catalog_ids?.forEach((id) => {
+          if (!obj[id]) {
+            obj[id] = [];
+          }
+          obj[id] = [...new Set([...obj[id], coupon])];
+        });
+      } else if (
+        coupon.applicable_on.bundle?.brand_id &&
+        !coupon.applicable_on.bundle.catalog_ids
+      ) {
+        if (!obj[coupon.applicable_on.bundle?.brand_id]) {
+          obj[coupon.applicable_on.bundle?.brand_id] = [];
+        }
+        obj[coupon.applicable_on.bundle?.brand_id] = [
+          ...new Set([...obj[coupon.applicable_on.bundle?.brand_id], coupon]),
+        ];
+      }
+    }
+  });
+  store.saveCouponsMap(obj);
+}
 
 export function defaultProfileImage() {
   //  This function generate random default profile image

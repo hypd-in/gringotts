@@ -8,7 +8,7 @@
           <span v-if="noOfWishlistedProducts > 0">({{ noOfWishlistedProducts }})</span>
         </h2>
         <button @click="close" class="close-btn">
-          <img src="@/assets/icons/common/cross.svg" alt="" />
+          <img src="~/assets/icons/misc/close.svg" alt="" />
         </button>
       </div>
 
@@ -18,7 +18,7 @@
         </div>
       </div>
       <div v-else class="empty-cart">
-        <h5>Looks Like you haven't wishlisted any products..</h5>
+        <h5>Looks Like you haven't wishlisted any products...</h5>
         <p>Use the heart icon to wishlist a product</p>
       </div>
     </div>
@@ -29,55 +29,53 @@
 import ProductCard from "~/components/ProductComponents/ProductCard.vue";
 import { getObjectLength } from "~/utils/helperMethods";
 
-const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 const emit = defineEmits(["close"]);
-const fetchingWishlistProducts = ref(false);
+const store = useStore();
+// const fetchingWishlistProducts = ref(false);
 const wishlistedProducts = ref([]);
 
 const wishlistedItems = computed(() => {
-  return store.getters.wishlistedItems;
+  return store.wishlistedItems;
 });
 
 const noOfWishlistedProducts = computed(() => {
   return wishlistedProducts.value?.length;
 });
-watch(wishlistedItems, async (newV, oldV) => {
-  if (getObjectLength(newV) > 0) {
-    await fetchWishlistedProducts();
-  }
-});
+// watch(wishlistedItems, async (newV, oldV) => {
+//   if (getObjectLength(newV) > 0) {
+//     await fetchWishlistedProducts();
+//   }
+// });
 
 onMounted(async () => {
   if (getObjectLength(wishlistedItems) > 0) {
-    await fetchWishlistedProducts();
+    await fetchWishlistedProductsInfo();
   }
 });
 function close() {
   emit("close");
 }
 
-async function fetchWishlistedProducts() {
-  fetchingWishlistProducts.value = true;
-  try {
-    var params = new URLSearchParams();
-    Object.keys(wishlistedItems.value).forEach((id) => {
-      params.append("id", id);
-    });
-    var response = await axios({
-      method: "GET",
-      url: proxy.$catalogURL + "/api/app/catalog/basic",
-      params: params,
-      withCredentials: true,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    if (response.data.payload && response.data.payload.length > 0) {
-      wishlistedProducts.value = [...response.data.payload];
+async function fetchWishlistedProductsInfo() {
+  // fetchingWishlistProducts.value = true;
+  var ids = '';
+  Object.keys(wishlistedItems.value).forEach((id, index) => {
+    ids += `${index > 0 ? '&' : '?'}id=${id}`;
+  });
+  await $fetch(`${config.public.catalogURL}/api/app/catalog/basic${ids}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  }).then((response) => {
+    if (response.payload && response.payload.length > 0) {
+      wishlistedProducts.value = [...response.payload];
     }
-  } catch (err) {
-    console.log("Error fetching wishlisted products info", err);
-  }
+  }).catch((error) => {
+    console.log("Error fetching Wishlisted Products Info", error);
+  })
 }
 </script>
 
@@ -127,10 +125,10 @@ h2.heading {
 
 .close-btn {
   position: absolute;
-  top: 8px;
-  right: 12px;
-  width: 36px;
-  height: 36px;
+  top: 16px;
+  right: 16px;
+  width: 24px;
+  height: 24px;
 }
 
 .close-btn img {
@@ -160,10 +158,36 @@ h2 span {
 }
 
 .product-listing-wrapper::-webkit-scrollbar {
-  background: var(--light-hover);
+  background: none;
 }
 
 .product-listing-wrapper::-webkit-scrollbar-thumb {
-  background: var(--dark-hover);
+  background: none;
+}
+
+.empty-cart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  height: calc(100% - 40px);
+  text-align: center;
+}
+
+h5 {
+  font-family: Urbanist-SemiBold;
+  font-size: 18px;
+  letter-spacing: 0.4px;
+  padding: 0;
+  margin: 0;
+}
+
+p {
+  font-family: Urbanist-Regular;
+  font-size: 14px;
+  letter-spacing: 0.4px;
+  margin: 0;
+  padding: 0;
 }
 </style>

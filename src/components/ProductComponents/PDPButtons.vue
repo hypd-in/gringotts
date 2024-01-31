@@ -8,7 +8,6 @@
 </template>
 
 <script setup>
-// import { addItemToWishlist, removeItemFromWishlist } from "@/API/APIs";
 import Button from "@/components/SubmitButton.vue";
 // import { addItemToCart } from "@/customMethods/cartMethods";
 // import { trackingAddToCart } from "@/eventTracking";
@@ -56,7 +55,7 @@ async function toggleWishlist() {
         type: "creator_store",
       },
     };
-    // await addItemToWishlist(itemInfo);
+    await addItemToWishlist(itemInfo);
   } else {
     await removeItemFromWishlist(productStore.info);
   }
@@ -84,7 +83,7 @@ async function addToCart() {
   if (store.user?.id) {
     itemInfo["id"] = store.user.id;
     addingToCart.value = true;
-    // await addItemToCart(itemInfo);
+    await addItemToCart(itemInfo);
     addingToCart.value = false;
   } else {
     if (localStorage.getItem("cart_items") != null) {
@@ -132,10 +131,9 @@ function buyNow() {
 }
 
 function goToCart() {
-  console.log("GO TO CART");
-  // router.push({
-  //   name: "CartItems",
-  // });
+  navigateTo({
+    name: "CartItems",
+  })
 }
 </script>
 

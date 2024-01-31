@@ -1,23 +1,12 @@
 <template>
-  <div
-    class="address-card"
-    :class="{
-      'selected-address':
-        store.state.cartInfo?.shipping_address?.id == address.id &&
-        (route.name == 'CartPayment' || route.name == 'CartItems'),
-    }"
-  >
+  <div class="address-card" :class="{
+    'selected-address':
+      store.cartInfo?.shipping_address?.id == address.id &&
+      (route.name == 'CartPayment' || route.name == 'CartItems'),
+  }">
     <div class="address-type">
-      <img
-        v-if="address?.address_name == 'office'"
-        :src="addressIcon['office']"
-        alt=""
-      />
-      <img
-        v-else-if="address?.address_name == 'home'"
-        :src="addressIcon['home']"
-        alt=""
-      />
+      <img v-if="address?.address_name == 'office'" :src="addressIcon['office']" alt="" />
+      <img v-else-if="address?.address_name == 'home'" :src="addressIcon['home']" alt="" />
       <img v-else :src="addressIcon['other']" alt="" />
     </div>
 
@@ -27,7 +16,7 @@
       </div>
 
       <div class="contact-info">
-        <p>{{`${address?.display_name}, ${address?.contact_number?.prefix} ${address?.contact_number?.number}`}}</p>
+        <p>{{ `${address?.display_name}, ${address?.contact_number?.prefix} ${address?.contact_number?.number}` }}</p>
       </div>
 
       <div class="address">
@@ -44,52 +33,32 @@
       </div>
     </div>
 
-    <div
-      v-if="route.name == 'CartItems' || route.name == 'CartPayment'"
-      @click="selectAddress"
-      class="checkbox"
-      :class="{
-        'selected-checkbox':
-          store.state.cartInfo?.shipping_address?.id == address.id,
-      }"
-    >
-      <svg
-        width="12"
-        height="8"
-        viewBox="0 0 12 8"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M1.32507 3.99996L4.43807 7.11296L10.6751 0.886963"
-          stroke="white"
-          stroke-width="1.5"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
+    <div v-if="route.name == 'CartItems' || route.name == 'CartPayment'" @click="selectAddress" class="checkbox" :class="{
+      'selected-checkbox':
+        store.cartInfo?.shipping_address?.id == address.id,
+    }">
+      <svg width="12" height="8" viewBox="0 0 12 8" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M1.32507 3.99996L4.43807 7.11296L10.6751 0.886963" stroke="white" stroke-width="1.5"
+          stroke-linecap="round" stroke-linejoin="round" />
       </svg>
     </div>
   </div>
 </template>
 
 <script setup>
-import { fetchCartInfo, fetchUserAddresses } from "@/API/APIs";
-import { getCurrentInstance, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
-
 const props = defineProps({
   address: Object,
 });
 const emit = defineEmits(["edit", "remove", "goBack"]);
+const store = useStore();
 const router = useRouter();
 const route = useRoute();
-const store = useStore();
-const { proxy } = getCurrentInstance();
+const config = useRuntimeConfig();
 
 const addressIcon = ref({
-  home: require("@/assets/icons/address/home-address.svg"),
-  other: require("@/assets/icons/address/home-address.svg"),
-  office: require("@/assets/icons/address/office-address.svg"),
+  home: "/_nuxt/assets/icons/address/home-address.svg",
+  other: "/_nuxt/assets/icons/address/home-address.svg",
+  office: "/_nuxt/assets/icons/address/office-address.svg",
 });
 
 function manipulateAddress(type) {
@@ -98,7 +67,7 @@ function manipulateAddress(type) {
 
 async function selectAddress() {
   if (route.query.isExpress) {
-    store.dispatch("updateCartInfo", {
+    store.updateCartInfo({
       billing_address: { ...props.address },
       shipping_address: { ...props.address },
     });
@@ -107,23 +76,22 @@ async function selectAddress() {
   }
   var data = { ...props.address };
   data["address_id"] = props.address?.id;
-  data["id"] = store.state.user?.id;
+  data["id"] = store.user?.id;
   try {
-    var response = await axios({
+    var response = await $fetch(config.public.entityURL + "/api/app/cart/address", {
       method: "POST",
-      url: proxy.$entityURL + "/api/app/cart/address",
-      withCredentials: true,
-      data: data,
+      credentials: 'include',
+      body: data,
       headers: {
         "Content-Type": "application/json",
       },
     });
-    if (response.data.payload) {
-      store.dispatch("updateCartInfo", {
-        ...store.state?.cartInfo,
+    if (response.payload) {
+      store.updateCartInfo({
+        ...store?.cartInfo,
         shipping_address: {
           ...props.address,
-          user_id: store.state.user?.id,
+          user_id: store.user?.id,
         },
       });
       emit("goBack");
@@ -170,7 +138,7 @@ async function selectAddress() {
   line-height: 18px;
 }
 
-.contact-info p{
+.contact-info p {
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;

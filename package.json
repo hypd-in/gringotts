@@ -11,6 +11,7 @@
   },
   "devDependencies": {
     "@nuxt/devtools": "latest",
+    "@nuxt/image": "^1.2.0",
     "nuxt": "^3.8.2",
     "sass": "^1.69.5",
     "typescript": "^2.4.0",
@@ -23,6 +24,7 @@
     "@mdi/font": "^7.4.47",
     "@pinia/nuxt": "^0.5.1",
     "node": "^21.2.0",
+    "nuxt-storage": "^1.2.2",
     "pinia": "^2.1.7",
     "vue3-carousel": "^0.3.1"
   }

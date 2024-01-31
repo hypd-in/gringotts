@@ -17,10 +17,6 @@ const catalogIds = ref(0)
 const catalogs = ref([])
 const catalogs_sent = ref(0)
 
-definePageMeta({
-      name: "CreatorSpotlight",
-});
-
 async function getCatalogIds() {
       try {
             let response = await $fetch(runtimeConfig.public.cmsURL + "/api/catalog/influencer",
@@ -40,7 +36,6 @@ async function getCatalogIds() {
                   await getCatalog();
             }
 
-            console.log(total_no_of_catalogs.value)
       }
       catch (err) {
             alert(err);
