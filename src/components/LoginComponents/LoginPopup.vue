@@ -94,6 +94,9 @@ function goBack() {
 </script>
   
 <style scoped>
+.bottom-sheet-container{
+  z-index: 55 !important;
+}
 .login-popup {
   max-width: 420px;
 }

@@ -1,7 +1,7 @@
 <template>
     <div class="login-flow">
       <Login
-        v-if="getNumber && !store.state.user.id && !getNameAndEmail"
+        v-if="getNumber && !store.user.id && !getNameAndEmail"
         :number="number"
         @sendOTP="sendOTP"
       />
@@ -9,13 +9,13 @@
         :number="number"
         @changeNumber="changeNumber"
         @verifyOTP="verifyOTP"
-        v-else-if="getOTP && !store.state.user.id && !getNameAndEmail"
+        v-else-if="getOTP && !store.user.id && !getNameAndEmail"
       />
       <NameEmail
         v-else-if="
           getNameAndEmail &&
-          store.state.user.id &&
-          (store.state.user.full_name == '' || store.state.user.email == '')
+          store.user.id &&
+          (store.user.full_name == '' || store.user.email == '')
         "
       />
     </div>
@@ -36,21 +36,22 @@
   });
   
   const route = useRoute();
+  const store = useStore()
   const emit = defineEmits(["close"]);
   
   const getOTP = ref(false);
   const getNameAndEmail = computed(() => {
     return (
-      store.state.user?.id &&
-      (store.state.user?.full_name == "" ||
-        store?.state.user?.email == "" ||
-        !store.state.user?.full_name ||
-        !store.state.user?.email)
+      store.user?.id &&
+      (store.user?.full_name == "" ||
+        store.user?.email == "" ||
+        !store.user?.full_name ||
+        !store.user?.email)
     );
   });
   
   const getNumber = computed(() => {
-    return !store.state.user?.id && !getOTP.value && !getNameAndEmail.value;
+    return !store.user?.id && !getOTP.value && !getNameAndEmail.value;
   });
   const number = ref(null);
   
