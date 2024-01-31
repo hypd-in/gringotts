@@ -192,7 +192,7 @@ const discount = computed(() => {
   }
 });
 
-const goToProduct = computed(() => {
+const goToProduct = computed(async () => {
   var obj = {};
   if (props.isAffiliate) {
     let link = props.itemInfo.hypd_link.split("/");
@@ -225,15 +225,18 @@ const goToProduct = computed(() => {
       },
     }
   }
-  // else {
-  //   obj = {
-  //     name: "Product",
-  //     params: { id: props.itemInfo?.id },
-  //     query: {
-  //       title: props.itemInfo?.name,
-  //     },
-  //   }
-  // }
+  else {
+    obj = {
+      name: "CreatorProduct",
+      params: {
+        id: props.itemInfo?.id,
+        creatorUsername: await getCreatorUserName()
+      },
+      query: {
+        title: props.itemInfo?.name,
+      },
+    }
+  }
   return obj;
 })
 

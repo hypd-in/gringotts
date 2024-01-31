@@ -106,7 +106,7 @@ async function getOrderByItemId() {
 
 // Methods
 function goBack() {
-  router.go(-1);
+  router.back();
 }
 
 function saveTrackingInfo() {

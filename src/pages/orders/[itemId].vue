@@ -33,21 +33,24 @@
             <div class="order-status">
               <label>Current Order Status:</label>
               <h6 class="status" :class="orderStatus">{{
-                readableOrderStatus[orderStatus] }}</h6>
+                readableOrderStatus[orderStatus] || readableOrderStatus[itemStatus?.code] }}</h6>
               <p class="status-date" v-if="orderDetails?.order_status">on {{
-                formatDateWithTime(orderDetails?.order_status?.created_at) }}</p>
+                formatDateWithTime(orderDetails?.order_status?.created_at) || formatDateWithTime(itemStatus?.created_at)
+              }}</p>
             </div>
             <button v-if="showReorder" class="reorder">Re Order</button>
             <button v-else-if="showTrackOrder" @click="openTracking" class="track-order">Track Order</button>
           </section>
-          <section :class="orderStatus" v-if="!['cancel-user', 'cancel-brand'].includes(orderStatus)"
+          <section :class="orderStatus"
+            v-if="!['cancel-user', 'cancel-brand'].includes(orderStatus) && !['cancel-user', 'cancel-brand'].includes(itemStatus?.code)"
             class="order-status-info">
             <h6 class="status-heading">{{ statusBasedText[orderStatus]?.heading }}</h6>
             <p class="status-subheading">{{ statusBasedText[orderStatus]?.text }}</p>
           </section>
           <section class="help">
             <button>Cancel</button>
-            <button>Need Help</button>
+            <div class="seperator"></div>
+            <button @click="navigateToContactUs">Need Help</button>
           </section>
         </div>
 
@@ -74,7 +77,8 @@
               <h5 class="amount">{{ convertToINR(finalPrice) }}</h5>
             </div>
             <div class="buttons">
-              <button v-if="!['initiated', 'failed'].includes(orderStatus)" class="download">Download Receipt</button>
+              <button v-if="!['initiated', 'rto', 'failed'].includes(orderStatus) && checkOrderDate"
+                @click="downloadReceipt" class="download">Download Receipt</button>
               <button class="price-details">Price Details</button>
             </div>
           </section>
@@ -146,12 +150,25 @@ const config = useRuntimeConfig();
 const orderDetails = ref({});
 const creatorInfo = ref({});
 const similarProducts = ref([]);
+const downlaodingInvoice = ref(false);
 const orderStatus = computed(() => {
   return orderDetails.value?.order_status?.code;
 })
 
+const itemStatus = computed(() => {
+  return orderDetails.value?.item?.item_status;
+})
+
+const checkOrderDate = computed(() => {
+  if (new Date("3 December 2021").toJSON() < orderDetails.value.order_date) {
+    return false;
+  } else {
+    return true;
+  }
+});
+
 const showReorder = computed(() => {
-  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value)) {
+  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value) || ['cancel-brand', 'cancel-user'].includes(itemStatus.value.code)) {
     return true;
   } else {
     return false;
@@ -230,7 +247,7 @@ const statusBasedText = ref({
     'text': 'Verifying your payment status...'
   },
   failed: {
-    'heading': "Oops! Looks like your order was not placed",
+    'heading': "Uh-Oh, Your Payment was Declined",
     'text': 'We have not received the payment for your order'
   },
   confirmed: {
@@ -265,6 +282,12 @@ function openTracking() {
   })
 }
 
+function navigateToContactUs() {
+  navigateTo({
+    name: "ContactUs",
+  })
+}
+
 function formatDate(orderDate) {
   var date = new Date(orderDate);
   return new Intl.DateTimeFormat('en-IN', {
@@ -286,14 +309,48 @@ function formatDateWithTime(statusDate) {
   }).format(date);
 }
 
+async function downloadReceipt() {
+  try {
+    downlaodingInvoice.value = true;
+    var response = await $fetch(`${config.public.orderURL}/v2/order/invoice/download`, {
+      method: "GET",
+      credentials: "include",
+      responseType: "blob",
+      params: {
+        order_id: orderDetails.value?.id
+      },
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (response) {
+      downloadFile(URL.createObjectURL(response), orderDetails.value?.order_id);
+    }
+  } catch (error) {
+    downlaodingInvoice.value = false;
+    console.log("Error downloading receipt", error);
+    alert("There was an error downloading your receipt..");
+  }
+}
+
+function downloadFile(data, fileName) {
+  var link = document.createElement("a");
+  link.href = data;
+  link.download = fileName;
+  link.style.display = "none";
+  link.target = "_blank";
+  link.click();
+}
+
 function navigateToBrandPage() {
   console.log(orderDetails.value.brand_info);
-  // navigateTo({
-  //   name: "BrandPage",
-  //   params: {
-  //     brandUsername: orderDetails.value?.brand_info?.username
-  //   }
-  // })
+  navigateTo({
+    name: "BrandPage",
+    params: {
+      brandUsername: orderDetails.value?.brand_info?.username
+    }
+  })
 }
 
 function navigateToCreatorStore() {
@@ -382,7 +439,7 @@ onBeforeMount(async () => {
     width: calc(100dvw - 32px);
   }
 
-  h2.heading{
+  h2.heading {
     display: none !important;
   }
 }
@@ -582,15 +639,23 @@ h6.initiated {
 
 section.help {
   display: grid;
-  grid-template-columns: repeat(2, 50%);
+  grid-template-columns: calc(50% - 0.5px) 1px calc(50% - 0.5px);
   align-items: center;
+  padding: 0;
+}
+
+section.help .seperator {
+  height: 100%;
+  background: var(--primary-border-color);
+  width: 1px;
 }
 
 section.help button {
   font: normal normal normal 16px/21px Urbanist-Medium;
   letter-spacing: -0.4px;
-  color: #585858;
+  color: var(--secondary-text);
   cursor: pointer;
+  padding: 16px;
 }
 
 .order-section label {
@@ -667,6 +732,7 @@ h5.contact {
   letter-spacing: -0.35px;
   /* width: calc(100% - 32px); */
   box-sizing: border-box;
+  cursor: pointer;
 }
 
 .go-to {

@@ -1,15 +1,16 @@
 <template>
   <div class="order-card">
     <div class="order-details-bar">
-      <div style="display: flex; align-items: center; gap: 24px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px;">
         <span id="order-id">Order: #{{ orderInfo.order_id }}</span>
         <span id="order-date">Date: {{ formatDate(orderInfo.created_at) }}</span>
       </div>
-      <div class="bar-buttons">
-        <!-- <button @click="goToOrderDetails" id="details">Order Details</button>
-        | -->
-        <button v-if="!['initiated', 'failed'].includes(orderStatus)" @click="downloadOrderReceipt" id="download">Download Receipt</button>
-      </div>
+      <!-- <div class="bar-buttons">
+        <button @click="goToOrderDetails" id="details">Order Details</button>
+        |
+        <button v-if="!['initiated', 'failed'].includes(orderStatus)" @click="downloadOrderReceipt" id="download">Download
+          Receipt</button>
+      </div> -->
     </div>
 
     <div class="order-items">
@@ -138,10 +139,10 @@ function goToOrderDetails(id) {
 
 <style scoped>
 @media only screen and (max-width: 520px) {
-  .order-details-bar {
+  /* .order-details-bar {
     grid-template-columns: 100% !important;
     grid-template-rows: repeat(2, auto);
-  }
+  } */
 
   .order-item-info {
     width: 100% !important;
@@ -149,7 +150,7 @@ function goToOrderDetails(id) {
     grid-template-rows: repeat(2, auto);
   }
 
-  .order-item{
+  .order-item {
     padding: 16px 0;
   }
 
@@ -169,10 +170,11 @@ function goToOrderDetails(id) {
     justify-content: flex-start !important;
   } */
 
-  button#download{
+  button#download {
     display: none;
   }
-  .order-status-chip{
+
+  .order-status-chip {
     margin: 0 0 0 16px !important;
   }
 }
@@ -187,13 +189,13 @@ function goToOrderDetails(id) {
 }
 
 .order-details-bar {
-  display: grid;
+  /* display: grid;
   grid-template-columns: repeat(2, 50%);
   justify-content: center;
-  align-items: center;
-  font-family: Urbanist-Regular;
+  align-items: center; */
+  font-family: Urbanist-Medium;
   font-size: 14px;
-  color: #a9a9a9;
+  color: var(--secondary-text);
   background: #f5f5f5;
   padding: 16px 24px;
 }
@@ -264,10 +266,12 @@ button {
   color: #2597df;
   background: #2597df1a;
 }
-.initiated{
+
+.initiated {
   color: #df9e25;
   background: #df9e251a;
 }
+
 .order-items .order-item:last-of-type {
   border-bottom: none;
 }
@@ -277,6 +281,8 @@ button {
   align-items: flex-start;
   gap: 16px;
   padding: 16px 24px;
+  cursor: default;
+  user-select: none;
 }
 
 
@@ -361,4 +367,5 @@ button.reorder {
 
 button:hover {
   text-decoration: underline;
-}</style>
+}
+</style>
