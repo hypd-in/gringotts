@@ -214,7 +214,7 @@ const goToProduct = computed(() => {
     }
   } else {
     obj = {
-      name: "product",
+      name: "CreatorProduct",
       params: { id: props.itemInfo?.id },
       query: {
         title: props.itemInfo?.name,

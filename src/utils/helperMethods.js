@@ -113,11 +113,10 @@ export function getCookie(name) {
 export async function getCreatorUserName(id) {
   const route = useRoute();
   const creatorStore = useCreatorStore();
-  if (
-    JSON.parse(getCookie("creators")) &&
-    JSON.parse(getCookie("creators"))[id]
-  ) {
-    return JSON.parse(getCookie("creators"))[id].username;
+
+  const creatorCookie = useCookie("creators");
+  if (creatorCookie.value && creatorCookie.value[id]) {
+    return creatorCookie.value[id].username;
   }
   if (creatorStore?.info?.username) {
     return creatorStore?.info?.username;
@@ -137,12 +136,12 @@ export async function getCreatorUserName(id) {
     payload = await getInfluencerById(creator_id);
     return payload.username;
   }
-  if (getCookie("creators")) {
-    return Object.values(JSON.parse(getCookie("creators")))[
-      Object.values(JSON.parse(getCookie("creators"))).length - 1
+  if (creatorCookie.value) {
+    return Object.values(creatorCookie.value)[
+      Object.values(creatorCookie.value).length - 1
     ].username;
   }
-  // return "hypd_store";
+  return "hypd_store";
 }
 
 export function createCouponsMap(coupons) {

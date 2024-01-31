@@ -169,7 +169,7 @@ onMounted(async () => {
             }
             await getExpressCheckoutProductInfo(
                 route.query.pid,
-                route.query.vid,
+                route.query.vid, 
                 route.query.creatorId
             );
             return;

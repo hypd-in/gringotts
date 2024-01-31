@@ -138,7 +138,7 @@ async function removeItemFromCart() {
         }
         removingItem.value = false;
         closePopup();
-        trackingRemoveFromCart(props.itemInfo);
+        // trackingRemoveFromCart(props.itemInfo);
       }
     } catch (err) {
       await fetchCartInfo();

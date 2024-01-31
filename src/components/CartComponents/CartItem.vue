@@ -99,8 +99,8 @@
       </div>
 
       <div v-if="(store.cartInfo?.coupon &&
-          isCouponApplied &&
-          !(isVariantOutOfStock || isUnitsOutOfStock)) ||
+        isCouponApplied &&
+        !(isVariantOutOfStock || isUnitsOutOfStock)) ||
         bxGyFreeItem
         " class="coupon-info-section" :class="{ 'free-coupon': bxGyFreeItem }">
         <!-- Bxgy free -->
@@ -178,7 +178,7 @@
 import ImageFrame from "../ImageFrame.vue";
 import { convertToINR, getCreatorUserName, optimizeImage } from "@/utils/helperMethods.js";
 import { computed, reactive, ref } from "vue";
-import MoveToWishlistPopup from "./MoveToWishlistPopup.vue"; 
+import MoveToWishlistPopup from "./MoveToWishlistPopup.vue";
 import VariantSelector from "./VariantSelector.vue";
 import QuantitySelector from "./QuantitySelector.vue";
 
@@ -281,12 +281,12 @@ async function goToProductPage() {
   if (props.isGiftFree) {
     return
   }
-  let creator_username = getCreatorUserName(props.itemInfo?.source?.id);
+  let creator_username = await getCreatorUserName(props.itemInfo?.source?.id);
   router.push({
-    name: "creatorProduct",
+    name: "CreatorProduct",
     params: {
-      creator_username: creator_username,
-      product_id: props.itemInfo?.catalog_info?.id,
+      creatorUsername: creator_username,
+      id: props.itemInfo?.catalog_info?.id,
     },
     query: {
       title: props.itemInfo?.catalog_info?.name,

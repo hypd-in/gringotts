@@ -27,8 +27,8 @@
       return;
     }
     router.push({
-      name: "creator_store",
-      params: { creator_username: creator_username },
+      name: "CreatorStore",
+      params: { creatorUsername: creator_username },
     });
   }
   </script>
