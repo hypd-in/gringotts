@@ -894,6 +894,7 @@
         HYPD - © 2023. All Rights Reserved.
       </div>
     </section>
+    <a href="https://www.creator.hypd.store/login" id="CTAlink" target="_blank" hidden></a>
   </div>
 </template>
 
@@ -1258,6 +1259,11 @@ function callback_8(entries) {
     }
   });
 }
+
+function goToLogin() {
+  // trackingClickEvent("clicked_on_join_the_waitlist");
+  document.getElementById("CTAlink").click();
+};
 
 onMounted(() => {
   calculatingCreatorCount();
