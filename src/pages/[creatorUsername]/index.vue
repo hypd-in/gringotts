@@ -1122,8 +1122,9 @@ onBeforeMount(() => {
 }
 
 .creator-info {
-    margin: 10px auto;
+    padding: 16px;
     max-width: 1180px;
+    margin: 0 auto;
 }
 
 .creator-info-container {
@@ -1163,9 +1164,9 @@ onBeforeMount(() => {
 
 .sticky-container {
     position: sticky;
-    top: 56px;
+    top: 72px;
     z-index: 5;
-    /* padding: 10px 0 0; */
+    padding: 12px 0 0;
     background: #ffffff;
 }
 
@@ -1346,25 +1347,21 @@ onBeforeMount(() => {
     color: #a9a9a9;
     display: flex;
     justify-content: center;
-    padding-top: 8px;
     font-size: 18px;
-    margin: 8px 0 5px 0;
     font-family: Urbanist-Medium;
     border-bottom: 1px solid #e6e6e6;
-    margin-bottom: -2px;
 }
 
 .creator-contents div {
     width: 10%;
     min-width: 120px;
     cursor: pointer;
+    padding: 6px 0;
 }
 
 .active-creator-contents {
     color: #13141b;
-    padding-bottom: 6px;
-    border-bottom: 3px solid #13141b;
-    border-radius: 3px;
+    border-bottom: 2px solid #13141b;
 }
 
 .product-contents {
@@ -1406,8 +1403,8 @@ onBeforeMount(() => {
 
 .botd {
     /* position: relative; */
-    max-width:1180px;
-    margin: 0 0 0 18px;
+    max-width: 1180px;
+    margin: 0 auto;
     width: calc(100% - 36px);
     cursor: pointer;
 }
@@ -1435,9 +1432,12 @@ section.carousel :deep(ol) {
 }
 
 @media screen and (max-width: 480px) {
+
+    .sticky-container{
+        top: 48px !important;
+    }
     .botd {
-        /* position: relative; */
-        margin: 18px 0 0;
+        margin: 0 auto;
         width: calc(100%);
     }
 
