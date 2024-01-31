@@ -58,7 +58,6 @@
 </template>
 
 <script setup>
-// import { logoutUser } from "@/API/APIs";
 // import ImageFrame from "../ImageFrame.vue";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue";
 
@@ -133,13 +132,13 @@ function redirectToPath(pathName) {
   }
 }
 
-function logout() {
-  // logoutUser({
-  //   name: "CreatorStore",
-  //   params: {
-  //     creatorUsername: creatorStore.info?.username || "hypd_store",
-  //   },
-  // });
+async function logout() {
+  logoutUser({
+    name: "CreatorStore",
+    params: {
+      creatorUsername: await getCreatorUserName(),
+    },
+  });
   return;
 }
 </script>

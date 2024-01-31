@@ -35,7 +35,6 @@
 </template>
 
 <script setup>
-// import { logoutUser } from "@/API/APIs";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue"
 
 const emit = defineEmits(["close"]);
@@ -104,21 +103,21 @@ function toggleAddressComponent(){
 
 function goToLogin() {
   navigateTo({
-    name: "login",
+    name: "Login",
     query: {
       redirection_url: route.fullPath,
     },
   });
 }
 
-function routeToPath(pathName) {
+async function routeToPath(pathName) {
   if (pathName == "logOut") {
-    // logoutUser({
-    //   name: "creator_store",
-    //   params: {
-    //     creator_username: store.creator.info?.username || "hypd_store",
-    //   },
-    // });
+    logoutUser({
+      name: "CreatorStore",
+      params: {
+        creatorUsername: await getCreatorUserName(),
+      },
+    });
     return;
   } else if(pathName == 'MyAddresses'){
     toggleAddressComponent();

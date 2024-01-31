@@ -250,3 +250,30 @@ export async function getInfluencerById(creatorId) {
     console.log("error: ", error);
   }
 }
+
+export async function logoutUser(redirectionPath) {
+  var logoutConfirm = confirm("Are you sure, you want to log out from HYPD?");
+  if (!logoutConfirm) {
+    return;
+  } else {
+    try {
+      var response = await $fetch(
+        `${useRuntimeConfig().public.entityURL}/api/user/auth/logout`,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response) {
+        if (redirectionPath) {
+          await navigateTo(redirectionPath);
+        }
+      }
+    } catch (err) {
+      console.log("Error logging out", err);
+    }
+  }
+}

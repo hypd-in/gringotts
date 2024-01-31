@@ -244,8 +244,8 @@ function toggleWishlist() {
     );
     if (flag) {
       navigateTo({
-        name: "login",
-        params: route.params,
+        name: "Login",
+        params: { ...route.params },
         query: {
           redirection_url: route.fullPath,
         },
@@ -280,7 +280,7 @@ async function goToExplore() {
 function openDropDown() {
   if (!store.user?.id) {
     navigateTo({
-      name: "login",
+      name: "Login",
       query: {
         redirection_url: route.fullPath,
       },
