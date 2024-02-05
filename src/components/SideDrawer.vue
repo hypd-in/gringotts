@@ -84,7 +84,6 @@ const store = useStore();
 const creatorStore = useCreatorStore();
 const emit = defineEmits(["closeDrawer"]);
 
-
 const userProfileImage = computed(() => {
   if (store.user?.profile_image?.src) {
     return getReplacedSource(store.user?.profile_image?.src);
@@ -152,7 +151,8 @@ function redirectToPath(pathName) {
   } else if (pathName == "MyAddresses") {
     toggleMyAddresses();
   } else {
-    router.push({
+    emit("closeDrawer");
+    navigateTo({
       name: pathName,
     });
   }

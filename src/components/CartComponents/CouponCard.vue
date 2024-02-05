@@ -134,7 +134,7 @@ async function goToBundleProducts(offer) {
 }
 </script>
   
-<style>
+<style scoped>
 .link-eligible-items {
     border-bottom: 1px dotted #fc404d;
     cursor: pointer;

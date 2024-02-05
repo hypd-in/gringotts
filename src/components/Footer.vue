@@ -60,7 +60,7 @@ function goToTerms() {
 }
 </script>
 
-<style>
+<style scoped>
 @media only screen and (max-width: 520px) {
   .content-container {
     display: block !important;

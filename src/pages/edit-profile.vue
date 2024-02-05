@@ -30,12 +30,12 @@
 
       <div class="input-wrapper">
         <label for="email">Your Email</label>
-        <input type="text" v-if="userInfo.email" name="email" id="email" v-model="userInfo.email">
+        <input type="text" v-if="store.user?.email" name="email" id="email" v-model="userInfo.email">
       </div>
 
       <div class="input-wrapper">
         <label for="dob">Date of Birth</label>
-        <input type="date" v-if="dob" @input="updateDob" :value="dob">
+        <input type="date" @input="updateDob" :value="dob">
       </div>
 
       <div class="input-wrapper">
