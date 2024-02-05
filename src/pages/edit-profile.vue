@@ -239,6 +239,7 @@ h3.heading {
   width: 90px;
   height: 90px;
   border-radius: 12px;
+  object-fit: cover;
 }
 
 .edit-btn {
