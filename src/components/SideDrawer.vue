@@ -65,8 +65,11 @@
         <h2>Looks like you're not logged in!</h2>
         <p>Let's get you logged in?</p>
       </div>
-      <SubmitButton default-text="Go To Login" @submit="navigateToLogin"/>
+      <SubmitButton default-text="Go To Login" @submit="navigateToLogin" />
     </div>
+    <button v-if="!showAddresses" @click="emit('closeDrawer')" class="close-btn">
+      <img src="~/assets/icons/misc/close.svg" alt="">
+    </button>
   </div>
 </template>
 
@@ -138,7 +141,7 @@ function navigateToLogin() {
   navigateTo({
     name: "Login",
     query: {
-      'redirection_url': router.currentRoute.fullPath,
+      'redirection_url': route.fullPath,
     }
   })
 }

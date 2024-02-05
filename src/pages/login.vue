@@ -121,7 +121,6 @@ const config = useRuntimeConfig();
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
-const redirect = route.query.redirection_url;
 const timer = ref(30);
 const enterOTP = ref(false);
 const otpInputs = ref(null);
@@ -139,6 +138,10 @@ const disabledBtn = computed(() => {
   }
   return false;
 });
+
+const redirect = computed(() => {
+  return route.query.redirection_url;
+})
 
 const sendOTP = async () => {
   generatingOTP.value = true;
@@ -195,9 +198,10 @@ const confirmOTP = async (otpValue) => {
       submittingOTP.value = false;
       await fetchUserInfo();
       await fetchCartInfo();
-      if (redirect) {
+      if (redirect.value) {
+        console.log(redirect.value);
         navigateTo({
-          path: `${redirect}`,
+          path: `${redirect.value}`,
           replace: true,
         });
       }
