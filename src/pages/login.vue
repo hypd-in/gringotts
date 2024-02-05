@@ -204,6 +204,9 @@ const confirmOTP = async (otpValue) => {
       submittingOTP.value = false;
       await fetchUserInfo();
       await fetchCartInfo();
+
+      track('user_login_success', { user_id : store.user.id })
+
       if (redirect.value) {
         console.log(redirect.value);
         navigateTo({
@@ -223,6 +226,9 @@ const confirmOTP = async (otpValue) => {
       }
     }
   } catch (err) {
+    
+    track('user_login_fail')
+
     showError.value = true;
     submittingOTP.value = false;
     otpInputs.value.clearOTP();
