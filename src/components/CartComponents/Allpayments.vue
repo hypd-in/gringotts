@@ -88,7 +88,7 @@
                     <div class="card-cvv-txt">CVV</div>
                     <div class="flex-together gap-18">
                       <div class="security_code_div"></div>
-                      <img src="@/assets/icons/payment-icons/cvv.svg" alt="" />
+                      <img src="/icons/payment-icons/cvv.svg" alt="" />
                     </div>
                   </div>
                 </div>
