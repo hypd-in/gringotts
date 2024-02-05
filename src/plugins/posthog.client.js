@@ -13,13 +13,13 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   // Make sure that pageviews are captured with each route change
   const router = useRouter();
-  // router.afterEach((to) => {
-  //   nextTick(() => {
-  //     posthog.capture("$pageview", {
-  //       current_url: to.fullPath,
-  //     });
-  //   });
-  // });
+  router.afterEach((to) => {
+    nextTick(() => {
+      posthog.capture("$pageview", {
+        current_url: to.fullPath,
+      });
+    });
+  });
 
   return {
     provide: {

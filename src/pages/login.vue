@@ -47,7 +47,7 @@
         <section>
           <div class="login-section" v-if="!enterOTP">
             <h1 class="title">get started with your mobile number</h1>
-            <div class="input-container mt-24">
+            <div class="input-container mt-24" @click="track('login:phone_input_click')">
               <span>+91</span><input type="tel" name="phone_no" placeholder="0000000000" v-model="phone_no"
                 class="ph-no-input" maxlength="10" @input="updatePhoneNumber($event)" @keydown.enter="sendOTP" />
             </div>
@@ -116,6 +116,8 @@ import SubmitButton from "~/components/SubmitButton.vue";
 import Footer from "~/components/Footer.vue";
 import { returnMaxLength, returnNumber } from "~/utils/helperMethods";
 
+import track from "../utils/tracking-posthog"
+
 const phone_no = ref("");
 const config = useRuntimeConfig();
 const router = useRouter();
@@ -171,10 +173,14 @@ const sendOTP = async () => {
     generatingOTP.value = false;
     console.log("Error generating OTP", err);
   }
+
+  track('login:send_otp', { phone_no: '******' + phone_no.value.substring(6) })
 };
 
 const confirmOTP = async (otpValue) => {
+  console.log(phone_no.value.substring(6))
   submittingOTP.value = true;
+  track('login:confirm_otp', { phone_no: '******' + phone_no.value.substring(6), otp:'****' + otpInputs?.value?.otp.substring(4) })
   try {
     var response = await $fetch(
       `${config.public.entityURL}/api/customer/otp/confirm?isWeb=true`,
@@ -225,6 +231,7 @@ const confirmOTP = async (otpValue) => {
       showError.value = false;
     }, 3500);
   }
+
 };
 const showError = ref(false);
 const featuredIn = ref([
