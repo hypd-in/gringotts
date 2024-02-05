@@ -365,7 +365,7 @@ export async function addItemToWishlist(itemInfo) {
     var flag = confirm("You're not logged in, Let's get you logged in first?");
     if (flag) {
       router.push({
-        name: "login",
+        name: "Login",
         query: {
           redirection_url: router.currentRoute.fullPath,
         },

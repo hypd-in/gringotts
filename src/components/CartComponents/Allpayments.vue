@@ -312,37 +312,37 @@ const selectedMethod = ref("");
 const paymentMethods = ref([
   {
     methodName: "Credit/Debit Card",
-    icon: "/_nuxt/assets/icons/payment-icons/CARDS.svg",
+    icon: "/icons/payment-icons/CARDS.svg",
   },
   {
     methodName: "UPI",
     upiApps: [
       {
         appName: "Google Pay",
-        appIcon: "/_nuxt/assets/icons/payment-icons/gpay.png",
+        appIcon: "/icons/payment-icons/gpay.png",
       },
       {
         appName: "PhonePe",
-        appIcon: "/_nuxt/assets/icons/payment-icons/phonepe.png",
+        appIcon: "/icons/payment-icons/phonepe.png",
       },
       {
         appName: "Paytm",
-        appIcon: "/_nuxt/assets/icons/payment-icons/paytm.png",
+        appIcon: "/icons/payment-icons/paytm.png",
       },
       {
         appName: "Enter UPI ID",
-        appIcon: "/_nuxt/assets/icons/payment-icons/UPI2.svg",
+        appIcon: "/icons/payment-icons/UPI2.svg",
       },
     ],
-    icon: "/_nuxt/assets/icons/payment-icons/UPI.svg",
+    icon: "/icons/payment-icons/UPI.svg",
   },
   {
     methodName: "Net banking",
-    icon: "/_nuxt/assets/icons/payment-icons/NETBANKING.svg",
+    icon: "/icons/payment-icons/NETBANKING.svg",
   },
   {
     methodName: "Cash on Delivery",
-    icon: "/_nuxt/assets/icons/payment-icons/COD.svg",
+    icon: "/icons/payment-icons/COD.svg",
   },
 ]);
 const activePaymentMethod = ref("UPI");
@@ -353,17 +353,17 @@ const topBanks = ref([
   {
     name: "AXIS",
     value: "NB_AXIS",
-    icon: "/_nuxt/assets/icons/payment-icons/axis.png",
+    icon: "/icons/payment-icons/axis.png",
   },
   {
     name: "ICICI",
     value: "NB_ICICI",
-    icon: "/_nuxt/assets/icons/payment-icons/icici.png",
+    icon: "/icons/payment-icons/icici.png",
   },
   {
     name: "SBI",
     value: "NB_SBI",
-    icon: "/_nuxt/assets/icons/payment-icons/sbu.png",
+    icon: "/icons/payment-icons/sbu.png",
   },
 ]);
 const showBanks = ref(false);

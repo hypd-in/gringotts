@@ -4,7 +4,7 @@
         <ImageFrame v-if="item.image" :src="optimizeImage(item.image.src, 350)"
             :alt="item.name + ' by ' + creatorStore.info.name" />
         <div v-else-if="item.default_image" class="default-image">
-            <img class="catalog-image" v-for="(image, index) in item.default_image" :src="optimizeImage(image.src, 350)"
+            <img class="catalog-image" v-for="(image, index) in item.default_image" :src="getReplacedSource(image.src, 350)"
                 alt="" :key="`default_image_${index}`" />
         </div>
         <div class="collection-name">{{ item.name }}</div>
@@ -14,7 +14,6 @@
   
 <script setup>
 import ImageFrame from "../components/ImageFrame.vue";
-import { optimizeImage } from "~/utils/helperMethods";
 
 const router = useRouter()
 const props = defineProps(["item"])

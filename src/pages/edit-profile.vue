@@ -5,8 +5,9 @@
       <h3 class="heading">Edit Profile</h3>
 
       <div class="user-image-wrapper">
-        <NuxtImg v-if="userInfo.profile_image?.src" :src="userInfo.profile_image.src" class="user-image" />
-        <NuxtImg v-else src="/icons/image-icon.svg" class="user-image" />
+        <ImageFrame v-if="userInfo.profile_image?.src" :src="getReplacedSource(userInfo.profile_image.src, 200)"
+          class="user-image" />
+        <ImageFrame v-else src="/icons/image-icon.svg" class="user-image" />
         <button class="edit-btn" @click="selectFile">
           <img src="/icons/camera.svg" alt="">
         </button>
@@ -24,18 +25,19 @@
         <label for="phone-no">Phone Number</label>
         <div style="display: grid; grid-template-columns: 32px auto;">
           <input type="tel" disabled name="prefix" v-if="store.user.phone_no?.prefix" v-model="userInfo.phone_no.prefix">
-          <input type="tel" disabled name="phone-no" id="phone-no" v-if="store.user.phone_no?.number" v-model="userInfo.phone_no.number">
+          <input type="tel" disabled name="phone-no" id="phone-no" v-if="store.user.phone_no?.number"
+            v-model="userInfo.phone_no.number">
         </div>
       </div>
 
       <div class="input-wrapper">
         <label for="email">Your Email</label>
-        <input type="text" v-if="userInfo.email" name="email" id="email" v-model="userInfo.email">
+        <input type="text" v-if="store.user?.email" name="email" id="email" v-model="userInfo.email">
       </div>
 
       <div class="input-wrapper">
         <label for="dob">Date of Birth</label>
-        <input type="date" v-if="dob" @input="updateDob" :value="dob">
+        <input type="date" @input="updateDob" :value="dob">
       </div>
 
       <div class="input-wrapper">
@@ -48,13 +50,14 @@
         </div>
       </div>
 
-      <SubmitButton class="submit-button" default-text="Update Profile" :loading="updatingUserInfo" :disabled="enableUpdateButton"
-        @submit="updateUserInfo" />
+      <SubmitButton class="submit-button" default-text="Update Profile" :loading="updatingUserInfo"
+        :disabled="enableUpdateButton" @submit="updateUserInfo" />
     </div>
   </ClientOnly>
 </template>
 
 <script setup>
+import ImageFrame from '~/components/ImageFrame.vue';
 import SubmitButton from '~/components/SubmitButton.vue';
 
 definePageMeta({
@@ -239,6 +242,7 @@ h3.heading {
   width: 90px;
   height: 90px;
   border-radius: 12px;
+  object-fit: cover;
 }
 
 .edit-btn {

@@ -163,7 +163,7 @@ function buttonAction(coupon, buttonText) {
       let ans = confirm("Let's get you logged in first?");
       if (ans) {
         router.push({
-          name: "login",
+          name: "Login",
           query: {
             redirection_url: route.fullPath,
           },

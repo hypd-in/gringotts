@@ -593,7 +593,7 @@
 <script setup>
 definePageMeta({
     name: "CreatorStore",
-    layout: "public",
+    layout: "parent-layout",
 });
 // import * as tracking from "../eventTracking";
 import {
@@ -768,7 +768,7 @@ function follow_author() {
     } else {
         let ans = confirm("Let's get you logged in first!");
         if (ans) {
-            let current_url = route.path;
+            let current_url = route.fullPath;
             router.push("/login?redirection_url=" + current_url);
         }
     }

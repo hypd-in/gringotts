@@ -56,9 +56,9 @@ const route = useRoute();
 const config = useRuntimeConfig();
 
 const addressIcon = ref({
-  home: "/_nuxt/assets/icons/address/home-address.svg",
-  other: "/_nuxt/assets/icons/address/home-address.svg",
-  office: "/_nuxt/assets/icons/address/office-address.svg",
+  home: "/icons/address/home-address.svg",
+  other: "/icons/address/home-address.svg",
+  office: "/icons/address/office-address.svg",
 });
 
 function manipulateAddress(type) {

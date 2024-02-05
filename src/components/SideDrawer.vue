@@ -1,8 +1,10 @@
 <template>
-  <div class="side-drawer">
+  <div class="side-drawer" v-if="store.user?.id">
     <section class="user-info-wrapper">
-      <NuxtImg class="profile-image" style="border-radius: 16px; object-fit: cover;" :placeholder="[30, 30, 50, 20]" v-if="userProfileImage"
-        :src="userProfileImage" />
+      <ClientOnly>
+        <ImageFrame class="profile-image"
+          v-if="userProfileImage" :src="userProfileImage" />
+      </ClientOnly>
       <div class="user-info">
         <h2>{{ userFullName }}</h2>
         <h3>
@@ -50,16 +52,34 @@
     </section>
 
     <button v-if="!showAddresses" @click="emit('closeDrawer')" class="close-btn">
-      <img src="~/assets//icons/misc/close.svg" alt="">
+      <img src="~/assets/icons/misc/close.svg" alt="">
     </button>
 
     <AddressComponent @close="toggleMyAddresses" v-if="showAddresses" />
   </div>
+
+  <div v-else class="side-drawer">
+    <div class="no-user">
+      <div class="illustration">
+        <img src="@/assets/illustrations/no-orders.png" alt="">
+      </div>
+      <div class="content">
+        <h2>Looks like you're not logged in!</h2>
+        <p>Let's get you logged in?</p>
+      </div>
+      <SubmitButton default-text="Go To Login" @submit="navigateToLogin" />
+    </div>
+    <button v-if="!showAddresses" @click="emit('closeDrawer')" class="close-btn">
+      <img src="~/assets/icons/misc/close.svg" alt="">
+    </button>
+  </div>
 </template>
 
 <script setup>
-// import ImageFrame from "../ImageFrame.vue";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue";
+import SubmitButton from "./SubmitButton.vue";
+import ImageFrame from "./ImageFrame.vue";
+import { getReplacedSource } from "@/utils/helperMethods";
 
 const route = useRoute();
 const router = useRouter();
@@ -67,10 +87,9 @@ const store = useStore();
 const creatorStore = useCreatorStore();
 const emit = defineEmits(["closeDrawer"]);
 
-
 const userProfileImage = computed(() => {
   if (store.user?.profile_image?.src) {
-    return getReplacedSource(store.user?.profile_image?.src);
+    return getReplacedSource(store.user?.profile_image?.src, 200);
   } else {
     return "/illustrations/default_user.png"
   }
@@ -120,13 +139,23 @@ function goToEditProfile() {
   });
 }
 
+function navigateToLogin() {
+  navigateTo({
+    name: "Login",
+    query: {
+      'redirection_url': route.fullPath,
+    }
+  })
+}
+
 function redirectToPath(pathName) {
   if (route.name == pathName) {
     emit("closeDrawer");
   } else if (pathName == "MyAddresses") {
     toggleMyAddresses();
   } else {
-    router.push({
+    emit("closeDrawer");
+    navigateTo({
       name: pathName,
     });
   }
@@ -177,6 +206,8 @@ async function logout() {
   width: 70px;
   height: 70px;
   aspect-ratio: 1/1;
+  border-radius: 16px;
+  object-fit: cover;
 }
 
 h1,
@@ -277,6 +308,21 @@ section.logout {
   padding: 0 0 0;
 }
 
+.no-user {
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 32px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
 button.logout-btn {
   display: flex;
   background: var(--plain-white, #fff);
@@ -311,7 +357,7 @@ button.close-btn {
   box-sizing: border-box;
 }
 
-button.close-btn svg{
+button.close-btn svg {
   width: 24spx;
   height: 24px;
 }
