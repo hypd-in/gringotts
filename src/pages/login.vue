@@ -108,6 +108,7 @@
 definePageMeta({
   name: "Login",
   layout: "standalone",
+  scrollToTop: true,
 });
 import { fetchUserInfo, fetchCartInfo } from "~/utils/globalAPIs";
 import OTP from "~/components/OtpInput.vue";

@@ -1,8 +1,8 @@
 <template>
-  <div class="side-drawer">
+  <div class="side-drawer" v-if="store.user?.id">
     <section class="user-info-wrapper">
-      <NuxtImg class="profile-image" style="border-radius: 16px; object-fit: cover;" :placeholder="[30, 30, 50, 20]" v-if="userProfileImage"
-        :src="userProfileImage" />
+      <NuxtImg class="profile-image" style="border-radius: 16px; object-fit: cover;" :placeholder="[30, 30, 50, 20]"
+        v-if="userProfileImage" :src="userProfileImage" />
       <div class="user-info">
         <h2>{{ userFullName }}</h2>
         <h3>
@@ -55,11 +55,25 @@
 
     <AddressComponent @close="toggleMyAddresses" v-if="showAddresses" />
   </div>
+
+  <div v-else class="side-drawer">
+    <div class="no-user">
+      <div class="illustration">
+        <img src="@/assets/illustrations/no-orders.png" alt="">
+      </div>
+      <div class="content">
+        <h2>Looks like you're not logged in!</h2>
+        <p>Let's get you logged in?</p>
+      </div>
+      <SubmitButton default-text="Go To Login" @submit="navigateToLogin"/>
+    </div>
+  </div>
 </template>
 
 <script setup>
 // import ImageFrame from "../ImageFrame.vue";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue";
+import SubmitButton from "./SubmitButton.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -118,6 +132,15 @@ function goToEditProfile() {
   navigateTo({
     name: "EditProfile",
   });
+}
+
+function navigateToLogin() {
+  navigateTo({
+    name: "Login",
+    query: {
+      'redirection_url': router.currentRoute.fullPath,
+    }
+  })
 }
 
 function redirectToPath(pathName) {
@@ -277,6 +300,21 @@ section.logout {
   padding: 0 0 0;
 }
 
+.no-user {
+  text-align: center;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  width: calc(100% - 32px);
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  row-gap: 16px;
+}
+
 button.logout-btn {
   display: flex;
   background: var(--plain-white, #fff);
@@ -311,7 +349,7 @@ button.close-btn {
   box-sizing: border-box;
 }
 
-button.close-btn svg{
+button.close-btn svg {
   width: 24spx;
   height: 24px;
 }

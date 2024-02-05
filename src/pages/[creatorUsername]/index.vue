@@ -593,7 +593,7 @@
 <script setup>
 definePageMeta({
     name: "CreatorStore",
-    layout: "public",
+    layout: "parent-layout",
 });
 // import * as tracking from "../eventTracking";
 import {

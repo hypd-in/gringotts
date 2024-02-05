@@ -80,7 +80,7 @@ function goToOrders() {
     // trackingClickEvent("clicked_on_track_your_order");
     router.push("/orders");
   } else {
-    router.push({ name: "login", params: { redirect: "/orders" } });
+    router.push({ name: "Login", params: { redirect: "/orders" } });
   }
 }
 function downloadApp() {
