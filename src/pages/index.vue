@@ -406,7 +406,7 @@
     <a href="https://www.creator.hypd.store/login" id="CTAlink" target="_blank" hidden></a>
     <div class="header-wrapper-login">
       <div class="landing-page-header">
-        <div class="hypd-logo">HYPD.</div>
+        <div @click="track('landing_page:hypd_main_logo_click')" class="hypd-logo">HYPD.</div>
         <!-- <div class="header-login" @click="goToLogin">
           Login /<span class="wave-txt-1"> Join </span>
           <span class="wave-txt-2"> as </span>
@@ -430,7 +430,7 @@
         shop-able, get paid every time someone buys something from your store,
         boom!
       </div>
-      <button class="btn" @click="goToLogin">Join the Waitlist</button>
+      <button class="btn" @click="()=>goToLogin('landing_page:join_waitlist_1_click')">Join the Waitlist</button>
     </div>
     <section class="second-section-container">
       <div class="second-section">
@@ -590,11 +590,11 @@
           flex-wrap: wrap;
           padding: 0 0 16px 0;
         ">
-        <div class="link">
+        <div class="link" @click="track('landing_page:username_input_click')">
           <span> hypd.store/ </span>
-          <span class="link-second-part"> your_name </span>
+          <span class="link-second-part" > your_name </span>
         </div>
-        <button class="btn-2" @click="goToLogin">Join the Waitlist</button>
+        <button class="btn-2" @click="()=>goToLogin('landing_page:join_waitlist_2_click')">Join the Waitlist</button>
       </div>
     </section>
     <section class="forth-section">
@@ -830,7 +830,7 @@
         </div>
       </div>
       <div class="bottom-dock">
-        <button class="btn-2" @click="goToLogin">Join the Waitlist</button>
+        <button class="btn-2" @click="()=>goToLogin('landing_page:join_waitlist_3_click')">Join the Waitlist</button>
       </div>
     </section>
     <section class="footer-section">
@@ -903,6 +903,16 @@ definePageMeta({
   name: "Index",
   layout: "standalone"
 })
+let posthog
+const { $posthog } = useNuxtApp()
+if ($posthog) {
+   posthog = $posthog()
+  posthog.capture('user_landed_on_landing_page')
+}
+
+function track(event){
+  posthog.capture(event)
+}
 
 const route = useRoute();
 const router = useRouter();
@@ -1000,6 +1010,7 @@ const translateBubble = computed(() => {
 
 
 function goToOrders() {
+  track('landing_page:track_order_click')
   navigateTo({
     name: "Orders"
   })
@@ -1260,8 +1271,9 @@ function callback_8(entries) {
   });
 }
 
-function goToLogin() {
+function goToLogin(event) {
   // trackingClickEvent("clicked_on_join_the_waitlist");
+  track(event)
   document.getElementById("CTAlink").click();
 };
 

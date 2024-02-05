@@ -6,7 +6,34 @@
 
 <script setup>
 
-// import * as API from "@/utils/globalAPIs.js";
+
+// posthog server setup
+// import { useAsyncData, useCookie, useRuntimeConfig } from 'nuxt/app';
+// import { PostHog } from 'posthog-node';
+
+// const { data: someData, error } = await useAsyncData('ctaText', async () => {
+//   const runtimeConfig = useRuntimeConfig();
+//   const posthog = new PostHog(
+//     runtimeConfig.public.posthogPublicKey,
+//     { host: runtimeConfig.public.posthogHost }
+//   );
+
+//   const cookies = useCookie(`ph_${runtimeConfig.public.posthogPublicKey}_posthog`);
+//   if (cookies && cookies.value) {
+//     try {
+//       const distinctId = cookies.value.distinct_id; // or you can use your user's email, for example.
+//       posthog.capture({
+//         distinctId: distinctId,
+//         event: 'user_did_something"',
+//       })
+//       await posthog.shutdownAsync()
+//     } catch (error) {
+//       console.log(error);
+//     }
+//   }
+//   return "Some data";
+// });
+// posthog ends
 
 import { clearLocalCartItems } from "@/utils/cartMethods.js"
 
