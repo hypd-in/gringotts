@@ -225,42 +225,42 @@ const showError = ref(false);
 const featuredIn = ref([
   {
     alt: "YourStory",
-    img: "/_nuxt/assets/media/yourstory.png",
+    img: "/media/yourstory.png",
     link: "https://yourstory.com/2021/02/funding-alert-hypd-store-raises-pre-seed-investment",
   },
   {
     alt: "Tech in Asia",
-    img: "/_nuxt/assets/media/techinasia.png",
+    img: "/media/techinasia.png",
     link: "https://www.techinasia.com/indian-ecommerce-platform-hypd-bags-pre-seed-money-scoopwhoop",
   },
   {
     alt: "Entrepreneur India",
-    img: "/_nuxt/assets/media/entrepreneurindia.png",
+    img: "/media/entrepreneurindia.png",
     link: "https://www.entrepreneur.com/article/365308",
   },
   {
     alt: "The Startup Lab",
-    img: "/_nuxt/assets/media/startuplab.png",
+    img: "/media/startuplab.png",
     link: "https://thestartuplab.in/content-to-commerce-discovery-platform-hypd-store-raises-pre-seed-investment-from-scoopwhoop/",
   },
   {
     alt: "Next Big Brand",
-    img: "/_nuxt/assets/media/nbb.png",
+    img: "/media/nbb.png",
     link: "https://www.nextbigbrand.in/hypd-store-a-content-based-commerce-platform-raises-pre-seed-investment-from-scoopwhoop/",
   },
   {
     alt: "Bwdisrupt",
-    img: "/_nuxt/assets/media/bwdisrupt.png",
+    img: "/media/bwdisrupt.png",
     link: "http://bwdisrupt.businessworld.in/article/Hypd-Store-Raises-Pre-seed-Strategic-Investment-From-ScoopWhoop/11-02-2021-376502/",
   },
   {
     alt: "TechCircle",
-    img: "/_nuxt/assets/media/techcircle.png",
+    img: "/media/techcircle.png",
     link: "https://www.techcircle.in/2021/02/12/hypd-store-payme-india-raise-funding#utm_source=twitter&utm_medium=social&utm_campaign=HYPD%20Store,%20PayMe%20India%20raise%20funding",
   },
   {
     alt: "VC Circle",
-    img: "/_nuxt/assets/media/vccircle.png",
+    img: "/media/vccircle.png",
     link: "https://www.vccircle.com/hypd-store-payme-india-raise-funding#utm_source=twitter&utm_medium=social&utm_campaign=HYPD%20Store,%20PayMe%20India%20raise%20funding",
   },
 ]);

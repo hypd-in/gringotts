@@ -50,7 +50,7 @@
     </section>
 
     <button v-if="!showAddresses" @click="emit('closeDrawer')" class="close-btn">
-      <img src="~/assets//icons/misc/close.svg" alt="">
+      <img src="~/assets/icons/misc/close.svg" alt="">
     </button>
 
     <AddressComponent @close="toggleMyAddresses" v-if="showAddresses" />
