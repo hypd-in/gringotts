@@ -17,7 +17,7 @@
       </NuxtLink>
       <div @click="toggleWishlist" class="wishlist-icon" v-if="!isAffiliate" v-html="wishlistIcon"></div>
       <NuxtLink :to="goToProduct">
-        <NuxtImg class="featured-image" :src="optimizeImage(productImage, 550)" :placeholder="[50, 25, 75, 5]" />
+        <ImageFrame class="featured-image" :src="getReplacedSource(productImage, 450)"/>
         <!-- <ImageFrame /> -->
       </NuxtLink>
     </div>
@@ -52,7 +52,7 @@
 </template>
 
 <script setup>
-// import ImageFrame from "@/components/ImageFrame.vue";
+import ImageFrame from "~/components/ImageFrame.vue";
 import {
   convertToINR,
   optimizeImage,
@@ -165,7 +165,7 @@ const isLowInStock = computed(() => {
 });
 
 const productImage = computed(() => {
-  return props.itemInfo?.featured_image?.src || props.itemInfo?.image || null;
+  return getReplacedSource(props.itemInfo?.featured_image?.src, 350) || getReplacedSource(props.itemInfo?.image, 350) || null;
 });
 
 const brandName = computed(() => {
@@ -279,6 +279,7 @@ async function toggleWishlist() {
   width: 100%;
   min-width: 160px;
   height: 240px;
+  min-height: 240px;
   border-radius: 12px;
   overflow: hidden;
   object-fit: cover;

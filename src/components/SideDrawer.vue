@@ -1,8 +1,10 @@
 <template>
   <div class="side-drawer" v-if="store.user?.id">
     <section class="user-info-wrapper">
-      <NuxtImg class="profile-image" style="border-radius: 16px; object-fit: cover;" :placeholder="[30, 30, 50, 20]"
-        v-if="userProfileImage" :src="userProfileImage" />
+      <ClientOnly>
+        <ImageFrame class="profile-image"
+          v-if="userProfileImage" :src="userProfileImage" />
+      </ClientOnly>
       <div class="user-info">
         <h2>{{ userFullName }}</h2>
         <h3>
@@ -74,9 +76,10 @@
 </template>
 
 <script setup>
-// import ImageFrame from "../ImageFrame.vue";
 import AddressComponent from "@/components/UserAddresses/AddressComponent.vue";
 import SubmitButton from "./SubmitButton.vue";
+import ImageFrame from "./ImageFrame.vue";
+import { getReplacedSource } from "@/utils/helperMethods";
 
 const route = useRoute();
 const router = useRouter();
@@ -86,7 +89,7 @@ const emit = defineEmits(["closeDrawer"]);
 
 const userProfileImage = computed(() => {
   if (store.user?.profile_image?.src) {
-    return getReplacedSource(store.user?.profile_image?.src);
+    return getReplacedSource(store.user?.profile_image?.src, 200);
   } else {
     return "/illustrations/default_user.png"
   }
@@ -203,6 +206,8 @@ async function logout() {
   width: 70px;
   height: 70px;
   aspect-ratio: 1/1;
+  border-radius: 16px;
+  object-fit: cover;
 }
 
 h1,

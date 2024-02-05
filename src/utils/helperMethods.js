@@ -20,7 +20,7 @@ export function optimizeImage(imageURL, resolution) {
   }
 }
 
-export function getReplacedSource(source) {
+export function getReplacedSource(source, height) {
   let newhostName;
   const filter = "/filters:strip_exif";
   if (process.env.NODE_ENV != "production") {
@@ -29,11 +29,25 @@ export function getReplacedSource(source) {
     newhostName = "cdn.hypd.store";
   }
   let hostName = "d3d92s7oewgbjx.cloudfront.net";
+  let hostName2 = "dmk9je7eclmvw.cloudfront.net";
   if (source?.includes(hostName)) {
     let newURL = source.replace(hostName, newhostName);
 
     if (newURL.includes(filter)) {
       newURL = newURL + "?height=" + "550";
+      if (height > 0) {
+        newURL = newURL + "?height=" + height;
+      }
+    }
+    return newURL;
+  } else if (source?.includes(hostName2)) {
+    let newURL = source.replace(hostName2, newhostName);
+
+    if (newURL.includes(filter)) {
+      newURL = newURL + "?height=" + "550";
+      if (height > 0) {
+        newURL = newURL + "?height=" + height;
+      }
     }
     return newURL;
   } else {
