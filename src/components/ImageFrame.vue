@@ -1,20 +1,14 @@
 <template>
   <figure class="image-holder">
-    <img
-      :style="{
-        'border-radius': border_radius ? border_radius : '0',
-        'object-fit': objectFit ? objectFit : 'cover',
-      }"
-      :class="{
-        'blur-fade-in': !loading,
-        'padding-left': firstChild,
-        'padding-right': lastChild,
-        'blur-img-effect': loading,
-      }"
-      ref="dp"
-      style="height: 100%; width: 100%;"
-      :alt="alt"
-    />
+    <img :style="{
+      'border-radius': border_radius ? border_radius : '0',
+      'object-fit': objectFit ? objectFit : 'cover',
+    }" :class="{
+  'blur-fade-in': !loading,
+  'padding-left': firstChild,
+  'padding-right': lastChild,
+  'blur-img-effect': loading,
+}" ref="dp" style="height: 100%; width: 100%;" :alt="alt" />
   </figure>
 </template>
 
@@ -60,7 +54,7 @@ export default {
       this.src_details =
         this.src.split("?height")[0] + "?height=8";
     } else if (this.src.includes(this.$cdn)) {
-      this.src_details = this.src+"?height=8";
+      this.src_details = this.src + "?height=8";
     } else {
       return this.src;
     }
@@ -112,10 +106,12 @@ export default {
 .circle {
   border-radius: 50%;
 }
+
 .image-holder {
   height: 100%;
   width: 100%;
 }
+
 figure {
   margin: 0;
   padding: 0;
@@ -127,25 +123,31 @@ figure {
   justify-content: center;
   overflow: hidden;
 }
+
 figure img {
   height: 100%;
   width: 100%;
 }
+
 .blur-img-effect {
   border-radius: 20px;
   filter: blur(5px);
 }
+
 .blur-fade-in {
   border-radius: 20px;
   filter: none;
 }
+
 .rolling-loader {
   height: 32px !important;
   width: 32px !important;
 }
+
 .padding-left {
   padding-left: 16px;
 }
+
 .padding-right {
   padding-right: 16px;
 }
