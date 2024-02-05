@@ -119,6 +119,7 @@ async function routeToPath(pathName) {
         creatorUsername: await getCreatorUserName(),
       },
     });
+    emit("close");
     return;
   } else if(pathName == 'MyAddresses'){
     toggleAddressComponent();
@@ -126,6 +127,7 @@ async function routeToPath(pathName) {
     navigateTo({
       name: pathName,
     });
+    emit("close");
   }
 }
 </script>
