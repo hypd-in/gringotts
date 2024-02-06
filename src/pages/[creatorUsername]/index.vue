@@ -14,7 +14,7 @@
                     <div class="creator-info">
                         <!-- Desktop view -->
                         <div class="creator-info-container desktop">
-                            <div class="creator-dp">
+                            <div class="creator-dp" @click="trackCreatorProfileClick">
                                 <img :src="getReplacedSource(creatorProfilePic)" :alt="creator.name" />
                             </div>
                             <div class="creator-title-wrapper">
@@ -34,7 +34,7 @@
                                     </button>
                                 </div>
                                 <div>
-                                    <div class="followers-section">
+                                    <div class="followers-section" @click="trackCreatorFollowers">
                                         <span class="count mr-6">{{ creatorFollowers }}</span>
                                         Followers
                                     </div>
@@ -47,7 +47,7 @@
                         </div>
                         <!-- Mobile view -->
                         <div class="creator-profile-container mobile">
-                            <div class="creator-dp">
+                            <div class="creator-dp" @click="trackCreatorProfileClick">
                                 <img :src="getReplacedSource(creatorProfilePic)" :alt="creator.name" />
                             </div>
                             <div class="creator-title-wrapper">
@@ -60,7 +60,7 @@
                                         }}
                                     </div>
                                 </div>
-                                <div class="followers-section">
+                                <div class="followers-section" @click="trackCreatorFollowers">
                                     <span class="count mr-6">{{ creatorFollowers }}</span>
                                     Followers
                                 </div>
@@ -607,6 +607,7 @@ import { Carousel, Slide } from "vue3-carousel";
 
 import collections from "./collections.vue";
 import spotlight from "./spotlight.vue";
+import track from "~/utils/tracking-posthog";
 
 const route = useRoute();
 const router = useRouter();
@@ -659,10 +660,33 @@ const botd = ref(true);
 const botdData = ref([]);
 const current_slide = ref(0);
 
+
+let trackingDetails = {}
+
 // computed
 const creatorProfilePic = computed(() => {
     return optimizeImage(creator.value?.profile_image?.src, 350);
 });
+
+function trackCreatorFollowButton() {
+    track("creator_store:follow_button_click", {
+        ...trackingDetails,
+        followers_count: creatorFollowers.value
+    })
+}
+
+function trackCreatorFollowers() {
+    track("creator_store:followers_click", {
+        ...trackingDetails,
+        followers_count: creatorFollowers.value
+    })
+}
+
+function trackCreatorProfileClick() {
+    track('creator_store:profile_image_click', {
+        ...trackingDetails
+    })
+}
 
 function readMore() {
     window.open(
@@ -671,6 +695,12 @@ function readMore() {
 }
 
 function redirectToBWB(path) {
+
+    track('creator_store:bwb_click', {
+        ...trackingDetails,
+        bwb_name: path
+    })
+
     let url = path.split(runtimeConfig.public.base)[1];
     window.open(`${runtimeConfig.public.base}/${creatorStore.info.username}${url}`, "_self");
 }
@@ -722,6 +752,20 @@ function updateCarousel(payload) {
 
 function changeTab(options) {
 
+
+    if (options == 'collections') {
+        track('creator_store:collection_tab_click', {
+            creator_name: creatorStore.info.name,
+            creator_username: creatorStore.info.username,
+        })
+    } else {
+        track('creator_store:spotlight_tab_click', {
+            creator_name: creatorStore.info.name,
+            creator_username: creatorStore.info.username,
+        })
+    }
+
+
     router.replace({
         name: "CreatorStore", params: {
             creatorUsername: route.params.creatorUsername
@@ -736,6 +780,7 @@ function changeTab(options) {
 }
 
 function follow_author() {
+    trackCreatorFollowButton()
     if (props.user) {
         if (!creator.value.is_followed_by_user) {
             $fetch(
@@ -827,6 +872,14 @@ async function getBOTD() {
 }
 
 onMounted(() => {
+    trackingDetails = {
+        creator_name: creatorStore.info.name,
+        creator_username: route.params.creatorUsername,
+    }
+    track('creator_store:visit', {
+        ...trackingDetails
+    })
+
     router.replace({
         name: "CreatorStore", params: {
             creatorUsername: route.params.creatorUsername
@@ -843,11 +896,11 @@ onBeforeMount(() => {
 });
 </script>
 <style scoped>
-
-.creator-store{
-    max-width:1180px;
+.creator-store {
+    max-width: 1180px;
     margin: 0 auto;
 }
+
 /* funding news css */
 .emoji-text {
     display: flex;
@@ -1433,9 +1486,10 @@ section.carousel :deep(ol) {
 
 @media screen and (max-width: 480px) {
 
-    .sticky-container{
+    .sticky-container {
         top: 48px !important;
     }
+
     .botd {
         margin: 0 auto;
         width: calc(100%);

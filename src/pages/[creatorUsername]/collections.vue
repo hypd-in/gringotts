@@ -1,6 +1,7 @@
 <template>
   <div class="collections">
-    <CollectionComponent v-for="collection in creatorStore.collectionInfo.collections" :key="collection.id" :item="collection" />
+    <CollectionComponent src="creator-store-collections" v-for="collection in creatorStore.collectionInfo.collections" :key="collection.id"
+      :item="collection" />
     <div class="target" ref="target"></div>
   </div>
 </template>
@@ -9,6 +10,7 @@
 
 import CollectionComponent from '~/components/CollectionComponent.vue';
 import { addingObserver } from "~/utils/helperMethods";
+import track from '~/utils/tracking-posthog';
 
 const collectionPage = ref(0)
 const collections = ref([])
@@ -18,6 +20,8 @@ let observer
 
 const runtimeConfig = useRuntimeConfig()
 const creatorStore = useCreatorStore()
+
+
 
 async function getCollections() {
   try {
@@ -69,6 +73,11 @@ onMounted(() => {
   if (target.value) {
     observer = addingObserver(target.value, callback);
   }
+
+  track('creator_store_collection:visit', {
+    creator_name: creatorStore.info.name,
+    creator_username: creatorStore.info.username,
+  })
 })
 
 </script>

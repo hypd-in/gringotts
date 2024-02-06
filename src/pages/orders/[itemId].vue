@@ -279,13 +279,6 @@ const statusBasedText = ref({
   }
 })
 
-onMounted(() => {
-  track('order_item:visit', {
-    order_no: store.orderDetails.order_id,
-    item_id: store.orderDetails.item.id,
-    brand_id: store.orderDetails.brand_id
-  })
-})
 
 function cancelOrderPopup() {
   track("order_item:item_cancel_click", {
@@ -460,6 +453,11 @@ async function fetchSimilarProducts(id) {
 
 onBeforeMount(async () => {
   await fetchOrderDetails();
+  track('order_item:visit', {
+    order_no: store.orderDetails?.order_id,
+    item_id: store.orderDetails.item?.id,
+    brand_id: store.orderDetails?.brand_id
+  })
 })
 </script>
 

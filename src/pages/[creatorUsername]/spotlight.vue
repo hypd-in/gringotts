@@ -1,13 +1,14 @@
 <template>
       <div class="spotlight">
-            <Product v-for="product in creatorStore.spotlight" :key="product?.id" :itemInfo="product" origin="creator-store"
-                  source="creator-store" />
+            <Product src="creator-store-spotlight" v-for="product in creatorStore.spotlight" :key="product?.id"
+                  :itemInfo="product" origin="creator-store" source="creator-store" />
       </div>
 </template>
   
 <script setup>
 
 import Product from "~/components/ProductComponents/ProductCard.vue";
+import track from "~/utils/tracking-posthog";
 
 const runtimeConfig = useRuntimeConfig()
 const creatorStore = useCreatorStore()
@@ -102,6 +103,11 @@ onMounted(() => {
       else {
             getCatalogIds()
       }
+
+      track('creator_store_spotlight:visit', {
+            creator_name: creatorStore.info.name,
+            creator_username: creatorStore.info.username,
+      })
 })
 
 </script>
