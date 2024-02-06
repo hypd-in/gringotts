@@ -233,6 +233,7 @@ const goToProduct = computed(() => {
       name: "CreatorProduct",
       params: {
         id: props.itemInfo?.id,
+        creatorUsername: 'hypd_store',
       },
       query: {
         title: props.itemInfo?.name,

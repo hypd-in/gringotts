@@ -108,6 +108,7 @@
 definePageMeta({
   name: "Login",
   layout: "standalone",
+  middleware: "auth",
   scrollToTop: true,
 });
 import { fetchUserInfo, fetchCartInfo } from "~/utils/globalAPIs";

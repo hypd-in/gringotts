@@ -164,14 +164,6 @@ async function moveItemToWishlist() {
 </script>
 
 <style scoped>
-.backdrop {
-  z-index: 41;
-}
-
-.bottom-sheet-container {
-  z-index: 42;
-  max-width: 420px;
-}
 
 .upper-section {
   display: grid;
