@@ -109,7 +109,6 @@
 definePageMeta({
   name: "Login",
   layout: "standalone",
-  middleware: "auth",
   scrollToTop: true,
 });
 import { fetchUserInfo, fetchCartInfo } from "~/utils/globalAPIs";
@@ -334,6 +333,14 @@ const startTimer = () => {
     }
   }, 1000);
 };
+
+onMounted(() => {
+  if (store.user?.id && redirect.value) {
+    navigateTo({
+      path: redirect.value,
+    })
+  }
+})
 </script>
 
 <style scoped>

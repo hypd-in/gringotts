@@ -1,5 +1,5 @@
 <template>
-      <div class="spotlight">
+      <div class="product-listing-wrapper">
             <Product src="creator-store-spotlight" v-for="product in creatorStore.spotlight" :key="product?.id"
                   :itemInfo="product" origin="creator-store" source="creator-store" />
       </div>
@@ -111,15 +111,3 @@ onMounted(() => {
 })
 
 </script>
-  
-<style scoped>
-.spotlight {
-      min-height: calc(100dvh - 350px);
-      margin: 20px 12px 0;
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-      gap: 32px;
-      justify-items: center;
-      padding: 0 0 32px;
-}
-</style>

@@ -4,6 +4,14 @@
     <div class="orders-listing">
       <OrderCard :orderInfo="order" v-for="order in store.orders.userOrders" :key="order.id" />
     </div>
+    <div v-if="fetchingOrders" style="display: flex; justify-content: center">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
 
     <div class="pagination-element" ref="target"></div>
   </div>
@@ -14,24 +22,23 @@ import OrderCard from "@/components/OrderListing/OrderCard.vue";
 
 import track from "../../utils/tracking-posthog"
 
+const route = useRoute();
+
 definePageMeta({
   name: "Orders",
   layout: "parent-layout",
-  middleware: "auth"
-})
-
-onMounted(()=>{
-  track("order:visit")
 })
 
 const observer = ref(null);
 const target = ref(null);
 const config = useRuntimeConfig();
+const fetchingOrders = ref(false);
 
 const store = useStore();
 
 async function fetchUserOrders() {
   if (store.user.id) {
+    fetchingOrders.value = true;
     await $fetch(`${config.public.orderURL}/api/order/user`, {
       method: "POST",
       credentials: "include",
@@ -52,6 +59,9 @@ async function fetchUserOrders() {
       } else {
         observer.value.unobserve(target.value);
       }
+      fetchingOrders.value = false;
+    }).catch((error) => {
+      console.log("Error fetching User Orders", error);
     })
   }
 }
@@ -65,9 +75,21 @@ async function callback(entries) {
 }
 
 onMounted(async () => {
+  fetchingOrders.value = true;
+  var user = await fetchUserInfo();
+  if (!user?.id) {
+    navigateTo({
+      name: "Login",
+      query: {
+        redirection_url: route.fullPath,
+      }
+    })
+  }
   if (target.value) {
     observer.value = addingObserver(target.value, callback)
   }
+
+  track("order:visit")
 })
 </script>
 
@@ -103,4 +125,63 @@ h2.heading {
   line-height: 32px;
   padding: 0 16px 16px;
 }
+
+
+/* Loader Start*/
+.lds-ellipsis {
+  display: inline-block;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ellipsis div {
+  position: absolute;
+  top: 33px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: rgb(153, 153, 153);
+  animation-timing-function: cubic-bezier(0, 1, 1, 0);
+}
+.lds-ellipsis div:nth-child(1) {
+  left: 8px;
+  animation: lds-ellipsis1 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(2) {
+  left: 8px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(3) {
+  left: 32px;
+  animation: lds-ellipsis2 0.6s infinite;
+}
+.lds-ellipsis div:nth-child(4) {
+  left: 56px;
+  animation: lds-ellipsis3 0.6s infinite;
+}
+@keyframes lds-ellipsis1 {
+  0% {
+    transform: scale(0);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+@keyframes lds-ellipsis3 {
+  0% {
+    transform: scale(1);
+  }
+  100% {
+    transform: scale(0);
+  }
+}
+@keyframes lds-ellipsis2 {
+  0% {
+    transform: translate(0, 0);
+  }
+  100% {
+    transform: translate(24px, 0);
+  }
+}
+/* Loader End*/
 </style>
