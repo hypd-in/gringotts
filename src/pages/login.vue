@@ -78,7 +78,7 @@
               <span @click="resendCode" :class="{ 'disabled-resend': timer > 0 }">
                 Resend Code</span>
             </div>
-            <SubmitButton defaultText="Send OTP" :loading="submittingOTP" class="submit-btn" :disabled="checkOTP" />
+            <SubmitButton :defaultText="submitButtonText" :loading="submittingOTP" class="submit-btn" :disabled="checkOTP" />
             <p class="tnc">
               By continuing, I agree to the <span>Terms of Use</span> &<br />
               <span> Policy</span>
@@ -134,6 +134,10 @@ const generatingOTP = ref(false);
 const checkOTP = computed(() => {
   return otpInputs.value?.otp?.length !== 6;
 });
+
+const submitButtonText = computed(() => {
+  return enterOTP.value ? "Confirm OTP" : "Send OTP";
+})
 const disabledBtn = computed(() => {
   if (phone_no.value?.toString()?.length == 10) {
     return true;
