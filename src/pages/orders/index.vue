@@ -11,11 +11,19 @@
 
 <script setup>
 import OrderCard from "@/components/OrderListing/OrderCard.vue";
+
+import track from "../../utils/tracking-posthog"
+
 definePageMeta({
   name: "Orders",
   layout: "parent-layout",
   middleware: "auth"
 })
+
+onMounted(()=>{
+  track("order:visit")
+})
+
 const observer = ref(null);
 const target = ref(null);
 const config = useRuntimeConfig();
