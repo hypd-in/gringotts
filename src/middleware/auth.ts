@@ -1,7 +1,9 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  await fetchUserInfo();
+  const user = await fetchUserInfo();
+  console.log("Middleware", user);
+  
   const sessionCookie = useCookie("session");
-  if (!sessionCookie.value) {
+  if (!sessionCookie.value && !user?.id) {
     return navigateTo({
       name: "Login",
       query: {
