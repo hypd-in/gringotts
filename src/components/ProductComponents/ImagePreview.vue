@@ -95,7 +95,7 @@ function changeImage(type) {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  z-index: 42;
+  z-index: 55;
   max-width: 1080px;
 
   background: var(--plain-white);

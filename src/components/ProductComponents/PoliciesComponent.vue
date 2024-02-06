@@ -1,28 +1,11 @@
 <template>
   <div class="policies-wrapper">
-    <section
-      class="policy-section"
-      v-for="(policy, index) in brandInfo.policies"
-      :key="index"
-    >
+    <section class="policy-section" v-for="(policy, index) in brandInfo.policies" :key="index">
       <div class="policy-heading" @click="expandPolicy(policy)">
         <h3>{{ policy.name }}</h3>
-        <svg
-          class="arrow"
-          width="14"
-          height="7"
-          viewBox="0 0 14 7"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-        >
-          <path
-            d="M1.72003 0.966675L6.0667 5.31334C6.58003 5.82668 7.42003 5.82668 7.93336 5.31334L12.28 0.966675"
-            stroke="#13141B"
-            stroke-width="1.5"
-            stroke-miterlimit="10"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-          />
+        <svg class="arrow" width="14" height="7" viewBox="0 0 14 7" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M1.72003 0.966675L6.0667 5.31334C6.58003 5.82668 7.42003 5.82668 7.93336 5.31334L12.28 0.966675"
+            stroke="#13141B" stroke-width="1.5" stroke-miterlimit="10" stroke-linecap="round" stroke-linejoin="round" />
         </svg>
       </div>
       <transition name="expand-down">
@@ -42,6 +25,8 @@
 </template>
 
 <script setup>
+import track from '~/utils/tracking-posthog';
+
 const expandedPolicies = ref({});
 const brandInfo = ref({});
 const product = useProductStore();
@@ -51,7 +36,7 @@ if (product.info?.brand_id) {
   const { data: brand, pending: fetchingBrandInfo } = await useFetch(
     `${runtimeConfig.public.entityURL}/api/app/brand/${product.info.brand_id}`,
     {
-      key:'brand_info',
+      key: 'brand_info',
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -69,6 +54,30 @@ const productInfo = computed(() => {
 });
 
 function expandPolicy(policy) {
+  let trackingDetails = {
+    item_id: product.info.id,
+    brand_id: product.info.brand_id,
+  }
+  if (policy.name == 'Return Policy') {
+    track('pdp:return_policy_click', {
+      ...trackingDetails
+    })
+  } else if (policy.name == 'Refund Policy') {
+    track('pdp:refund_policy_click', {
+      ...trackingDetails
+    })
+  }
+  else if (policy.name == 'Cancellation Policy') {
+    track('pdp:cancellation_policy_click', {
+      ...trackingDetails
+    })
+  }
+  else if (policy.name == 'Shipping Policy') {
+    track('pdp:shipping_policy_click', {
+      ...trackingDetails
+    })
+  }
+
   if (!!expandedPolicies.value[policy.name]) {
     delete expandedPolicies.value[policy.name];
   } else {
@@ -81,6 +90,7 @@ function expandPolicy(policy) {
 .policies-wrapper {
   padding: 0;
 }
+
 section {
   padding: 16px;
   box-sizing: border-box;
@@ -88,12 +98,14 @@ section {
   background: var(--plain-white, #fff);
   cursor: pointer;
 }
+
 .policy-heading {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 16px;
 }
+
 h3 {
   margin: 0;
   color: #000;
@@ -135,6 +147,7 @@ li {
 .expand-down-enter-active {
   transition: all 0.45s ease-in-out;
 }
+
 .expand-down-leave-active {
   transition: all 0.35s ease-in-out;
 }

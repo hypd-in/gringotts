@@ -32,6 +32,8 @@
 </template>
 
 <script setup>
+import track from '~/utils/tracking-posthog';
+
 // import { computed, onUpdated, watch } from "vue";
 
 const product = useProductStore();
@@ -50,10 +52,17 @@ const variantType = computed(() => {
 //     store.dispatch("product/updateProductInfo", {
 //       selected_variant: newValue[0],
 //     });
-//   }
+//   } 
 // });
 
 function selectVariant(variant) {
+
+  track('pdp:variant_click', {
+    item_id:product.info.id,
+    brand_id:product.info.brand_id,
+    variant_id:variant.id,
+  })
+
   if (variant.id == product.info?.selected_variant?.id) {
     return;
   } else {

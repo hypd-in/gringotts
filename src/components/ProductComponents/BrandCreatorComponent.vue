@@ -53,6 +53,7 @@
 <script setup>
 import { getCreatorUserName } from "~/utils/helperMethods";
 import ImageFrame from "../ImageFrame.vue";
+import track from "~/utils/tracking-posthog";
 const route = useRoute();
 const router = useRouter();
 const productStore = useProductStore();
@@ -73,7 +74,12 @@ const creatorImage = computed(() => {
 });
 
 async function goToBrandPage() {
+  track('pdp:visit_brand_click', {
+    item_id: productStore.info.id,
+    brand_id: productStore.info.brand_id
+  })
   var creatorUsername = await getCreatorUserName();
+
   if (brandInfo.value?.username) {
     navigateTo({
       name: "BrandProfile",
@@ -90,6 +96,13 @@ async function goToBrandPage() {
 
 async function goToCreatorStore() {
   var creatorUsername = creatorStore.info?.username || await getCreatorUserName();
+
+  track('pdp:visit_creator_click', {
+    item_id: productStore.info.id,
+    brand_id: productStore.info.brand_id,
+    creator_username:creatorUsername
+  })
+
   navigateTo({
     name: "CreatorStore",
     params: {
