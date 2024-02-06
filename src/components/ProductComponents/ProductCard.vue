@@ -268,6 +268,13 @@ function trackProductNavigation() {
       collection_id: route.params.collectionId
     })
   }
+  else if (props.src == 'pdp') {
+    track('pdp:similar_product_click', {
+      brand_id:props.itemInfo.brand_id,
+      product_id:props.itemInfo.id,
+    })
+  }
+  
 }
 
 function buttonAction() {

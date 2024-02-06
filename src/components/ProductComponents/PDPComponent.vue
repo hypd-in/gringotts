@@ -89,7 +89,7 @@
           <PDPButtons @getVariant="toggleVariantSelector" class="mobile-btns" />
         </div>
       </div>
-      <SimilarProducts :products="similarProducts" heading="Similar Products" />
+      <SimilarProducts src="pdp" :products="similarProducts" heading="Similar Products" />
     </div>
     <!-- <Footer /> -->
   </div>
@@ -108,6 +108,8 @@ import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorCo
 import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
 // import { trackingViewItems } from "../../eventTracking.js";
 
+import track from "~/utils/tracking-posthog";
+
 const route = useRoute();
 const router = useRouter();
 const config = useRuntimeConfig();
@@ -123,6 +125,9 @@ const showVariantSelector = ref(false);
 const timeout = ref(null);
 const productImagesRef = ref(null);
 const similarProducts = ref([]);
+
+let trackingDetails = {}
+
 const productInfo = computed(() => {
   return product.info;
 });
@@ -197,6 +202,17 @@ onMounted(async () => {
   if (productInfo.value?.id) {
     await getProductOffers();
   }
+
+  trackingDetails = {
+    item_id: productInfo.value.id,
+    brand_id: productInfo.value.brand_id,
+  }
+
+  track('pdp:visit', {
+    ...trackingDetails,
+    creator_username: route.params?.creatorUsername
+  })
+
 });
 
 async function getProductOffers() {
@@ -259,6 +275,10 @@ function toggleDescription() {
 }
 
 function openImagePreview(index) {
+  track('pdp:product_image_click', {
+    ...trackingDetails,
+    creator_username: route.params?.creatorUsername
+  })
   activeImageIndex.value = index;
 }
 

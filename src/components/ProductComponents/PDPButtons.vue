@@ -13,6 +13,7 @@ import Button from "@/components/SubmitButton.vue";
 // import { trackingAddToCart } from "@/eventTracking";
 import { computed, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import track from "~/utils/tracking-posthog";
 
 const route = useRoute();
 const store = useStore();
@@ -47,6 +48,13 @@ const addToCartText = computed(() => {
 });
 
 async function toggleWishlist() {
+
+  track('pdp:wishlist_button_click', {
+    item_id: productStore.info.id,
+    brand_id: productStore.info.brand_id,
+    variant_id: productStore.info.selected_variant.id,
+  })
+
   if (!isWishlisted.value) {
     var itemInfo = {
       ...productStore.info,
@@ -61,6 +69,11 @@ async function toggleWishlist() {
   }
 }
 async function addToCart() {
+  track('pdp:add_to_cart_click', {
+    item_id: productStore.info.id,
+    brand_id: productStore.info.brand_id,
+    variant_id: productStore.info.selected_variant.id,
+  })
   if (!productStore.info?.selected_variant?.id) {
     emit("getVariant");
     return;
@@ -109,6 +122,14 @@ async function addToCart() {
 }
 
 function buyNow() {
+
+  track(' pdp:buy_now_click', {
+    item_id: productStore.info.id,
+    brand_id: productStore.info.brand_id,
+    variant_id: productStore.info.selected_variant.id,
+  })
+
+
   if (!productStore.info?.selected_variant?.id) {
     emit("getVariant");
     return;

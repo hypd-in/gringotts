@@ -2,14 +2,8 @@
   <div class="similar-products-wrapper" v-if="products?.length > 0">
     <h3>Similar Products</h3>
     <div class="horizontal-listing">
-      <ProductCard
-        class="product-card"
-        :itemInfo="product"
-        origin="similar_products"
-        source="product_page"
-        v-for="product in products"
-        :key="product.id"
-      />
+      <ProductCard :src="src" class="product-card" :itemInfo="product" origin="similar_products" source="product_page"
+        v-for="product in products" :key="product.id" />
     </div>
   </div>
 </template>
@@ -17,10 +11,13 @@
 <script setup>
 import ProductCard from "~/components/ProductComponents/ProductCard.vue";
 
+
 const route = useRoute();
 const productStore = useProductStore();
 const config = useRuntimeConfig();
 const products = ref([]);
+
+const props = defineProps(['src'])
 
 if (route.params.id) {
   const { data } = await useFetch(
@@ -53,6 +50,7 @@ if (route.params.id) {
   box-sizing: border-box;
   margin: 12px 0;
 }
+
 h3 {
   margin: 0;
   padding: 16px;
@@ -62,6 +60,7 @@ h3 {
   line-height: 21px;
   letter-spacing: 0.2px;
 }
+
 .horizontal-listing {
   display: flex;
   align-items: flex-start;
@@ -69,14 +68,17 @@ h3 {
   overflow: auto hidden;
   padding: 0 16px 16px;
 }
+
 .horizontal-listing::-webkit-scrollbar {
   height: 3px;
   width: 3px;
   background: #dedede;
 }
+
 .horizontal-listing::-webkit-scrollbar-thumb {
   background: var(--primary-dark);
 }
+
 .product-card {
   min-width: 160px;
 }
