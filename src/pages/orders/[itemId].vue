@@ -48,7 +48,7 @@
             <p class="status-subheading">{{ statusBasedText[orderStatus]?.text }}</p>
           </section>
           <section class="help">
-            <button>Cancel</button>
+            <button @click="cancelOrderPopup">Cancel</button>
             <div class="seperator"></div>
             <button @click="navigateToContactUs">Need Help</button>
           </section>
@@ -129,7 +129,7 @@
     <section class="similar-products" v-if="similarProducts?.length">
       <h2 class="section-heading">Products you might like</h2>
       <div class="product-listing horizontal-listing">
-        <ProductCard :itemInfo="product" v-for="product in similarProducts" :creator="creatorInfo" :key="product.id" />
+        <ProductCard src="order-detail-page" :itemInfo="product" v-for="product in similarProducts" :creator="creatorInfo" :key="product.id" />
       </div>
     </section>
 
@@ -139,6 +139,9 @@
 
 <script setup>
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
+
+import track from "../../utils/tracking-posthog"
+
 definePageMeta({
   name: "OrderDetails",
   layout: "default",
@@ -276,13 +279,42 @@ const statusBasedText = ref({
   }
 })
 
+onMounted(() => {
+  track('order_item:visit', {
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id
+  })
+})
+
+function cancelOrderPopup() {
+  track("order_item:item_cancel_click", {
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id,
+    current_status: store.orderDetails.order_status.code
+  })
+}
+
 function openTracking() {
+  track('order_item:item_track_order', {
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id
+  })
+
   navigateTo({
     name: "OrderTracking",
   })
 }
 
 function navigateToContactUs() {
+  track('order_item:item_need_help', {
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id,
+    current_status: store.orderDetails.order_status.code
+  })
   navigateTo({
     name: "ContactUs",
   })
@@ -310,6 +342,13 @@ function formatDateWithTime(statusDate) {
 }
 
 async function downloadReceipt() {
+
+  track('order_item:download_receipt_click',{
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id,
+  })
+
   try {
     downlaodingInvoice.value = true;
     var response = await $fetch(`${config.public.orderURL}/v2/order/invoice/download`, {
@@ -344,7 +383,12 @@ function downloadFile(data, fileName) {
 }
 
 function navigateToBrandPage() {
-  console.log(orderDetails.value.brand_info);
+  track('order_item:visit_brand_click', {
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id,
+  })
+
   navigateTo({
     name: "BrandPage",
     params: {
@@ -354,6 +398,13 @@ function navigateToBrandPage() {
 }
 
 function navigateToCreatorStore() {
+
+  track('order_item:visit_creator_click', {
+    order_no: store.orderDetails.order_id,
+    item_id: store.orderDetails.item.id,
+    brand_id: store.orderDetails.brand_id,
+  })
+
   navigateTo({
     name: "CreatorStore",
     params: {

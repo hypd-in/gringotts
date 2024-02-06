@@ -37,6 +37,8 @@
 import OrderTrackingHeader from "./OrderTrackingHeader.vue";
 import TrackingUpdatesSummary from "./TrackingUpdatesSummary.vue";
 
+import track from "../../utils/tracking-posthog"
+
 // Declarations
 const router = useRouter();
 const route = useRoute();
@@ -106,6 +108,7 @@ async function getOrderByItemId() {
 
 // Methods
 function goBack() {
+  track('order:item_track_order_click_close')
   router.back();
 }
 

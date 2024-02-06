@@ -53,18 +53,22 @@
 
           <div class="button-section">
             <button @click="goToOrderDetails(item?.id)" class="order-details">Item Details</button>
-            <button v-if="showTrackOrder" class="track-order">Track Order</button>
+            <button v-if="showTrackOrder" class="track-order" @click="trackOrder(item?.id)">Track Order</button>
             <button v-else-if="showReorder" class="reorder">Re Order</button>
           </div>
         </div>
-
       </div>
     </div>
-
   </div>
 </template>
 
 <script setup>
+
+import OrderTrackingComponent from '~/components/OrderTracking/OrderTrackingComponent.vue';
+
+import track from "../../utils/tracking-posthog"
+
+
 const props = defineProps({
   orderInfo: Object,
 })
@@ -105,6 +109,14 @@ const showTrackOrder = computed(() => {
   }
 })
 
+function trackOrder(id){
+  track("order:item_track_order_click",{
+    order_no: props.orderInfo?.order_id,
+    item_id: id,
+    brand_id: props.orderInfo?.brand_info.id
+  })
+}
+
 function formatDate(orderDate) {
   var date = new Date(orderDate);
   return new Intl.DateTimeFormat('en-IN', {
@@ -127,6 +139,11 @@ function formatDateWithTime(statusDate) {
 }
 
 function goToOrderDetails(id) {
+  track('order:item_detail_click', {
+    order_no: props.orderInfo?.order_id,
+    item_id: id,
+    brand_id: props.orderInfo?.brand_info.id
+  })
   navigateTo({
     name: "OrderDetails",
     params: {

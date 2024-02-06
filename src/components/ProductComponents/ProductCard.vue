@@ -17,7 +17,7 @@
       </NuxtLink>
       <div @click="toggleWishlist" class="wishlist-icon" v-if="!isAffiliate" v-html="wishlistIcon"></div>
       <NuxtLink :to="goToProduct">
-        <ImageFrame class="featured-image" :src="getReplacedSource(productImage, 450)"/>
+        <ImageFrame class="featured-image" :src="getReplacedSource(productImage, 450)" />
         <!-- <ImageFrame /> -->
       </NuxtLink>
     </div>
@@ -58,12 +58,15 @@ import {
   optimizeImage,
 } from "~/utils/helperMethods";
 
+import track from "~/utils/tracking-posthog";
+
 const props = defineProps({
   itemInfo: Object,
   showButton: Boolean,
   showOffers: Boolean,
   isAffiliate: Boolean,
   creator: Object,
+  src: String
 });
 const emit = defineEmits(["buttonAction"]);
 const router = useRouter();
@@ -193,6 +196,15 @@ const discount = computed(() => {
 });
 
 const goToProduct = computed(() => {
+  if (props?.src == 'order-detail-page') {
+    track('order_item:similar_product_click', {
+      order_no: store.orderDetails?.order_id,
+      item_id: store.orderDetails?.item.id,
+      brand_id: store.orderDetails.brand_id,
+      product_id: props.itemInfo?.id
+    })
+  }
+
   var obj = {};
   if (props.isAffiliate) {
     let link = props.itemInfo.hypd_link.split("/");
