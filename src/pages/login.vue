@@ -78,7 +78,8 @@
               <span @click="resendCode" :class="{ 'disabled-resend': timer > 0 }">
                 Resend Code</span>
             </div>
-            <SubmitButton :defaultText="submitButtonText" :loading="submittingOTP" class="submit-btn" :disabled="checkOTP" />
+            <SubmitButton :defaultText="submitButtonText" :loading="submittingOTP" class="submit-btn"
+              :disabled="checkOTP" />
             <p class="tnc">
               By continuing, I agree to the <span>Terms of Use</span> &<br />
               <span> Policy</span>
@@ -117,6 +118,8 @@ import Footer from "~/components/Footer.vue";
 import { returnMaxLength, returnNumber } from "~/utils/helperMethods";
 
 import track from "../utils/tracking-posthog"
+
+const { $posthog } = useNuxtApp()
 
 const phone_no = ref("");
 const config = useRuntimeConfig();
@@ -184,7 +187,7 @@ const sendOTP = async () => {
 const confirmOTP = async (otpValue) => {
   console.log(phone_no.value.substring(6))
   submittingOTP.value = true;
-  track('login:confirm_otp', { phone_no: '******' + phone_no.value.substring(6), otp:'****' + otpInputs?.value?.otp.substring(4) })
+  track('login:confirm_otp', { phone_no: '******' + phone_no.value.substring(6), otp: '****' + otpInputs?.value?.otp.substring(4) })
   try {
     var response = await $fetch(
       `${config.public.entityURL}/api/customer/otp/confirm?isWeb=true`,
@@ -209,7 +212,12 @@ const confirmOTP = async (otpValue) => {
       await fetchUserInfo();
       await fetchCartInfo();
 
-      track('user_login_success', { user_id : store.user.id })
+      track('user_login_success', { user_id: store.user.id })
+
+      $posthog().identify(
+        store.user.id,
+        { email: store.user.email, name: store.user.full_name }
+      );
 
       if (redirect.value) {
         console.log(redirect.value);
@@ -230,7 +238,7 @@ const confirmOTP = async (otpValue) => {
       }
     }
   } catch (err) {
-    
+
     track('user_login_fail')
 
     showError.value = true;

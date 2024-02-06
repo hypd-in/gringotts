@@ -1056,6 +1056,7 @@ export async function getInfluencerById(creatorId) {
 
 export async function logoutUser(redirectionPath) {
   const router = useRouter();
+  const { $posthog } = useNuxtApp();
   var logoutConfirm = confirm("Are you sure, you want to log out from HYPD?");
   if (!logoutConfirm) {
     return;
@@ -1072,6 +1073,8 @@ export async function logoutUser(redirectionPath) {
         }
       );
       if (response) {
+        $posthog().reset();
+
         if (redirectionPath) {
           await navigateTo(redirectionPath);
         }
