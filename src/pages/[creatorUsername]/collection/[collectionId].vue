@@ -2,7 +2,8 @@
   <div class="curation-wrapper">
     <div class="sub-header">
       <div class="journey-path">
-        <NuxtImg placeholder="[50, 25, 20, 10]" :alt="creatorStore.info.name" width="32" height="32" style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info?.profile_image?.src" />
+        <NuxtImg placeholder="[50, 25, 20, 10]" :alt="creatorStore.info.name" width="32" height="32"
+          style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info?.profile_image?.src" />
         {{ creatorStore.info.name }} / Collections / &nbsp;
         <!-- <NuxtImg width="32" height="32" style="border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="collectionInfo.image.src" /> -->
         <span v-if="route.query.title" style="color: #000">{{
@@ -14,7 +15,7 @@
       <div class="curation-products">
         <h2 class="heading">{{ collectionName }}</h2>
         <div class="product-listing-wrapper" v-if="collectionProducts.length > 0">
-          <ProductCard v-for="product in collectionProducts" :key="product?.id" :itemInfo="product" />
+          <ProductCard src="creator-collection-product" v-for="product in collectionProducts" :key="product?.id" :itemInfo="product" />
         </div>
       </div>
     </div>
@@ -23,6 +24,7 @@
 
 <script setup>
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
+import track from '~/utils/tracking-posthog';
 definePageMeta({
   name: "CreatorCollection",
   layout: "public"
@@ -35,6 +37,7 @@ const collectionName = computed(() => {
   return collectionInfo.value?.name || route.query.title;
 })
 const collectionProducts = ref([]);
+
 if (route.params.collectionId) {
   const { data: response, error } = await useFetch(`${useRuntimeConfig().public.catalogURL}/api/app/influencer/collection`, {
     method: "GET",
@@ -55,6 +58,15 @@ if (route.params.collectionId) {
     console.log("Error fetching collection info", err);
   }
 }
+
+
+onMounted(() => {
+  track('collection:visit', {
+    creator_name: creatorStore.info.name,
+    creator_username: creatorStore.info.username,
+    collection_id: route.params.collectionId
+  })
+})
 
 async function fetchCatalogInfo(catalogIds) {
   let ids = '';
@@ -129,4 +141,5 @@ async function fetchCatalogInfo(catalogIds) {
 h2 {
   margin: 0;
   display: none;
-}</style>
+}
+</style>

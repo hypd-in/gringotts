@@ -15,11 +15,23 @@
 <script setup>
 import ImageFrame from "../components/ImageFrame.vue";
 
+import track from "~/utils/tracking-posthog";
+
 const router = useRouter()
-const props = defineProps(["item"])
+const props = defineProps(["item", 'src'])
 const creatorStore = useCreatorStore()
 
 function goToManageCollection(item) {
+
+    if (props.src == 'creator-store-collections')
+        track('creator_store:collection_click', {
+            creator_name: creatorStore.info.name,
+            creator_username: creatorStore.info.username,
+            collection_name: item.name,
+            collection_id: item.id
+        })
+
+
     if (item.collection_type == "affiliate") {
         router.push({
             name: "AffiliateCollection",

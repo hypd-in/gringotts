@@ -1,7 +1,7 @@
 <template>
   <div class="product-card-wrapper" :class="{ 'oos-card': isOutOfStock }">
     <div class="image-tag-wrapper" v-if="productImage">
-      <NuxtLink :to="goToProduct" v-if="!isAffiliate">
+      <NuxtLink @click="trackProductNavigation" :to="goToProduct" v-if="!isAffiliate">
         <div class="tag out-of-stock" v-if="isOutOfStock">
           Out of Stock
         </div>
@@ -16,12 +16,12 @@
         </div>
       </NuxtLink>
       <div @click="toggleWishlist" class="wishlist-icon" v-if="!isAffiliate" v-html="wishlistIcon"></div>
-      <NuxtLink :to="goToProduct">
+      <NuxtLink @click="trackProductNavigation" :to="goToProduct">
         <ImageFrame class="featured-image" :src="getReplacedSource(productImage, 450)" />
         <!-- <ImageFrame /> -->
       </NuxtLink>
     </div>
-    <NuxtLink :to="goToProduct">
+    <NuxtLink @click="trackProductNavigation" :to="goToProduct">
       <div class="item-info-wrapper">
         <div class="info-container">
           <h3 class="brand-name">{{ brandName }}</h3>
@@ -69,7 +69,7 @@ const props = defineProps({
   src: String
 });
 const emit = defineEmits(["buttonAction"]);
-const router = useRouter();
+const route = useRoute();
 const store = useStore();
 const creatorStore = useCreatorStore();
 
@@ -196,15 +196,6 @@ const discount = computed(() => {
 });
 
 const goToProduct = computed(() => {
-  if (props?.src == 'order-detail-page') {
-    track('order_item:similar_product_click', {
-      order_no: store.orderDetails?.order_id,
-      item_id: store.orderDetails?.item.id,
-      brand_id: store.orderDetails.brand_id,
-      product_id: props.itemInfo?.id
-    })
-  }
-
   var obj = {};
   if (props.isAffiliate) {
     let link = props.itemInfo.hypd_link.split("/");
@@ -250,6 +241,34 @@ const goToProduct = computed(() => {
   }
   return obj;
 })
+
+function trackProductNavigation() {
+  if (props.src == 'order-detail-page') {
+    track('order_item:similar_product_click', {
+      order_no: store.orderDetails?.order_id,
+      item_id: store.orderDetails?.item.id,
+      brand_id: store.orderDetails.brand_id,
+      product_id: props.itemInfo?.id
+    })
+  }
+  else if (props.src == 'creator-store-spotlight') {
+    track('creator_store:spotlight_product_click', {
+      creator_name: creatorStore.info.name,
+      creator_username: creatorStore.info.username,
+      product_name: props.itemInfo.name,
+      product_id: props.itemInfo.id,
+      brand_id: props.itemInfo.brand_id
+    })
+  }
+  else if (props.src == 'creator-collection-product') {
+    track('collection:product_click', {
+      product_id: props.itemInfo.id,
+      creator_name: creatorStore.info.name,
+      creator_username: creatorStore.info.username,
+      collection_id: route.params.collectionId
+    })
+  }
+}
 
 function buttonAction() {
   if (props.itemInfo?.inventory_status == "out_of_stock") {
