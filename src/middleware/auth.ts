@@ -1,11 +1,11 @@
 export default defineNuxtRouteMiddleware(async (to, from) => {
   await fetchUserInfo();
   const sessionCookie = useCookie("session");
-  if (!sessionCookie) {
+  if (!sessionCookie.value) {
     return navigateTo({
       name: "Login",
       query: {
-        "redirection_url": to.fullPath,
+        "redirection_url": to.path,
       },
     });
   }
