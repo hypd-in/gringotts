@@ -103,6 +103,9 @@ onBeforeMount(async () => {
 
 
 onMounted(async () => {
+
+  $posthog().group('store', creatorStore.info.username);
+
   // Calling Hot selling Products API
   let response = await $fetch(runtimeConfig.public.orderURL + "/api/hot-selling-catalogs", {
     method: "GET",
