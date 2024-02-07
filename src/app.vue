@@ -48,6 +48,8 @@ const wishlisted_items = ref([])
 const cart_items = ref([])
 const level_one_categories = ref([])
 
+const { $posthog } = useNuxtApp()
+
 
 
 if (route.params.creatorUsername) {
@@ -90,6 +92,13 @@ onBeforeMount(async () => {
       await fetchCartInfo();
     }
   });
+
+  if (store.user.id) {
+    $posthog().identify(
+      store.user.id,
+    );
+  }
+
 })
 
 

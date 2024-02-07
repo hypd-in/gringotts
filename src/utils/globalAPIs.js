@@ -1070,7 +1070,7 @@ export async function logoutUser(redirectionPath) {
           headers: {
             "Content-Type": "application/json",
           },
-        }
+        } 
       );
       if (response) {
         $posthog().reset();

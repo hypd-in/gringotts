@@ -216,7 +216,6 @@ const confirmOTP = async (otpValue) => {
 
       $posthog().identify(
         store.user.id,
-        { email: store.user.email, name: store.user.full_name }
       );
 
       if (redirect.value) {
