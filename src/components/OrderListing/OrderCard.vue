@@ -1,5 +1,7 @@
 <template>
   <div class="order-card">
+    <OrderTrackingComponent :isPopup="true" :itemId="selectedItemId" v-if="showOrderTracking"
+      @close="toggleTrackingPopup" />
     <div class="order-details-bar">
       <div style="display: flex; align-items: center; justify-content: space-between; gap: 24px;">
         <span id="order-id">Order: #{{ orderInfo.order_id }}</span>
@@ -53,7 +55,7 @@
 
           <div class="button-section">
             <button @click="goToOrderDetails(item?.id)" class="order-details">Item Details</button>
-            <button v-if="showTrackOrder" class="track-order" @click="trackOrder(item?.id)">Track Order</button>
+            <button v-if="showTrackOrder" class="track-order" @click="toggleTrackingPopup(item?.id)">Track Order</button>
             <button v-else-if="showReorder" class="reorder">Re Order</button>
           </div>
         </div>
@@ -72,7 +74,8 @@ import track from "../../utils/tracking-posthog"
 const props = defineProps({
   orderInfo: Object,
 })
-
+const selectedItemId = ref(null);
+const showOrderTracking = ref(false);
 const readableOrderStatus = ref({
   initiated: "Awaiting Payment",
   failed: "Order Failed",
@@ -109,12 +112,18 @@ const showTrackOrder = computed(() => {
   }
 })
 
-function trackOrder(id){
-  track("order:item_track_order_click",{
-    order_no: props.orderInfo?.order_id,
-    item_id: id,
-    brand_id: props.orderInfo?.brand_info.id
-  })
+function toggleTrackingPopup(id) {
+  if (id) {
+    selectedItemId.value = id;
+  }
+  showOrderTracking.value = !showOrderTracking.value;
+  if (showOrderTracking.value) {
+    track("order:item_track_order_click", {
+      order_no: props.orderInfo?.order_id,
+      item_id: id,
+      brand_id: props.orderInfo?.brand_info.id
+    })
+  }
 }
 
 function formatDate(orderDate) {

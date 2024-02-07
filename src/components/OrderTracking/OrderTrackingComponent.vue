@@ -39,6 +39,14 @@ import TrackingUpdatesSummary from "./TrackingUpdatesSummary.vue";
 
 import track from "../../utils/tracking-posthog"
 
+const props = defineProps({
+  isPopup: Boolean,
+  itemId: String,
+})
+
+const emit = defineEmits([
+  "close"
+])
 // Declarations
 const router = useRouter();
 const route = useRoute();
@@ -50,6 +58,14 @@ const orderDetails = ref({});
 const trackingInfo = ref({});
 const trackingUpdatesSummary = ref(null);
 // Computed Properties
+const orderItemId = computed(() => {
+  if (route.params.itemId) {
+    return route.params.itemId;
+  } else if (props.itemId) {
+    return props.itemId;
+  }
+})
+
 const estimatedDate = computed(() => {
   const options = {
     day: "numeric",
@@ -58,17 +74,17 @@ const estimatedDate = computed(() => {
   };
   var finalDate = new Date();
   var addDays = 0;
-  if (store?.orderDetails?.created_at) {
-    var initialDate = new Date(store?.orderDetails?.created_at);
-  }
-  if (store?.orderDetails?.item?.item_status?.code === "exchange") {
+  if (orderDetails.value?.item?.item_status?.code === "exchange") {
     initialDate = new Date(
-      store?.orderDetails?.item?.item_status?.created_at
+      orderDetails.value?.item?.item_status?.created_at
     );
+  } else if (orderDetails.value?.created_at) {
+    var initialDate = new Date(orderDetails.value?.created_at);
   }
-  if (route.params.item_id && store.orderDetails?.items) {
+
+  if (orderDetails.value.item) {
     addDays =
-      store.orderDetails.items[route.params.item_id]?.catalog_info?.eta
+      orderDetails.value.item?.catalog_info?.eta
         ?.max;
   }
 
@@ -78,18 +94,17 @@ const estimatedDate = computed(() => {
   return new Intl.DateTimeFormat("en-IN", options).format(finalDate);
 });
 
+
 // Lifecycle Hooks
 onMounted(async () => {
-  if (!store.orderDetails?.id) {
-    await getOrderByItemId();
-  }
+  await getOrderByItemId();
   saveTrackingInfo();
 });
 
 
 async function getOrderByItemId() {
   try {
-    var response = await $fetch(`${config.public.orderURL}/api/order/item/${route.params.itemId}`, {
+    var response = await $fetch(`${config.public.orderURL}/api/order/item/${orderItemId.value}`, {
       method: "GET",
       credentials: "include",
       headers: {
@@ -109,6 +124,10 @@ async function getOrderByItemId() {
 // Methods
 function goBack() {
   track('order:item_track_order_click_close')
+  if (props.isPopup) {
+    emit("close");
+    return;
+  }
   router.back();
 }
 
