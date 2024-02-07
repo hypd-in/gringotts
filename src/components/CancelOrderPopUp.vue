@@ -5,7 +5,7 @@
       <div class="top-bar"></div>
       <div class="popup-title">
         <div class="title bold t-black">{{ title }}</div>
-        <img src="../assets/img/icons/black-close.svg" class="icon pointer" @click="closePopup"
+        <img src="~/assets/icons/misc/close.svg" class="icon pointer" @click="closePopup"
           style="justify-self: flex-end" width="30px" alt="" />
       </div>
       <div class="reasons" id="reasons">
@@ -553,5 +553,9 @@ textarea::placeholder {
 
 .t-white {
   color: #ffffff;
+}
+
+.icon{
+  width: 18px;
 }
 </style>

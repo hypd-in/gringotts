@@ -1,6 +1,6 @@
 <template>
   <div class="order-details-wrapper">
-    <CancelOrderPopUp :order="orderDetails" v-if="showCancelOrderPopup" @close="toggleCancelOrderPopup"/>
+    <CancelOrderPopUp :order="orderDetails" v-if="showCancelOrderPopup" @close="toggleCancelOrderPopup" />
     <div class="order-details" v-if="orderDetails?.id">
       <div class="left-section">
         <h2 class="heading">Order Details</h2>
@@ -48,9 +48,9 @@
             <h6 class="status-heading">{{ statusBasedText[orderStatus]?.heading }}</h6>
             <p class="status-subheading">{{ statusBasedText[orderStatus]?.text }}</p>
           </section>
-          <section class="help">
-            <button @click="toggleCancelOrderPopup">Cancel</button>
-            <div class="seperator"></div>
+          <section class="help" :class="{ 'flex': !showCancelButton }">
+            <button v-if="showCancelButton" @click="toggleCancelOrderPopup">Cancel</button>
+            <div v-if="showCancelButton" class="seperator"></div>
             <button @click="navigateToContactUs">Need Help</button>
           </section>
         </div>
@@ -130,7 +130,8 @@
     <section class="similar-products" v-if="similarProducts?.length">
       <h2 class="section-heading">Products you might like</h2>
       <div class="product-listing horizontal-listing">
-        <ProductCard src="order-detail-page" :itemInfo="product" v-for="product in similarProducts" :creator="creatorInfo" :key="product.id" />
+        <ProductCard src="order-detail-page" :itemInfo="product" v-for="product in similarProducts" :creator="creatorInfo"
+          :key="product.id" />
       </div>
     </section>
 
@@ -188,6 +189,27 @@ const showTrackOrder = computed(() => {
   }
 })
 
+const showCancelButton = computed(() => {
+  if (orderDetails.value?.created_at) {
+    var orderDate = new Date(orderDetails.value?.created_at)
+    console.log(Date.now() <= (orderDate).addDays(1));
+  }
+  if (
+    orderDetails.value?.item_status?.code === "cancel-user" ||
+    orderDetails.value?.item_status?.code === "cancel-brand" ||
+    orderDetails.value?.order_status === "cancel-brand" ||
+    orderDetails.value?.order_status === "cancel-user"
+  ) {
+    return false;
+  } else if (
+    orderStatus.value === "confirmed" &&
+    Date.now() <= (orderDate).addDays(1)
+  ) {
+    return true;
+  } else {
+    return false;
+  }
+})
 const creatorProduct = computed(() => {
   if (orderDetails.value?.item?.catalog_info?.id) {
     if (creatorInfo.value?.username) {
@@ -342,7 +364,7 @@ function formatDateWithTime(statusDate) {
 
 async function downloadReceipt() {
 
-  track('order_item:download_receipt_click',{
+  track('order_item:download_receipt_click', {
     order_no: store.orderDetails.order_id,
     item_id: store.orderDetails.item.id,
     brand_id: store.orderDetails.brand_id,
@@ -465,6 +487,12 @@ onBeforeMount(async () => {
     brand_id: store.orderDetails?.brand_id
   })
 })
+
+Date.prototype.addDays = function (days) {
+  var date = new Date(this.valueOf());
+  date.setDate(date.getDate() + days);
+  return date;
+}
 </script>
 
 <style scoped>
@@ -824,5 +852,11 @@ h2.section-heading {
 
 .horizontal-listing::-webkit-scrollbar-thumb {
   background: var(--primary-dark);
+}
+
+.flex {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
 }
 </style>
