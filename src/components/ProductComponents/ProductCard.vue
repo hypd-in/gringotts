@@ -216,7 +216,7 @@ const goToProduct = computed(() => {
         title: props.itemInfo?.name,
       },
     }
-  } else if (props.creator) {
+  } else if (getObjectLength(props.creator) > 0) {
     obj = {
       name: "CreatorProduct",
       params: {

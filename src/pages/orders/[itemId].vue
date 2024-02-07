@@ -1,5 +1,6 @@
 <template>
   <div class="order-details-wrapper">
+    <CancelOrderPopUp :order="orderDetails" v-if="showCancelOrderPopup" @close="toggleCancelOrderPopup"/>
     <div class="order-details" v-if="orderDetails?.id">
       <div class="left-section">
         <h2 class="heading">Order Details</h2>
@@ -48,7 +49,7 @@
             <p class="status-subheading">{{ statusBasedText[orderStatus]?.text }}</p>
           </section>
           <section class="help">
-            <button @click="cancelOrderPopup">Cancel</button>
+            <button @click="toggleCancelOrderPopup">Cancel</button>
             <div class="seperator"></div>
             <button @click="navigateToContactUs">Need Help</button>
           </section>
@@ -141,6 +142,7 @@
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 
 import track from "../../utils/tracking-posthog"
+import CancelOrderPopUp from '~/components/CancelOrderPopUp.vue';
 
 definePageMeta({
   name: "OrderDetails",
@@ -228,6 +230,8 @@ const paymentMode = computed(() => {
   }
 })
 
+const showCancelOrderPopup = ref(false);
+
 const readableOrderStatus = ref({
   initiated: "Awaiting Payment",
   failed: "Order Failed",
@@ -279,14 +283,16 @@ const statusBasedText = ref({
   }
 })
 
-
-function cancelOrderPopup() {
-  track("order_item:item_cancel_click", {
-    order_no: store.orderDetails.order_id,
-    item_id: store.orderDetails.item.id,
-    brand_id: store.orderDetails.brand_id,
-    current_status: store.orderDetails.order_status.code
-  })
+function toggleCancelOrderPopup() {
+  showCancelOrderPopup.value = !showCancelOrderPopup.value;
+  if (showCancelOrderPopup.value) {
+    track("order_item:item_cancel_click", {
+      order_no: store.orderDetails.order_id,
+      item_id: store.orderDetails.item.id,
+      brand_id: store.orderDetails.brand_id,
+      current_status: store.orderDetails.order_status.code
+    })
+  }
 }
 
 function openTracking() {

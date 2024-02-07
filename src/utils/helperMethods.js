@@ -160,16 +160,6 @@ export async function getCreatorUserName(id) {
   if (creatorCookie.value && creatorCookie.value[id]) {
     return creatorCookie.value[id].username;
   }
-  if (creatorStore?.info?.username) {
-    return creatorStore?.info?.username;
-  }
-  if (router.currentRoute.value.params.creator_username) {
-    return router.currentRoute.value.params.creator_username;
-  }
-  if (localStorage.getItem("creatorInfo") != null) {
-    var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
-    return creatorInfo?.creatorName;
-  }
   let payload = null;
 
   let creator_id =
@@ -180,6 +170,16 @@ export async function getCreatorUserName(id) {
   if (id) {
     payload = await getInfluencerById(creator_id);
     return payload.username;
+  }
+  if (creatorStore?.info?.username) {
+    return creatorStore?.info?.username;
+  }
+  if (router.currentRoute.value.params.creator_username) {
+    return router.currentRoute.value.params.creator_username;
+  }
+  if (localStorage.getItem("creatorInfo") != null) {
+    var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
+    return creatorInfo?.creatorName;
   }
   if (creatorCookie.value) {
     return Object.values(creatorCookie.value)[
