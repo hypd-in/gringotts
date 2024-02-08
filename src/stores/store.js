@@ -41,7 +41,13 @@ export const useStore = defineStore("store", () => {
 
   const cartItemsFailSuccess = ref([]);
 
+  const cartDataToTrack = ref({});
+
   // functions
+
+  function saveCartDataToTrack(obj) {
+    cartDataToTrack.value = { ...obj };
+  }
 
   function saveCartItemsFailSuccess(items) {
     cartItemsFailSuccess.value = [...items];
@@ -203,7 +209,9 @@ export const useStore = defineStore("store", () => {
     brandTotalCartValue,
     giftsEligibleForCart,
     cartItemsFailSuccess,
+    cartDataToTrack,
 
+    saveCartDataToTrack,
     saveCartItemsFailSuccess,
     removeUserAddress,
     removeItemFromCart,

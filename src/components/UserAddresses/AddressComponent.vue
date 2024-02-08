@@ -43,6 +43,7 @@
 import { fetchCartInfo, fetchUserAddresses } from "@/utils/globalAPIs";
 import AddressCard from "./AddressCard.vue";
 import EditAddress from "./EditAddress.vue";
+import track from "~/utils/tracking-posthog";
 
 const emits = defineEmits(["close"]);
 const route = useRoute();
@@ -50,6 +51,7 @@ const router = useRouter();
 const store = useStore();
 const config = useRuntimeConfig();
 onMounted(async () => {
+  track("cart_address:visit", {...store.cartDataToTrack})
   if (noOfUserAddresses.value == 0 && store.user.id) {
     await fetchUserAddresses();
   }

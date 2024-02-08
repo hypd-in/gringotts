@@ -57,6 +57,7 @@ import {
   saveBrandWiseCart,
 } from "@/utils/globalAPIs";
 import Submit from "@/components/SubmitButton.vue";
+import track from "~/utils/tracking-posthog";
 
 // import { trackingRemoveFromCart } from "@/eventTracking";
 
@@ -98,6 +99,11 @@ async function removeItemFromCart() {
     closePopup();
     imitateCartInfo(Object.values(store.cartItems));
     saveBrandWiseCart(Object.values(store.cartItems));
+
+    track('cart:item_delete', {
+        ...store.cartDataToTrack, removed_item: { ...props.itemInfo, variants : {...props.itemInfo.variants} }
+      })
+
     return;
   } else {
     try {
@@ -107,7 +113,6 @@ async function removeItemFromCart() {
         quantity: 0,
         variant_id: props.itemInfo?.variant_id,
       };
-      console.log(formData, "x")
       var response = await $fetch(runtimeConfig.public.entityURL + "/api/app/cart/item", {
         method: "PUT",
         credentials: 'include',
@@ -140,6 +145,9 @@ async function removeItemFromCart() {
         closePopup();
         // trackingRemoveFromCart(props.itemInfo);
       }
+      track('cart:item_delete', {
+        ...store.cartDataToTrack, removed_item: { ...props.itemInfo, variants : {...props.itemInfo.variants} }
+      })
     } catch (err) {
       await fetchCartInfo();
       removingItem.value = false;
@@ -147,6 +155,7 @@ async function removeItemFromCart() {
       closePopup();
     }
   }
+
 }
 
 async function closePopup() {

@@ -47,11 +47,14 @@
   </template>
   
   <script setup>
+import track from '~/utils/tracking-posthog';
+
 
   const store = useStore();
   const emit = defineEmits(["goToLogin", "openAddresses"]);
   
   function openAddress() {
+    track("cart:address_change_click")
     if (
       !store.user?.id ||
       !store.user?.full_name ||

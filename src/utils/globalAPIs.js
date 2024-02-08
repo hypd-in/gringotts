@@ -1,5 +1,6 @@
 import { imitateCartInfo, deleteItemFormCart } from "./cartMethods";
 import { getUTMParams, createCouponsMap } from "./helperMethods";
+import track from "./tracking-posthog";
 
 export async function fetchUserInfo() {
   const store = useStore();
@@ -485,6 +486,7 @@ export async function fetchWishlistedProducts() {
 }
 
 export async function fetchCartInfo(bypass) {
+
   let router = useRouter();
   const store = useStore();
   if (
@@ -794,15 +796,26 @@ export async function saveBrandWiseCart(items) {
 export async function removeCouponFromCart(bypassCart) {
   let router = useRouter();
   const store = useStore();
+
   // For Express
   if (router.currentRoute.value.query.isExpress) {
     let itemsArray = store.cartInfo.items;
 
     store.updateCartInfo({ coupon: null, coupon_value: null });
-
     imitateCartInfo(itemsArray, "express");
     saveBrandWiseCart(itemsArray);
     calculatingShippingChargesForLocalItems();
+
+    track("cart_coupon:code_remove", {
+      ...store.cartDataToTrack,
+      coupon: {
+        ...store.cartDataToTrack.coupon,
+        discount_removed: store.cartDataToTrack.coupon.discount,
+        discount_added: 0,
+        discount: 0,
+      },
+    });
+
     return;
   }
   // For cart
@@ -821,9 +834,20 @@ export async function removeCouponFromCart(bypassCart) {
       }
     );
     if (response.payload) {
+      let coupon = {
+        ...store.cartDataToTrack.coupon,
+        discount_removed: store.cartDataToTrack.coupon.discount,
+        discount_added: 0,
+        discount: 0,
+      };
+
       if (!bypassCart) {
         await fetchCartInfo();
       }
+      track("cart_coupon:code_remove", {
+        ...store.cartDataToTrack,
+        coupon: { ...coupon },
+      });
     }
   } catch (err) {
     console.log(err);
@@ -835,23 +859,18 @@ export async function fetchAllCoupons() {
   // Api to fetch cart/express cart coupons
   try {
     let params = "";
-    let count = 0;
     if (getObjectLength(store.cartItems) > 0) {
       Object.keys(store.cartItems).forEach((id) => {
-        if (count == 0) {
-          params += `?catalog_id=${store.cartItems[id].catalog_info.id}`;
-        } else {
-          params += `&catalog_id=${store.cartItems[id].catalog_info.id}`;
-        }
-        count++;
+        params += `&catalog_id=${store.cartItems[id].catalog_info.id}`;
       });
     }
 
     var response = await $fetch(
-      useRuntimeConfig().public.couponURL + "/api/app/coupons?version=2",
+      useRuntimeConfig().public.couponURL +
+        "/api/app/coupons?version=2" +
+        params,
       {
         method: "GET",
-        params: params,
         credentials: "include",
         headers: {
           "Content-Type": "application/json",
@@ -968,17 +987,14 @@ export async function fetchUserAddresses() {
     });
 }
 
-export async function saveVariants(items) {
+export function saveVariants(items) {
   items.forEach(async (item) => {
-    item["variants"] = await item.catalog_info?.variants?.reduce(
-      (obj, item) => {
-        return {
-          ...obj,
-          [item["id"]]: item,
-        };
-      },
-      {}
-    );
+    item["variants"] = item.catalog_info?.variants?.reduce((obj, item) => {
+      return {
+        ...obj,
+        [item["id"]]: item,
+      };
+    }, {});
   });
 
   return items;
@@ -1070,7 +1086,7 @@ export async function logoutUser(redirectionPath) {
           headers: {
             "Content-Type": "application/json",
           },
-        } 
+        }
       );
       if (response) {
         $posthog().reset();

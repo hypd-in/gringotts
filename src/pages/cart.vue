@@ -101,6 +101,7 @@ import {
     fetchCartInfo,
     getGiftInfo,
 } from "@/utils/globalAPIs";
+import track from "~/utils/tracking-posthog";
 
 // uncmnt later
 // import { trackingBeginCheckout } from "@/eventTracking";
@@ -137,6 +138,8 @@ onBeforeRouteLeave(async (to, from) => {
 // Variables
 const isLoggedIn = ref(false);
 const showAddress = ref(false);
+
+// computed
 const errorMessage = computed(() => {
     if (!store.cartInfo.shipping_address?.id) {
         return "Please select an address to continue";
@@ -155,10 +158,49 @@ const errorMessage = computed(() => {
         return "";
     }
 });
+const cartItemsToWatch = computed(() => {
+    return store.cartInfo.items
+})
 
 const giftInfo = ref({});
+const calledVisitCart = ref(false)
 
 let hideBanner = false;
+
+
+// watcher
+watch(cartItemsToWatch, () => {
+    let dataForTracking = {}
+    if (store.cartInfo?.items && Object.keys(store.cartInfo?.items).length > 0) {
+        dataForTracking.items = []
+        for (let item of store.cartInfo.items) {
+            let varIndex = item?.catalog_info.variants.findIndex((variant) => variant.id == item?.variant_id)
+            let obj = {
+                id: item?.id,
+                name: item?.catalog_info.name,
+                qty: item?.quantity,
+                variant: item?.catalog_info.variants[varIndex],
+                discount: store.cartInfo.coupon_value?.value ?? null,
+                coupon: item?.coupon_applied ? { ...item.coupon_applied } : null
+            }
+            dataForTracking.items.push(obj)
+        }
+        dataForTracking.address = { ...store.cartInfo.shipping_address }
+        dataForTracking.coupon = {
+            discount: store.cartInfo.coupon_value?.value ?? null,
+            coupon_details: store.cartInfo.coupon ? { ...store.cartInfo.coupon } : null
+        }
+        store.saveCartDataToTrack(dataForTracking)
+        if (!calledVisitCart.value) {
+            track('cart:visit', {
+                ...dataForTracking
+            })
+            calledVisitCart.value = true
+        }
+    }
+
+}, { immediate: true })
+
 
 // LifecycleHooks
 onMounted(async () => {
@@ -169,7 +211,7 @@ onMounted(async () => {
             }
             await getExpressCheckoutProductInfo(
                 route.query.pid,
-                route.query.vid, 
+                route.query.vid,
                 route.query.creatorId
             );
             return;

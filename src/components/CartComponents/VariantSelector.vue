@@ -39,10 +39,17 @@
 <script setup>
 import { updateVariant } from "@/utils/cartMethods";
 import { ref } from "vue";
+import track from "~/utils/tracking-posthog";
 
 const props = defineProps({
   itemInfo: Object,
 });
+
+onMounted(() => {
+  track("cart_variant:visit", {
+    ...variantDataTracking
+  })
+})
 
 const emits = defineEmits(["close"]);
 
@@ -51,7 +58,15 @@ const errorTimeout = ref(null);
 
 const store = useStore()
 
+let variantDataTracking = {
+  variants: { ...props.itemInfo.variants },
+  current_varient: { ...props.itemInfo.variants[props.itemInfo.variant_id] },
+}
+
 function closePopup() {
+  track('cart_variant:select_variant_close', {
+    ...variantDataTracking
+  })
   emits("close");
 }
 
@@ -81,6 +96,11 @@ async function selectVariant(variantInfo) {
     return;
   }
   await updateVariant(props.itemInfo?.variant_id, variantInfo);
+
+  track('cart_variant:select_variant_click', {
+    ...variantDataTracking,
+    new_varient: { ...variantInfo }
+  })
   emits("close");
 }
 </script>

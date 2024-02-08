@@ -181,6 +181,7 @@ import { computed, reactive, ref } from "vue";
 import MoveToWishlistPopup from "./MoveToWishlistPopup.vue";
 import VariantSelector from "./VariantSelector.vue";
 import QuantitySelector from "./QuantitySelector.vue";
+import track from "~/utils/tracking-posthog";
 
 const props = defineProps({
   itemInfo: Object,
@@ -260,6 +261,9 @@ const isUnitsOutOfStock = computed(() => {
   );
 });
 function toggleVariantSelector() {
+  if (!showVariantSelector.value) {
+    track('cart:change_variant_click', { ...store.cartDataToTrack })
+  }
   if (props.isGiftFree) {
     return
   }
@@ -267,6 +271,9 @@ function toggleVariantSelector() {
 }
 
 function toggleQuantitySelector() {
+  if (!showQuantitySelector.value) {
+    track('cart:change_qty_click', { ...store.cartDataToTrack })
+  }
   if (props.bxGyFreeItem) {
     return;
   }
@@ -274,6 +281,9 @@ function toggleQuantitySelector() {
 }
 
 function toggleWishlistItemPopup() {
+  if (!showMoveToWishlistPopup.value) {
+    track("cart:delete_item_click", { item_id: props.itemInfo.id })
+  }
   showMoveToWishlistPopup.value = !showMoveToWishlistPopup.value;
 }
 

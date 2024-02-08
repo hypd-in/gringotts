@@ -40,6 +40,7 @@ import ImageFrame from "../ImageFrame.vue";
 import { computed, ref } from "vue";
 import { applyExpressCoupon, applyCartCoupon } from "@/utils/globalAPIs";
 import { getCreatorUserName } from "@/utils/helperMethods.js";
+import track from "~/utils/tracking-posthog";
 const props = defineProps({
     couponInfo: Object,
 });
@@ -73,6 +74,8 @@ const applyCoupon = async () => {
     } else {
         payload = await applyCartCoupon(props.couponInfo.code);
     }
+
+    track('cart_coupon:coupon_apply_click', { ...store.cartDataToTrack, coupon: { ...store.cartDataToTrack.coupon, discount_added: payload.coupon_value.value, discount_removed: 0 } })
     loading.value = false;
     if (payload) {
         emit("close");

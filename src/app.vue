@@ -71,6 +71,12 @@ if (route.params.creatorUsername) {
 onBeforeMount(async () => {
   await fetchUserInfo();
   if (store.user.id) {
+
+    // identify user
+    $posthog().identify(
+      store.user.id,
+    );
+
     clearLocalCartItems();
     await fetchCartInfo();
 
@@ -93,18 +99,18 @@ onBeforeMount(async () => {
     }
   });
 
-  if (store.user.id) {
-    $posthog().identify(
-      store.user.id,
-    );
-  }
-
 })
 
 
 onMounted(async () => {
 
-  $posthog().group('store', creatorStore.info.username);
+  if (creatorStore.info.username) {
+    $posthog().group('store', creatorStore.info.username);
+  }
+  else {
+    let name = await getCreatorUserName()
+    $posthog().group('store', name);
+  }
 
   // Calling Hot selling Products API
   let response = await $fetch(runtimeConfig.public.orderURL + "/api/hot-selling-catalogs", {

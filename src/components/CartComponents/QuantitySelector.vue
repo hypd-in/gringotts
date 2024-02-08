@@ -70,6 +70,7 @@
 import { updateCartItemQuantity } from "@/utils/cartMethods";
 import { ref } from "vue";
 import { removeCouponFromCart } from "@/utils/globalAPIs.js";
+import track from "~/utils/tracking-posthog";
 
 const props = defineProps({
   itemInfo: Object,
@@ -81,6 +82,18 @@ const decreasingQuantity = ref(false);
 const errorTimeout = ref(null);
 const showError = ref("");
 const store = useStore();
+
+let qtyDataTracking = {
+  quantity: props.itemInfo.quantity,
+  current_varient: { ...props.itemInfo.variants[props.itemInfo.variant_id] },
+}
+
+
+onMounted(() => {
+  track("cart_qty:visit", {
+    ...qtyDataTracking
+  })
+})
 
 // const itemQuantity = computed(() => {
 //   if (
@@ -104,6 +117,7 @@ const store = useStore();
 // });
 
 async function updateItemQuantity(newQuantity) {
+  track('cart_qty:select_qty_click', { ...qtyDataTracking, updated_quantity: qtyDataTracking.quantity + newQuantity })
   if (showError.value?.length > 0) {
     clearTimeout(errorTimeout.value);
     showError.value = "";
@@ -156,6 +170,9 @@ async function updateItemQuantity(newQuantity) {
 }
 
 function closePopup() {
+
+  track('cart_qty:select_qty_close', { ...qtyDataTracking })
+
   emit("close");
 }
 </script>
