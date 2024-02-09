@@ -444,7 +444,7 @@ watch(shippingAddress, (newAdd, oldAdd) => {
 watch(brandWiseCart, (newVal, oldVal) => {
   checkBrandCODRange();
   checkCODEligibleText();
-});
+}, { immediate: true });
 
 watch(brandCODEligibility, (newValue, oldValue) => {
   if (newValue?.flag !== oldValue?.flag) {
@@ -455,7 +455,7 @@ watch(brandCODEligibility, (newValue, oldValue) => {
     checkCODEligibleText();
     checkCartCODRange();
   }
-});
+}, { immediate: true });
 
 // Methods
 
@@ -1054,6 +1054,8 @@ function checkCODEligibleText() {
   }
 
   // Brand Level COD Support Range check
+
+
   else if (brandTotalCODFlag.value == false) {
     CODNotEligible.value = true;
     codHTMLText.value = `<div>  You cart total for ${brandTotalCODNotEligibleObj.value.name
