@@ -1474,7 +1474,9 @@ section.carousel :deep(ol) {
 .botdImg {
     object-fit: cover;
     border-radius: 20px;
-    width: calc(100% - 6px);
+    width: calc(100% - 24px);
+    margin: 12px;
+    box-sizing: border-box;
 }
 
 .single-botdImg {

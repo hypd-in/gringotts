@@ -332,6 +332,14 @@ const startTimer = () => {
     }
   }, 1000);
 };
+
+onMounted(() => {
+  if (store.user?.id && redirect.value) {
+    navigateTo({
+      path: redirect.value,
+    })
+  }
+})
 </script>
 
 <style scoped>

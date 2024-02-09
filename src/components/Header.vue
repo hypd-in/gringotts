@@ -194,6 +194,14 @@ const pageTitle = computed(() => {
       return "Terms & Conditions"
     }
 
+    case 'CartItems': {
+      return "Cart"
+    }
+
+    case 'CartPayment': {
+      return "Payment"
+    }
+
     case 'CreatorStore': {
       if (creatorStore.info?.id) {
         return creatorStore.info?.name;

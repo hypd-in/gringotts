@@ -216,7 +216,7 @@ const goToProduct = computed(() => {
         title: props.itemInfo?.name,
       },
     }
-  } else if (props.creator) {
+  } else if (getObjectLength(props.creator) > 0) {
     obj = {
       name: "CreatorProduct",
       params: {
@@ -233,6 +233,7 @@ const goToProduct = computed(() => {
       name: "CreatorProduct",
       params: {
         id: props.itemInfo?.id,
+        creatorUsername: 'hypd_store',
       },
       query: {
         title: props.itemInfo?.name,
