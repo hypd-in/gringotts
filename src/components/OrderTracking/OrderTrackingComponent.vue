@@ -123,11 +123,12 @@ async function getOrderByItemId() {
 
 // Methods
 function goBack() {
-  track('order:item_track_order_click_close')
   if (props.isPopup) {
     emit("close");
+    track('order:item_track_order_click_close')
     return;
   }
+  track('order_item:track_order_click_close')
   router.back();
 }
 
