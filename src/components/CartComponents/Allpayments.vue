@@ -262,6 +262,7 @@ import { brandCODRanges } from "../../data/constants";
 import { fetchCartInfo, calculateShippingCharges } from "@/utils/globalAPIs";
 import { getObjectLength, convertToINR } from "@/utils/helperMethods";
 import UPIBanks from "./UPIBanks.vue";
+import track from "~/utils/tracking-posthog";
 
 // Global Objects
 const runtimeConfig = useRuntimeConfig()
@@ -403,6 +404,8 @@ const codShippingCharges = ref(0);
 const prepaidShippingCharges = ref(0);
 
 const checkingOut = ref(false);
+
+let orderDataToTrack = {}
 
 // Computed
 const showMore = computed(() => {
@@ -574,6 +577,9 @@ const addCartToLocalStorage = () => {
 };
 
 async function checkout() {
+
+  track('cart_payment:pay_now_click', { payment_method: activePaymentMethod.value })
+
   if (/.*\d.*/.test(store.cartInfo?.shipping_address?.display_name)) {
     alert("Please don't use a number in your address's name.");
     return;
@@ -668,6 +674,10 @@ async function checkout() {
       // params: params,
     });
     if (response.payload) {
+      track('checkout:start', {
+        order_id: response.payload.order_id,
+        ...orderDataToTrack,
+      })
       orderId.value = response.payload.order_id;
 
       // Free Transaction
@@ -693,6 +703,12 @@ async function checkout() {
   if (activePaymentMethod.value == "Cash on Delivery") {
     sendDetailsToGoKwik(response.payload.go_kwik, "cod");
     store.saveCartItemsFailSuccess([...store.cartInfo.items])
+
+    track('checkout:end', {
+      order_id: orderId.value,
+      ...orderDataToTrack,
+    })
+
   } else if (orderId.value && activePaymentMethod.value != "Cash on Delivery") {
     if (skipPayment.value) {
       paymentLoader.value = false;
@@ -709,6 +725,9 @@ async function checkout() {
       await checkoutWithJuspay();
     }
   }
+
+
+
 }
 
 async function checkoutWithJuspay() {
@@ -901,6 +920,13 @@ async function orderConfirmation() {
       );
       store.saveCartItemsFailSuccess([...store.cartItems])
       await fetchCartInfo();
+
+
+      track('checkout:end', {
+        order_id: orderId.value,
+        ...orderDataToTrack,
+      })
+
     }
 
     // Creating goKwikData Object to send every payment details to GoKwik to train their CoD model
@@ -1457,6 +1483,7 @@ function selectDefaultUPI() {
 
 function expandPaymentMethod(method) {
   if (method == activePaymentMethod.value) {
+    track('cart:payment_collapse_click', { payment_method: method })
     activePaymentMethod.value = "";
     selectedApp.value = "";
     selectedBank.value = "";
@@ -1466,6 +1493,7 @@ function expandPaymentMethod(method) {
     calculateShippingCharges();
     return;
   } else {
+    track('cart:payment_expand_click', { payment_method: method })
     store.updateCartInfo({
       paymentMethod: method,
     });
@@ -1533,6 +1561,28 @@ onMounted(async () => {
   checkCartCODRange();
   checkCODEligibleText();
 });
+
+
+
+
+const cartItemsToWatch = computed(() => {
+  return store.cartInfo.items
+})
+
+watch(cartItemsToWatch, () => {
+  setTimeout(() => {   
+    orderDataToTrack = {
+      items: store.cartInfo.items,
+      total_price: store.cartInfo.total_price.value,
+      discount: store.cartInfo?.coupon?.value ?? null,
+      shipping: store.cartInfo?.shipping_charges_value ?? null,
+      convenience_fee: null,
+      grand_total: store.cartInfo.grand_total.value
+    }
+  }, 100);
+}, { immediate: true })
+
+
 </script>
   
   
