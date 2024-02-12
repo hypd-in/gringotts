@@ -272,10 +272,8 @@ async function fetchPincodeInfo(event) {
 
 async function fetchPincodeDetails() {
   try {
-    var response = await axios({
+    var response = await $fetch("https://api.postalpincode.in/pincode/" + address?.value?.postal_code, {
       method: "GET",
-      url:
-        "https://api.postalpincode.in/pincode/" + address?.value?.postal_code,
       headers: {
         "Content-Type": "application/json",
       },

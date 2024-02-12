@@ -162,7 +162,7 @@ export async function updateCartItemQuantity(key, updateQuantity) {
 
 export async function addLocalStorageItemsToCart() {
   var localCartItems = localStorage.getItem("cart_items");
-  const store = useStore()
+  const store = useStore();
   if (!localCartItems) {
     return;
   }
@@ -210,7 +210,7 @@ export async function addItemToCart(itemInfo) {
 
 export async function getCartItemsFromLocalStorage() {
   var cartItems = localStorage.getItem("cart_items");
-  const store = useStore()
+  const store = useStore();
   if (!cartItems) {
     return;
   }
@@ -241,11 +241,11 @@ export async function getCartItemsFromLocalStorage() {
   imitateCartInfo(items);
   saveBrandWiseCart(items);
   calculatingShippingChargesForLocalItems();
-  store.saveCartItems( cartItemsObject);
+  store.saveCartItems(cartItemsObject);
 }
 
 export function imitateCartInfo(items, type) {
-  const store = useStore()
+  const store = useStore();
   var cartInfo = {
     items: [],
     coupon_value: null,
@@ -318,17 +318,16 @@ export async function fetchBrandShippingCharges(brandIds) {
 
     for (let brandId in shipping_charges) {
       try {
-        var brandInfo = await axios({
+        var brandInfo = await $fetch(entityURL + "/api/app/brand/" + brandId,{
           method: "GET",
-          url: entityURL + "/api/app/brand/" + brandId,
-          withCredentials: true,
+          credentials:'include',
           headers: {
             "Content-Type": "application/json",
           },
         });
         if (brandInfo.data.payload) {
           shipping_charges[brandId] = {
-            ...brandInfo.data.payload?.shipping_charges,
+            ...brandInfo.payload?.shipping_charges,
           };
         }
       } catch (err) {
@@ -344,18 +343,23 @@ export async function getExpressCheckoutProductInfo(
   variantId,
   creatorId
 ) {
+
+  const store = useStore()
+
   if (productId && variantId) {
     try {
-      var response = await axios({
-        method: "GET",
-        url: catalogURL + "/api/app/catalog/" + productId,
-        withCredentials: true,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      if (response.data.payload) {
-        var itemInfo = { ...response.data.payload };
+      var response = await $fetch(
+        catalogURL + "/api/app/catalog/" + productId,
+        {
+          method: "GET",
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (response.payload) {
+        var itemInfo = { ...response.payload };
         itemInfo["brand_info"] = await getBrandInfoFromBrandId(
           itemInfo.brand_info.id
         );
@@ -380,7 +384,7 @@ export async function getExpressCheckoutProductInfo(
         var cartItemsObject = {};
         cartItemsObject[variantId] = itemInfo;
 
-        store.dispatch("saveCartItems", cartItemsObject);
+        store.saveCartItems(cartItemsObject);
 
         var itemsArray = [];
         itemsArray.push(itemInfo);

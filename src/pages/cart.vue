@@ -216,9 +216,6 @@ onMounted(async () => {
             );
             return;
         }
-        // else {
-        //   await fetchCartInfo();
-        // }
     } else {
         if (route.query.isExpress) {
             await getExpressCheckoutProductInfo(
