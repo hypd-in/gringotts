@@ -33,16 +33,16 @@
           <section class="order-status-wrapper">
             <div class="order-status">
               <label>Current Order Status:</label>
-              <h6 class="status" :class="orderStatus">{{
-                readableOrderStatus[orderStatus] || readableOrderStatus[itemStatus?.code] }}</h6>
+              <h6 class="status" :class="itemStatus?.code || orderStatus">{{
+                readableOrderStatus[itemStatus?.code] || readableOrderStatus[orderStatus] }}</h6>
               <p class="status-date" v-if="orderDetails?.order_status">on {{
-                formatDateWithTime(orderDetails?.order_status?.created_at) || formatDateWithTime(itemStatus?.created_at)
+                formatDateWithTime(itemStatus?.created_at) || formatDateWithTime(orderDetails?.order_status?.created_at)
               }}</p>
             </div>
             <button v-if="showReorder" class="reorder">Re Order</button>
             <button v-else-if="showTrackOrder" @click="openTracking" class="track-order">Track Order</button>
           </section>
-          <section :class="orderStatus"
+          <section :class="itemStatus?.code || orderStatus"
             v-if="!['cancel-user', 'cancel-brand'].includes(orderStatus) && !['cancel-user', 'cancel-brand'].includes(itemStatus?.code)"
             class="order-status-info">
             <h6 class="status-heading">{{ statusBasedText[orderStatus]?.heading }}</h6>
@@ -192,13 +192,12 @@ const showTrackOrder = computed(() => {
 const showCancelButton = computed(() => {
   if (orderDetails.value?.created_at) {
     var orderDate = new Date(orderDetails.value?.created_at)
-    console.log(Date.now() <= (orderDate).addDays(1));
   }
   if (
-    orderDetails.value?.item_status?.code === "cancel-user" ||
-    orderDetails.value?.item_status?.code === "cancel-brand" ||
-    orderDetails.value?.order_status === "cancel-brand" ||
-    orderDetails.value?.order_status === "cancel-user"
+    itemStatus.value?.code === "cancel-user" ||
+    itemStatus.value?.code === "cancel-brand" ||
+    orderStatus.value === "cancel-brand" ||
+    orderStatus.value === "cancel-user"
   ) {
     return false;
   } else if (
@@ -314,6 +313,8 @@ function toggleCancelOrderPopup() {
       brand_id: store.orderDetails.brand_id,
       current_status: store.orderDetails.order_status.code
     })
+  } else {
+    fetchOrderDetails();
   }
 }
 

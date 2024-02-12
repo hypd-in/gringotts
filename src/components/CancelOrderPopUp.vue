@@ -5,8 +5,8 @@
       <div class="top-bar"></div>
       <div class="popup-title">
         <div class="title bold t-black">{{ title }}</div>
-        <img src="~/assets/icons/misc/close.svg" class="icon pointer" @click="closePopup"
-          style="justify-self: flex-end" width="30px" alt="" />
+        <img src="~/assets/icons/misc/close.svg" class="icon pointer" @click="closePopup" style="justify-self: flex-end"
+          width="30px" alt="" />
       </div>
       <div class="reasons" id="reasons">
         <div v-for="(reason, index) in reasons" :key="index" class="reason-container pointer"
@@ -176,6 +176,12 @@ function selectReason(input) {
 
 async function cancelOrder() {
   try {
+    if (selectedReason.value) {
+      var reason = selectedReason.value;
+      if (selectedReason.value === "Others (Please Specify)") {
+        reason = reasonForCancellation.value;
+      }
+    }
     cancellingOrder.value = true;
     var response = await $fetch(`${config.public.orderURL}/api/order/item/cancel`, {
       method: "PUT",
@@ -184,12 +190,12 @@ async function cancelOrder() {
         "Content-Type": "application/json"
       },
       body: {
-        item_id: orderDetails.value.item_id,
-        reason: reasonForCancellation.value,
+        item_id: orderDetails.value.item?.id,
+        reason: reason,
       }
     })
     if (response.payload) {
-
+      emit("close");
     }
     cancellingOrder.value = false;
   } catch (error) {
@@ -555,7 +561,7 @@ textarea::placeholder {
   color: #ffffff;
 }
 
-.icon{
+.icon {
   width: 18px;
 }
 </style>
