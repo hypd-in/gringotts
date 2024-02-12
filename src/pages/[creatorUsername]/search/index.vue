@@ -109,8 +109,8 @@ onBeforeRouteLeave((to, from) => {
 
 onUpdated(async () => {
   if (route.query.query != searchQuery.value) {
-    searchQuery.value = route.query.query;
     if (route.query.query?.trim() != '') {
+      searchQuery.value = route.query.query;
       store.resetSearchProducts();
       await searchInput();
     }
