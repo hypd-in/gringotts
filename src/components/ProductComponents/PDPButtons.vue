@@ -48,11 +48,10 @@ const addToCartText = computed(() => {
 });
 
 async function toggleWishlist() {
-
   track('pdp:wishlist_button_click', {
-    item_id: productStore.info.id,
-    brand_id: productStore.info.brand_id,
-    variant_id: productStore.info.selected_variant.id,
+    item_id: productStore.info?.id,
+    brand_id: productStore.info?.brand_id,
+    variant_id: productStore.info.selected_variant?.id ?? null,
   })
 
   if (!isWishlisted.value) {
@@ -63,6 +62,9 @@ async function toggleWishlist() {
         type: "creator_store",
       },
     };
+    track('wishlist:add', {
+      location: 'pdp', catalog_name: productStore.info.name, catalog_id: productStore.info.id, brand_id: productStore.info.brand_id, brand_name: productStore.info.brand_info.name
+    })
     await addItemToWishlist(itemInfo);
   } else {
     await removeItemFromWishlist(productStore.info);

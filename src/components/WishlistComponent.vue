@@ -28,6 +28,7 @@
 <script setup>
 import ProductCard from "~/components/ProductComponents/ProductCard.vue";
 import { getObjectLength } from "~/utils/helperMethods";
+import track from "~/utils/tracking-posthog";
 
 const config = useRuntimeConfig();
 const emit = defineEmits(["close"]);
@@ -48,12 +49,29 @@ const noOfWishlistedProducts = computed(() => {
 //   }
 // });
 
+onUnmounted(() => {
+  track('wishlist:close')
+})
+
 onMounted(async () => {
   if (getObjectLength(wishlistedItems) > 0) {
     await fetchWishlistedProductsInfo();
   }
+  setTimeout(() => {
+    let wishlisted = []
+    for (let i of wishlistedProducts.value) {
+      wishlisted.push({
+        id: i.id, name: i.name, price: i.retail_price.value, is_oos: i.inventory_status == 'out_of_stock' ? true : false
+      })
+    }
+    track('wishlist:visit', {
+      wishlist_items: [...wishlisted]
+    })
+  }, 500);
+
 });
 function close() {
+  track('wishlist:close_btn_click')
   emit("close");
 }
 
