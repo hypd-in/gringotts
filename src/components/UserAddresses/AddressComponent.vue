@@ -221,7 +221,7 @@ async function selectAddress(address) {
     width: 50%;
     text-align: left;
     white-space: nowrap;
-    left: 64px;
+    left: 44px;
     color: var(--primary-black, #13141b);
   }
 

@@ -52,7 +52,12 @@ onMounted(async () => {
   if (getObjectLength(wishlistedItems) > 0) {
     await fetchWishlistedProductsInfo();
   }
+  document.body.style.overflow = "hidden";
 });
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = "scroll";
+})
 function close() {
   emit("close");
 }
