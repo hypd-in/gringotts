@@ -186,6 +186,22 @@ const basePrice = computed(() => {
   return props.itemInfo?.base_price?.value;
 });
 
+const getTag = computed(() => {
+  if (isOutOfStock.value) {
+    return "Out of stock"
+  } else if (isBxGy.value) {
+    return isBxGy.value
+  }
+  else if (isHotSelling.value) {
+    return "Hot selling"
+  } else if (isLowInStock.value) {
+    return "Only few left"
+  }
+  else {
+    return null
+  }
+})
+
 const discount = computed(() => {
   if (basePrice.value > retailPrice.value) {
     var discount = basePrice.value - retailPrice.value;
@@ -281,6 +297,7 @@ function trackProductNavigation() {
       product_name: props.itemInfo.name,
       product_id: props.itemInfo.id,
       price: props.itemInfo.retail_price.value,
+      tag: getTag.value
     })
   }
 
