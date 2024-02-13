@@ -2,7 +2,7 @@
   <div class="search-wrapper">
     <h2>Search Results For "{{ route.query?.query }}"</h2>
     <div class="product-listing" v-if="products.length > 0">
-      <Product v-for="product in products" :key="product?.id" :itemInfo="product" origin="hypd-explore"
+      <Product src="search" v-for="product in products" :key="product?.id" :itemInfo="product" origin="hypd-explore"
         source="searched-product" />
     </div>
   </div>
