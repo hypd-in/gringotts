@@ -33,20 +33,28 @@
           <section class="order-status-wrapper">
             <div class="order-status">
               <label>Current Order Status:</label>
-              <h6 class="status" :class="itemStatus?.code || orderStatus">{{
-                readableOrderStatus[itemStatus?.code] || readableOrderStatus[orderStatus] }}</h6>
-              <p class="status-date" v-if="orderDetails?.order_status">on {{
+              <h6 class="status" :class="itemStatus?.code || orderStatus?.code">{{
+                readableOrderStatus[itemStatus?.code] || readableOrderStatus[orderStatus?.code] }}</h6>
+              <p class="status-date">on
+                <span v-if="itemStatus">
+                  {{ formatDateWithTime(itemStatus?.created_at) }}
+                </span>
+                <span v-else-if="orderStatus">
+                  {{ formatDateWithTime(orderStatus?.created_at) }}
+                </span>
+                <!-- {{
                 formatDateWithTime(itemStatus?.created_at) || formatDateWithTime(orderDetails?.order_status?.created_at)
-              }}</p>
+              }} -->
+              </p>
             </div>
             <button v-if="showReorder" class="reorder">Re Order</button>
             <button v-else-if="showTrackOrder" @click="openTracking" class="track-order">Track Order</button>
           </section>
-          <section :class="itemStatus?.code || orderStatus"
-            v-if="!['cancel-user', 'cancel-brand'].includes(orderStatus) && !['cancel-user', 'cancel-brand'].includes(itemStatus?.code)"
+          <section :class="itemStatus?.code || orderStatus?.code"
+            v-if="!['cancel-user', 'cancel-brand'].includes(orderStatus?.code) && !['cancel-user', 'cancel-brand'].includes(itemStatus?.code)"
             class="order-status-info">
-            <h6 class="status-heading">{{ statusBasedText[orderStatus]?.heading }}</h6>
-            <p class="status-subheading">{{ statusBasedText[orderStatus]?.text }}</p>
+            <h6 class="status-heading">{{ statusBasedText[orderStatus?.code]?.heading }}</h6>
+            <p class="status-subheading">{{ statusBasedText[orderStatus?.code]?.text }}</p>
           </section>
           <section class="help" :class="{ 'flex': !showCancelButton }">
             <button v-if="showCancelButton" @click="toggleCancelOrderPopup">Cancel</button>
@@ -78,7 +86,7 @@
               <h5 class="amount">{{ convertToINR(finalPrice) }}</h5>
             </div>
             <div class="buttons">
-              <button v-if="!['initiated', 'rto', 'failed'].includes(orderStatus) && checkOrderDate"
+              <button v-if="!['initiated', 'rto', 'failed'].includes(orderStatus?.code) && checkOrderDate"
                 @click="downloadReceipt" class="download">Download Receipt</button>
               <button class="price-details">Price Details</button>
             </div>
@@ -158,7 +166,7 @@ const creatorInfo = ref({});
 const similarProducts = ref([]);
 const downlaodingInvoice = ref(false);
 const orderStatus = computed(() => {
-  return orderDetails.value?.order_status?.code;
+  return orderDetails.value?.order_status;
 })
 
 const itemStatus = computed(() => {
@@ -174,7 +182,7 @@ const checkOrderDate = computed(() => {
 });
 
 const showReorder = computed(() => {
-  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value) || ['cancel-brand', 'cancel-user'].includes(itemStatus.value?.code)) {
+  if (['delivered', 'cancel-brand', 'cancel-user', 'rto', 'failed'].includes(orderStatus.value?.code) || ['cancel-brand', 'cancel-user'].includes(itemStatus.value?.code)) {
     return true;
   } else {
     return false;
@@ -182,7 +190,7 @@ const showReorder = computed(() => {
 })
 
 const showTrackOrder = computed(() => {
-  if (['confirmed', 'tracking-id-generated', 'shipped', 'out-for-delivery'].includes(orderStatus.value)) {
+  if (['confirmed', 'tracking-id-generated', 'shipped', 'out-for-delivery'].includes(orderStatus.value?.code)) {
     return true;
   } else {
     return false;
@@ -196,12 +204,12 @@ const showCancelButton = computed(() => {
   if (
     itemStatus.value?.code === "cancel-user" ||
     itemStatus.value?.code === "cancel-brand" ||
-    orderStatus.value === "cancel-brand" ||
-    orderStatus.value === "cancel-user"
+    orderStatus.value?.code === "cancel-brand" ||
+    orderStatus.value?.code === "cancel-user"
   ) {
     return false;
   } else if (
-    orderStatus.value === "confirmed" &&
+    orderStatus.value?.code === "confirmed" &&
     Date.now() <= (orderDate).addDays(1)
   ) {
     return true;
