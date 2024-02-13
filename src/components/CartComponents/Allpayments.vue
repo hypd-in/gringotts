@@ -8,7 +8,7 @@
           <div class="handle"></div>
         </div>
         <div style="padding-top: 32px">
-          <div class="bank" @click="selectActiveBank({ name: bankName, value: bankValue })"
+          <div class="bank" @click="selectActiveBank({ name: bankName, value: bankValue }, 'showMore')"
             v-for="(bankName, bankValue) of netbankingBanks" :key="bankName">
             {{ bankName }}
           </div>
@@ -21,7 +21,7 @@
     <div class="desktop-net-banking" v-show="activePaymentMethod == 'Net banking' && showBanks">
       <div class="backdrop" @click="showBanks = false"></div>
       <div class="banks-container">
-        <div class="bank" @click="selectActiveBank({ name: bankName, value: bankValue })"
+        <div class="bank" @click="selectActiveBank({ name: bankName, value: bankValue }, 'showMore')"
           v-for="(bankName, bankValue) of netbankingBanks" :key="bankName">
           {{ bankName }}
         </div>
@@ -153,7 +153,8 @@
             <div class="custom-upi-id" v-if="selectedApp == 'Enter UPI ID'">
               <div class="upi-collect-text">ENTER UPI ID</div>
               <div class="upi-input">
-                <input type="text" @input="upiId = $event.target.value" v-model="upiId" />
+                <input type="text" @input="upiId = $event.target.value" v-model="upiId"
+                  @click="track('cart_payment:upi_input_click')" />
               </div>
 
               <!-- Juspay Form -->
@@ -780,6 +781,13 @@ async function checkoutWithJuspay() {
         isPaying.value = false;
         paymentLoader.value = false;
         emits("transactionLoader", false);
+
+        track("checkout:failed", {
+          order_id: orderId.value,
+          ...orderDataToTrack,
+          error: error_message
+        })
+
         store.saveCartItemsFailSuccess([...store.cartInfo.items])
         router.push("/payment-failed?orderID=" + orderId.value);
       },
@@ -903,6 +911,13 @@ async function orderConfirmation() {
 
       // stops checking transaction status
       clearInterval(paymentStatusInterval.value);
+
+      track("checkout:failed", {
+        order_id: orderId.value,
+        ...orderDataToTrack,
+        error: 'status : failed in /status'
+      })
+
       store.saveCartItemsFailSuccess([...store.cartInfo.items])
       router.push("/payment-failed?orderID=" + orderId.value);
       window.removeEventListener("focus", orderConfirmation, true);
@@ -1274,6 +1289,7 @@ function checkCartCODRange() {
 }
 
 function showMoreBanks() {
+  track('cart_payment:show_more_click')
   showBanks.value = true;
 }
 async function getBanksList() {
@@ -1297,7 +1313,17 @@ async function getBanksList() {
 function selectActiveApp(app) {
   selectedApp.value = app;
 }
-function selectActiveBank(bank) {
+function selectActiveBank(bank, from) {
+  if (from == 'showMore') {
+    track('cart_payment:netbank_list_select_click', {
+      payment_mode: bank.name
+    })
+  }
+  else {
+    track('cart_payment:netbank_select_click', {
+      payment_mode: bank.name
+    })
+  }
   selectedBank.value = { name: bank.name, value: bank.value };
   showBanks.value = false;
 }
@@ -1571,7 +1597,7 @@ const cartItemsToWatch = computed(() => {
 })
 
 watch(cartItemsToWatch, () => {
-  setTimeout(() => {   
+  setTimeout(() => {
     orderDataToTrack = {
       items: store.cartInfo.items,
       total_price: store.cartInfo.total_price.value,

@@ -45,6 +45,7 @@ import CurationComponent from "~/components/ExploreComponents/CurationComponent.
 import SearchResults from "~/components/ExploreComponents/SearchResults.vue";
 import TrendingSearches from "~/components/ExploreComponents/TrendingSearches.vue";
 import { addingObserver } from "~/utils/helperMethods";
+import track from "~/utils/tracking-posthog";
 // import { trackingSearch } from "@/eventTracking";
 
 definePageMeta({
@@ -148,6 +149,9 @@ async function search(query) {
     });
     await searchInput();
   }
+
+  track('search:start', { query: searchQuery.value.trim() })
+
 }
 
 async function searchInput() {
@@ -164,6 +168,13 @@ async function searchInput() {
   params = {
     ...params,
     "page": store.searchProducts.page,
+  }
+
+  if (store.searchProducts.page > 0) {
+    track('search_result:page_scroll', {
+      page: store.searchProducts.page,
+      query: searchQuery.value.trim()
+    })
   }
   await $fetch(`${config.public.catalogURL}/api/app/search/catalog`, {
     method: "GET",
@@ -194,6 +205,7 @@ async function searchInput() {
 }
 
 async function clearInput() {
+  track('search:query_clear_click')
   searchQuery.value = "";
   store.resetExploreCurations();
   await navigateTo({

@@ -18,9 +18,9 @@
             <path d="M22 22L20 20" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
 
-          <input v-model="searchInputQuery" @keypress.enter="goToExplore" type="text"
+          <input v-model="searchInputQuery" @keypress.enter="goToExplore('desktop')" type="text"
             placeholder="What are you looking for?" />
-          <img @click="searchInputQuery = ''" v-if="searchInputQuery.length > 0" class="close-icon"
+          <img @click="clearInput" v-if="searchInputQuery.length > 0" class="close-icon"
             src="/assets/icons/misc/close.svg" alt="close" />
         </div>
 
@@ -99,7 +99,7 @@
           <h5 class="title" v-if="pageTitle">{{ pageTitle }}</h5>
         </div>
         <div class="header-items">
-          <button @click="goToExplore"
+          <button @click="goToExplore('mobile')"
             v-if="route.params.creatorUsername || creatorStore?.info?.username || getCreatorUserName()" class="search">
             <ExploreButton :class="{ dark: darkMode }" />
           </button>
@@ -142,6 +142,7 @@ import Wishlist from "@/components/WishlistComponent.vue";
 import ExploreButton from "@/components/ExploreComponents/ExploreButton.vue";
 import { getCreatorUserName } from "~/utils/helperMethods";
 import SideDrawer from "~/components/SideDrawer.vue";
+import track from "~/utils/tracking-posthog";
 
 const props = defineProps({
   darkMode: Boolean,
@@ -216,6 +217,11 @@ const pageTitle = computed(() => {
   }
 })
 
+function clearInput() {
+  track('search:query_clear_click')
+  searchInputQuery.value = ''
+}
+
 function toggleSideDrawer() {
   openSideDrawer.value = !openSideDrawer.value;
 }
@@ -278,7 +284,10 @@ function goToCart() {
     name: "CartItems",
   });
 }
-async function goToExplore() {
+async function goToExplore(device) {
+  if (device == 'desktop') {
+    track('search:start', { query: searchInputQuery.value.trim() })
+  }
   var creatorUsername = route.params.creatorUsername || await getCreatorUserName();
   if (creatorUsername) {
     await navigateTo({
