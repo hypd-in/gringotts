@@ -639,6 +639,7 @@ async function checkout() {
     delete address.is_shipping_address;
     delete address.is_default_address;
     delete address.country;
+    delete address.is_sourcing_address;
 
     address["phone_no"] = {
       ...store.cartInfo?.shipping_address?.contact_number,
