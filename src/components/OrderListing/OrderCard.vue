@@ -62,7 +62,7 @@
             <button @click="goToOrderDetails(item?.id)" class="order-details">Item Details</button>
             <button v-if="showTrackOrder(item)" class="track-order" @click="toggleTrackingPopup(item?.id)">Track
               Order</button>
-            <button v-else class="reorder">Re Order</button>
+            <SubmitButton v-else @click="reorder(item)" defaultText="Re Order" :loading="addingToCart" class="reorder"/>
           </div>
         </div>
       </div>
@@ -75,11 +75,16 @@
 import OrderTrackingComponent from '~/components/OrderTracking/OrderTrackingComponent.vue';
 
 import track from "../../utils/tracking-posthog"
+import SubmitButton from '../SubmitButton.vue';
 
 
 const props = defineProps({
   orderInfo: Object,
 })
+const store = useStore();
+const creatorStore = useCreatorStore();
+
+const addingToCart = ref(false);
 const selectedItemId = ref(null);
 const showOrderTracking = ref(false);
 const readableOrderStatus = ref({
@@ -154,6 +159,38 @@ function formatDateWithTime(statusDate) {
   }).format(date);
 }
 
+async function reorder(item) {
+  if (
+    !!store.cartItems[item?.variant_id]
+  ) {
+    navigateTo({
+      name: "CartItems",
+    })
+    return;
+  }
+
+  var itemInfo = {
+    variant_id: item?.variant_id,
+    catalog_id: item?.catalog_info?.id,
+    quantity: 1,
+  };
+  if (creatorStore.info?.id) {
+    itemInfo["source"] = {
+      id: creatorStore.info?.id,
+      type: "creator_store",
+    };
+  }
+  if (store.user?.id) {
+    itemInfo["id"] = store.user.id;
+    addingToCart.value = true;
+    await addItemToCart(itemInfo);
+    addingToCart.value = false;
+    navigateTo({
+      name: "CartItems",
+    })
+  }
+}
+
 function goToOrderDetails(id) {
   track('order:item_detail_click', {
     order_no: props.orderInfo?.order_id,
@@ -168,9 +205,9 @@ function goToOrderDetails(id) {
   })
 }
 
-onMounted(() => {
-  console.log("Order Info", props.orderInfo);
-})
+// onMounted(() => {
+//   console.log("Order Info", props.orderInfo);
+// })
 </script>
 
 
@@ -400,6 +437,7 @@ button.order-details {
 button.reorder {
   color: var(--primary-orange);
   border: 1px solid var(--primary-orange);
+  background: none !important;
 }
 
 button:hover {

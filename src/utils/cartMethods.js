@@ -185,12 +185,12 @@ export async function addLocalStorageItemsToCart() {
 export async function addItemToCart(itemInfo) {
   //itemInfo must contain a field "id" which is user's id, along with the product info
   try {
-    var params = getUTMParams();
+    // var params = getUTMParams();
     var response = await $fetch(
       useRuntimeConfig().public.entityURL + "/api/app/cart",
       {
         method: "POST",
-        parms: params,
+        // params: params,
         body: itemInfo,
         credentials: "include",
         headers: {
@@ -318,9 +318,9 @@ export async function fetchBrandShippingCharges(brandIds) {
 
     for (let brandId in shipping_charges) {
       try {
-        var brandInfo = await $fetch(entityURL + "/api/app/brand/" + brandId,{
+        var brandInfo = await $fetch(entityURL + "/api/app/brand/" + brandId, {
           method: "GET",
-          credentials:'include',
+          credentials: "include",
           headers: {
             "Content-Type": "application/json",
           },
@@ -343,8 +343,7 @@ export async function getExpressCheckoutProductInfo(
   variantId,
   creatorId
 ) {
-
-  const store = useStore()
+  const store = useStore();
 
   if (productId && variantId) {
     try {

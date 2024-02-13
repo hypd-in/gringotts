@@ -69,7 +69,12 @@ onMounted(async () => {
     })
   }, 500);
 
+  document.body.style.overflow = "hidden";
 });
+
+onBeforeUnmount(() => {
+  document.body.style.overflow = "scroll";
+})
 function close() {
   track('wishlist:close_btn_click')
   emit("close");

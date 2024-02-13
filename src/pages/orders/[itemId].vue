@@ -47,7 +47,8 @@
               }} -->
               </p>
             </div>
-            <button v-if="showReorder" class="reorder">Re Order</button>
+            <SubmitButton v-if="showReorder" defaultText="Re Order" :loading="addingToCart"
+              @click="reorder(orderDetails.item)" class="reorder" />
             <button v-else-if="showTrackOrder" @click="openTracking" class="track-order">Track Order</button>
           </section>
           <section :class="itemStatus?.code || orderStatus?.code"
@@ -152,6 +153,7 @@ import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 
 import track from "../../utils/tracking-posthog"
 import CancelOrderPopUp from '~/components/CancelOrderPopUp.vue';
+import SubmitButton from '~/components/SubmitButton.vue';
 
 definePageMeta({
   name: "OrderDetails",
@@ -160,9 +162,11 @@ definePageMeta({
 
 const route = useRoute();
 const store = useStore();
+const creatorStore = useCreatorStore();
 const config = useRuntimeConfig();
 const orderDetails = ref({});
 const creatorInfo = ref({});
+const addingToCart = ref(false);
 const similarProducts = ref([]);
 const downlaodingInvoice = ref(false);
 const orderStatus = computed(() => {
@@ -311,6 +315,39 @@ const statusBasedText = ref({
     text: "Thanks for ordering."
   }
 })
+
+
+async function reorder(item) {
+  if (
+    !!store.cartItems[item?.variant_id]
+  ) {
+    navigateTo({
+      name: "CartItems",
+    })
+    return;
+  }
+
+  var itemInfo = {
+    variant_id: item?.variant_id,
+    catalog_id: item?.catalog_info?.id,
+    quantity: 1,
+  };
+  if (creatorStore.info?.id) {
+    itemInfo["source"] = {
+      id: creatorStore.info?.id,
+      type: "creator_store",
+    };
+  }
+  if (store.user?.id) {
+    itemInfo["id"] = store.user.id;
+    addingToCart.value = true;
+    await addItemToCart(itemInfo);
+    addingToCart.value = false;
+    navigateTo({
+      name: "CartItems",
+    })
+  }
+}
 
 function toggleCancelOrderPopup() {
   showCancelOrderPopup.value = !showCancelOrderPopup.value;
@@ -665,6 +702,8 @@ button.reorder {
   border-radius: 12px;
   padding: 12px 32px;
   color: var(--primary-orange);
+  max-width: 140px;
+  background: none;
 }
 
 button.track-order {
