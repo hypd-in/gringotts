@@ -17,9 +17,14 @@
 
     <div class="order-items">
       <div class="order-item" v-for="item in orderInfo.items" :key="item.id">
-        <div class="order-status-chip" v-if="orderInfo?.order_status?.code" :class="orderInfo?.order_status?.code">
-          <span class="label">{{ readableOrderStatus[orderInfo?.order_status?.code] }}</span>: <span>{{
-            formatDateWithTime(orderInfo.order_status.created_at) }}</span>
+        <div class="order-status-chip" v-if="item?.item_status?.code || orderInfo?.order_status?.code"
+          :class="item?.item_status?.code || orderInfo?.order_status?.code">
+          <span class="label">{{ readableOrderStatus[item?.item_status?.code] ||
+            readableOrderStatus[orderInfo?.order_status?.code] }}</span>: <span v-if="item?.item_status?.created_at">
+            {{ formatDateWithTime(item?.item_status?.created_at) }}
+          </span> <span v-else-if="orderInfo.order_status.created_at">{{
+            formatDateWithTime(orderInfo.order_status.created_at)
+          }}</span>
         </div>
         <div class="order-item-info">
           <div class="item-info-wrapper">
@@ -55,8 +60,9 @@
 
           <div class="button-section">
             <button @click="goToOrderDetails(item?.id)" class="order-details">Item Details</button>
-            <button v-if="showTrackOrder" class="track-order" @click="toggleTrackingPopup(item?.id)">Track Order</button>
-            <button v-else-if="showReorder" class="reorder">Re Order</button>
+            <button v-if="showTrackOrder(item)" class="track-order" @click="toggleTrackingPopup(item?.id)">Track
+              Order</button>
+            <button v-else class="reorder">Re Order</button>
           </div>
         </div>
       </div>
@@ -103,14 +109,15 @@ const showReorder = computed(() => {
     return false;
   }
 })
-
-const showTrackOrder = computed(() => {
-  if (['confirmed', 'tracking-id-generated', 'shipped', 'out-for-delivery'].includes(orderStatus.value)) {
+function showTrackOrder(item) {
+  if (['cancel-user', 'cancel-brand'].includes(item?.item_status?.code)) {
+    return false;
+  } else if (['confirmed', 'tracking-id-generated', 'shipped', 'out-for-delivery'].includes(orderStatus.value)) {
     return true;
   } else {
     return false;
   }
-})
+}
 
 function toggleTrackingPopup(id) {
   if (id) {
@@ -160,6 +167,10 @@ function goToOrderDetails(id) {
     }
   })
 }
+
+onMounted(() => {
+  console.log("Order Info", props.orderInfo);
+})
 </script>
 
 
