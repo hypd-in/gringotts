@@ -103,18 +103,13 @@ onBeforeMount(async () => {
 
 
 onMounted(async () => {
-  if (creatorStore.info.username) {
+  if (route.params.creatorUsername) {
     $posthog().group('store', creatorStore.info.username, {
       username: creatorStore.info.username,
       id: creatorStore.info.id
     });
   }
-  else {
-    let name = await getCreatorUserName()
-    $posthog().group('store', name, {
-      username: name,
-    });
-  }
+
 
   // Calling Hot selling Products API
   let response = await $fetch(runtimeConfig.public.orderURL + "/api/hot-selling-catalogs", {
