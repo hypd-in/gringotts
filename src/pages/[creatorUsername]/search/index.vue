@@ -13,7 +13,7 @@
           </g>
         </svg>
 
-        <input @keydown.enter="search" type="text" v-model="searchQuery" placeholder="Search Brand, Products"
+        <input @click="track('search:click',{location: router.currentRoute.value.fullPath})" @keydown.enter="search" type="text" v-model="searchQuery" placeholder="Search Brand, Products"
           autocomplete="off" />
 
         <svg v-if="searchQuery?.length > 0" @click="clearInput" class="clear" width="20" height="20" viewBox="0 0 20 20"
@@ -54,6 +54,7 @@ definePageMeta({
 })
 const config = useRuntimeConfig();
 const route = useRoute();
+const router = useRouter()
 const store = useStore();
 
 const page = ref(0);

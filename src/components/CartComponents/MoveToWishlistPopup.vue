@@ -163,8 +163,12 @@ async function closePopup() {
 }
 
 async function moveItemToWishlist() {
+  console.log("FFF")
   wishlistingItem.value = true;
   if (!store.wishlistedItems[props.itemInfo?.catalog_id]?.catalog_id) {
+    track('wishlist:add', {
+      location: 'cart-move-to-wishlist', catalog_name: props.itemInfo.catalog_info.name, catalog_id: props.itemInfo.id, brand_id: props.itemInfo.brand_info.id, brand_name: props.itemInfo.brand_info.name
+    })
     await addItemToWishlist(props.itemInfo);
   }
   await removeItemFromCart();

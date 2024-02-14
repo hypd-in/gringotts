@@ -186,6 +186,22 @@ const basePrice = computed(() => {
   return props.itemInfo?.base_price?.value;
 });
 
+const getTag = computed(() => {
+  if (isOutOfStock.value) {
+    return "Out of stock"
+  } else if (isBxGy.value) {
+    return isBxGy.value
+  }
+  else if (isHotSelling.value) {
+    return "Hot selling"
+  } else if (isLowInStock.value) {
+    return "Only few left"
+  }
+  else {
+    return null
+  }
+})
+
 const discount = computed(() => {
   if (basePrice.value > retailPrice.value) {
     var discount = basePrice.value - retailPrice.value;
@@ -271,19 +287,20 @@ function trackProductNavigation() {
   }
   else if (props.src == 'pdp') {
     track('pdp:similar_product_click', {
-      brand_id:props.itemInfo.brand_id,
-      product_id:props.itemInfo.id,
+      brand_id: props.itemInfo.brand_id,
+      product_id: props.itemInfo.id,
     })
   }
   else if (props.src == 'search') {
     track('search_result:product_click', {
-      query:route.query.query,
+      query: route.query.query,
       product_name: props.itemInfo.name,
       product_id: props.itemInfo.id,
-      price:props.itemInfo.retail_price.value,
+      price: props.itemInfo.retail_price.value,
+      tag: getTag.value
     })
   }
-  
+
 }
 
 function buttonAction() {
@@ -297,6 +314,9 @@ async function toggleWishlist() {
   if (!!store.wishlistedItems[props.itemInfo.id]) {
     removeItemFromWishlist(props.itemInfo);
   } else {
+    track('wishlist:add', {
+      location: 'product-listing', catalog_name: props.itemInfo.name, catalog_id: props.itemInfo.id, brand_id: props.itemInfo.brand_info.id, brand_name: props.itemInfo.brand_info.name
+    })
     await addItemToWishlist(props.itemInfo);
   }
 }
