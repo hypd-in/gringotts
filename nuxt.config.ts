@@ -14,6 +14,9 @@ export default defineNuxtConfig({
     port: 8080,
   },
   srcDir: "src",
+  routeRules: {
+    '/ingest/**': { proxy: 'https://app.posthog.com/**' },
+},
   runtimeConfig: {
     public:
       // process.env.NODE_ENV !== "production"
