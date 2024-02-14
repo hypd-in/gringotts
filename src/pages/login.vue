@@ -334,6 +334,7 @@ const startTimer = () => {
 };
 
 onMounted(() => {
+  track('login:visit')
   if (store.user?.id && redirect.value) {
     navigateTo({
       path: redirect.value,
