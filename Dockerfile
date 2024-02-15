@@ -26,7 +26,7 @@ COPY .output/ .
 
 
 # Expose the port that the application will run on
-EXPOSE 80
+EXPOSE 3000
 
 # Set the command to run the application
 CMD ["node", "/app/server/index.mjs"]
