@@ -289,7 +289,7 @@ function goToCart() {
 }
 async function goToExplore(device) {
   if (device == 'desktop') {
-    track('search:start', { query: searchInputQuery.value.trim() })
+    track('search:visit', { query: searchInputQuery.value.trim() })
   }
   var creatorUsername = route.params.creatorUsername || await getCreatorUserName();
   if (creatorUsername) {

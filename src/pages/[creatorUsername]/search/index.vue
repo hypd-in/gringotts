@@ -150,8 +150,7 @@ async function search(query) {
     });
     await searchInput();
   }
-
-  track('search:start', { query: searchQuery.value.trim() })
+  track('search:visit', { query: searchQuery.value.trim() })
 
 }
 
@@ -195,6 +194,9 @@ async function searchInput() {
       );
       fetchingSearchResults.value = false;
     } else {
+
+      track("serch_result:page_scroll_end")
+
       if (observer.value && target.value) {
         unobserveTarget();
       }

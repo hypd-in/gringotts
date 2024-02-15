@@ -1,9 +1,23 @@
 <template>
   <section class="buttons-section">
-    <button @click="toggleWishlist" :class="{ wishlisted: isWishlisted }" class="wishlist-btn"
-      v-html="wishlistIcon"></button>
-    <Button class="add-to-cart-btn" :loading="addingToCart" :defaultText="addToCartText" @click="addToCart" />
-    <Button @click="buyNow" class="buy-now-btn" :loading="buyingNow" defaultText="Buy Now" />
+    <button
+      @click="toggleWishlist"
+      :class="{ wishlisted: isWishlisted }"
+      class="wishlist-btn"
+      v-html="wishlistIcon"
+    ></button>
+    <Button
+      class="add-to-cart-btn"
+      :loading="addingToCart"
+      :defaultText="addToCartText"
+      @click="addToCart"
+    />
+    <Button
+      @click="buyNow"
+      class="buy-now-btn"
+      :loading="buyingNow"
+      defaultText="Buy Now"
+    />
   </section>
 </template>
 
@@ -48,11 +62,11 @@ const addToCartText = computed(() => {
 });
 
 async function toggleWishlist() {
-  track('pdp:wishlist_button_click', {
+  track("pdp:wishlist_button_click", {
     item_id: productStore.info?.id,
     brand_id: productStore.info?.brand_id,
     variant_id: productStore.info.selected_variant?.id ?? null,
-  })
+  });
 
   if (!isWishlisted.value) {
     var itemInfo = {
@@ -62,31 +76,37 @@ async function toggleWishlist() {
         type: "creator_store",
       },
     };
-    track('wishlist:add', {
-      location: 'pdp', catalog_name: productStore.info.name, catalog_id: productStore.info.id, brand_id: productStore.info.brand_id, brand_name: productStore.info.brand_info.name
-    })
+    track("wishlist:add", {
+      location: "pdp",
+      catalog_name: productStore.info.name,
+      catalog_id: productStore.info.id,
+      brand_id: productStore.info.brand_id,
+      brand_name: productStore.info.brand_info.name,
+    });
     await addItemToWishlist(itemInfo);
   } else {
     await removeItemFromWishlist(productStore.info);
   }
 }
 async function addToCart() {
-  track('pdp:add_to_cart_click', {
+  track("pdp:add_to_cart_click", {
     item_id: productStore.info.id,
     brand_id: productStore.info.brand_id,
     variant_id: productStore.info.selected_variant.id,
-  })
+  });
   if (!productStore.info?.selected_variant?.id) {
     emit("getVariant");
     return;
-  } else if (
-    !!store.cartItems[productStore.info?.selected_variant?.id]
-  ) {
+  } else if (!!store.cartItems[productStore.info?.selected_variant?.id]) {
     goToCart();
   }
   var itemInfo = {
     variant_id: productStore.info?.selected_variant?.id,
     catalog_id: productStore.info?.id,
+    brand_id: productStore.info?.brand_info?.id,
+    brand_name: productStore.info?.brand_info?.name,
+    name: productStore.info?.name,
+    price: productStore.info?.retail_price.value,
     quantity: 1,
   };
   if (creatorStore.info?.id) {
@@ -124,13 +144,11 @@ async function addToCart() {
 }
 
 function buyNow() {
-
-  track(' pdp:buy_now_click', {
+  track(" pdp:buy_now_click", {
     item_id: productStore.info.id,
     brand_id: productStore.info.brand_id,
     variant_id: productStore.info.selected_variant.id,
-  })
-
+  });
 
   if (!productStore.info?.selected_variant?.id) {
     emit("getVariant");
@@ -156,7 +174,7 @@ function buyNow() {
 function goToCart() {
   navigateTo({
     name: "CartItems",
-  })
+  });
 }
 </script>
 
