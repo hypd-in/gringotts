@@ -136,6 +136,7 @@ onMounted(() => {
 
 <style scoped>
 .no-products {
+      height: 50vh;
       display: flex;
       align-items: center;
       justify-content: center;

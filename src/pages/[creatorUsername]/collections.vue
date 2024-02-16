@@ -120,6 +120,7 @@ onMounted(() => {
   gap: 20px;
   font-family: Urbanist-Medium;
   font-size: 18px;
+  height: 50vh;
 }
 .collections {
   min-height: calc(100dvh - 334px);
