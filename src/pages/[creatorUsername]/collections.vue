@@ -1,8 +1,28 @@
 <template>
-  <div class="collections">
-    <CollectionComponent src="creator-store-collections" v-for="collection in creatorStore.collectionInfo.collections" :key="collection.id"
-      :item="collection" />
-    <div class="target" ref="target"></div>
+  <div>
+    <!-- loading -->
+    <div class="center-loader" v-if="loading">
+      <div class="small-rolling-spinner rolling-spinner">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
+    </div>
+
+    <!-- empty data -->
+    <div class="no-collections" v-else-if="!loading && collections.length == 0">
+      <img src="@/assets/illustrations/no-orders.png" alt="">
+      No collections found.
+    </div>
+
+    <!-- collections -->
+    <div v-else-if="!loading && collections.length > 0" class="collections">
+      <CollectionComponent src="creator-store-collections" v-for="collection in creatorStore.collectionInfo.collections"
+        :key="collection.id" :item="collection" />
+      <div class="target" ref="target"></div>
+    </div>
+
   </div>
 </template>
 
@@ -15,6 +35,9 @@ import track from '~/utils/tracking-posthog';
 const collectionPage = ref(0)
 const collections = ref([])
 const target = ref();
+
+const loading = ref(false)
+
 let observer
 
 
@@ -24,6 +47,10 @@ const creatorStore = useCreatorStore()
 
 
 async function getCollections() {
+  if (page.value == 0) {
+    loading.value = true
+  }
+
   try {
     let response = await $fetch(runtimeConfig.public.catalogURL + "/api/app/influencer/collections/active", {
       query: {
@@ -50,8 +77,10 @@ async function getCollections() {
         observer.value.unobserve(target.value);
       }
     }
+    loading.value = false
   }
   catch (err) {
+    loading.value = false
     console.log(err)
   }
 }
@@ -83,6 +112,15 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.no-collections{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  font-family: Urbanist-Medium;
+  font-size: 18px;
+}
 .collections {
   min-height: calc(100dvh - 334px);
   display: grid;

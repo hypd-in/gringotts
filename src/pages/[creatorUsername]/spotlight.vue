@@ -1,7 +1,24 @@
 <template>
-      <div class="product-listing-wrapper">
-            <Product src="creator-store-spotlight" v-for="product in creatorStore.spotlight" :key="product?.id"
-                  :itemInfo="product" origin="creator-store" source="creator-store" />
+      <div>
+            <div v-if="loading" class="center-loader">
+                  <div class="small-rolling-spinner rolling-spinner">
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                        <div></div>
+                  </div>
+            </div>
+
+            <div class="no-products" v-else-if="!loading && catalogs.length == 0">
+                  <img src="@/assets/illustrations/no-orders.png" alt="">
+                  No products found.
+            </div>
+
+            <div class="product-listing-wrapper" v-else-if="!loading && catalogs.length > 0">
+                  <Product src="creator-store-spotlight" v-for="product in creatorStore.spotlight" :key="product?.id"
+                        :itemInfo="product" origin="creator-store" source="creator-store" />
+            </div>
+
       </div>
 </template>
   
@@ -18,7 +35,10 @@ const catalogIds = ref(0)
 const catalogs = ref([])
 const catalogs_sent = ref(0)
 
+const loading = ref(false)
+
 async function getCatalogIds() {
+      loading.value = true
       try {
             let response = await $fetch(runtimeConfig.public.cmsURL + "/api/catalog/influencer",
                   {
@@ -39,6 +59,7 @@ async function getCatalogIds() {
 
       }
       catch (err) {
+            loading.value = false
             alert(err);
       }
 }
@@ -88,9 +109,10 @@ async function getCatalog() {
                         count = 0
                         await getCatalog();
                   }
-
             }
+            loading.value = false
       } catch (err) {
+            loading.value = true
             console.log(err)
       }
 }
@@ -111,3 +133,15 @@ onMounted(() => {
 })
 
 </script>
+
+<style scoped>
+.no-products {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 20px;
+      font-family: Urbanist-Medium;
+      font-size: 18px;
+}
+</style>
