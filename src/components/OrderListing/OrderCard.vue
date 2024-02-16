@@ -62,7 +62,7 @@
             <button @click="goToOrderDetails(item?.id)" class="order-details">Item Details</button>
             <button v-if="showTrackOrder(item)" class="track-order" @click="toggleTrackingPopup(item?.id)">Track
               Order</button>
-            <SubmitButton v-else @click="reorder(item)" defaultText="Re Order" :loading="addingToCart" class="reorder"/>
+            <SubmitButton v-else @click="reorder(item)" defaultText="Re Order" :loading="addingToCart" class="reorder" />
           </div>
         </div>
       </div>
@@ -172,6 +172,10 @@ async function reorder(item) {
   var itemInfo = {
     variant_id: item?.variant_id,
     catalog_id: item?.catalog_info?.id,
+    brand_id: props.orderInfo?.brand_info?.id,
+    brand_name: props.orderInfo?.brand_info?.name,
+    name: item?.catalog_info.name,
+    price: item?.retail_price.value,
     quantity: 1,
   };
   if (creatorStore.info?.id) {

@@ -8,6 +8,7 @@ import {
 } from "@/utils/globalAPIs";
 
 import { getUTMParams } from "./helperMethods";
+import track from "./tracking-posthog";
 
 let couponURL;
 let catalogURL;
@@ -183,6 +184,27 @@ export async function addLocalStorageItemsToCart() {
 }
 
 export async function addItemToCart(itemInfo) {
+  // de-structured data.
+  const {
+    id,
+    variant_id,
+    catalog_id,
+    brand_id,
+    brand_name,
+    name,
+    quantity,
+    source,
+    price,
+  } = itemInfo;
+
+  let dataToTrack = {
+    item: { catalog_id, name, price, variant_id },
+    brand_id,
+    brand_name,
+  };
+
+  track("cart:add", {...dataToTrack})
+
   //itemInfo must contain a field "id" which is user's id, along with the product info
   try {
     // var params = getUTMParams();
@@ -191,7 +213,7 @@ export async function addItemToCart(itemInfo) {
       {
         method: "POST",
         // params: params,
-        body: itemInfo,
+        body: { variant_id, catalog_id, quantity, source, id },
         credentials: "include",
         headers: {
           "Content-Type": "application/json",

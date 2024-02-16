@@ -77,6 +77,8 @@ async function selectAddress() {
   var data = { ...props.address };
   data["address_id"] = props.address?.id;
   data["id"] = store.user?.id;
+
+  delete data?.is_sourcing_address
   try {
     var response = await $fetch(config.public.entityURL + "/api/app/cart/address", {
       method: "POST",

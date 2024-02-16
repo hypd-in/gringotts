@@ -616,6 +616,8 @@ const creatorStore = useCreatorStore();
 
 const creator = ref({});
 
+const store = useStore()
+
 if (route.params.creatorUsername) {
     const { data, pending: loadingCreatorInfo } = await useFetch(
         runtimeConfig.public.entityURL +
@@ -781,7 +783,7 @@ function changeTab(options) {
 
 function follow_author() {
     trackCreatorFollowButton()
-    if (props.user) {
+    if (store.user.id) {
         if (!creator.value.is_followed_by_user) {
             $fetch(
                 runtimeConfig.public.entityURL + "/api/app/customer/influencer/follow",
@@ -792,7 +794,7 @@ function follow_author() {
                         "Content-Type": "application/json",
                     },
                     body: {
-                        customer_id: props.user.customer_id,
+                        customer_id: store.user.customer_id,
                         id: creator.value.id,
                     },
                 }
@@ -829,7 +831,7 @@ async function unfollow_author() {
                     "Content-Type": "application/json",
                 },
                 body: {
-                    customer_id: props.user.customer_id,
+                    customer_id: store.user.customer_id,
                     id: creator.value.id,
                 },
             }

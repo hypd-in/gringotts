@@ -10,12 +10,14 @@
             getCreatorDetails
           }}!
         </div>
-        <button v-if="creatorInfo && creatorInfo.creatorName" class="primary-button mt-60" @click="goToCreatorStore">
-          Continue Shopping
-        </button>
-        <button class="secondary-button mt-20" @click="goToOrders">
-          Track Your Order
-        </button>
+        <div class="buttons">
+          <button v-if="creatorInfo && creatorInfo.creatorName" class="primary-button mt-60" @click="goToCreatorStore">
+            Continue Shopping
+          </button>
+          <button class="secondary-button mt-20" @click="goToOrders">
+            Track Your Order
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -185,6 +187,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
+
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 .wrapper {
   position: relative;
   height: calc(100vh - 73px);
@@ -217,7 +226,7 @@ onUnmounted(() => {
 .primary-button {
   color: #fff;
   font-family: Urbanist-Bold;
-  border-radius: 20px;
+  border-radius: 12px;
   background: #fb6c23;
   padding: 16px;
   text-align: center;
@@ -225,18 +234,22 @@ onUnmounted(() => {
   outline: none;
   width: 100%;
   cursor: pointer;
+
+  max-width: 300px;
 }
 
 .secondary-button {
   color: #13141b;
   font-family: Urbanist-Bold;
-  border-radius: 20px;
+  border-radius: 12px;
   border: 1px solid #eaeaea;
   padding: 16px;
   text-align: center;
   width: 100%;
   background: transparent;
   cursor: pointer;
+
+  max-width: 300px;
 }
 
 .desktop_wrapper {

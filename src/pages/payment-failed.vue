@@ -10,12 +10,14 @@
           Any amount deducted will be refunded in 3 - 5 business days. Would you
           like to try again with a different payment option?
         </div>
-        <button class="primary-button mt-60" @click="reviewPayment">
-          Review Payment Method
-        </button>
-        <button v-if="creatorInfo.creatorName" class="secondary-button mt-20" @click="goToCreatorStore">
-          Back To Home
-        </button>
+        <div class="buttons">
+          <button class="primary-button mt-60" @click="reviewPayment">
+            Review Payment Method
+          </button>
+          <button v-if="creatorInfo.creatorName" class="secondary-button mt-20" @click="goToCreatorStore">
+            Back To Home
+          </button>
+        </div>
       </div>
     </div>
   </div>
@@ -67,9 +69,14 @@ function reviewPayment() {
     router.replace(isExpress.value.url);
     localStorage.removeItem("isExpress");
   } else {
-    router.replace({
-      name: "CartItems",
-    });
+    if (window.innerWidth > 600) {
+      router.replace('/cart')
+    }
+    else {
+      router.replace({
+        name: "CartItems",
+      });
+    }
   }
 }
 function goToCreatorStore() {
@@ -82,6 +89,13 @@ function goToCreatorStore() {
 }
 </script>
 <style scoped>
+.buttons {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .wrapper {
   position: relative;
   height: calc(100vh - 73px);
@@ -114,7 +128,7 @@ function goToCreatorStore() {
 .primary-button {
   color: #fff;
   font-family: Urbanist-Bold;
-  border-radius: 20px;
+  border-radius: 12px;
   background: #fb6c23;
   padding: 16px;
   text-align: center;
@@ -129,7 +143,7 @@ function goToCreatorStore() {
 .secondary-button {
   color: #13141b;
   font-family: Urbanist-Bold;
-  border-radius: 20px;
+  border-radius: 12px;
   border: 1px solid #eaeaea;
   padding: 16px;
   text-align: center;

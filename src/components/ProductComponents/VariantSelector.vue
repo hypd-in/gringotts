@@ -57,7 +57,7 @@ const variantType = computed(() => {
 
 function selectVariant(variant) {
 
-  track('pdp:variant_click', {
+  track('pdp:select_variant_click', {
     item_id:product.info.id,
     brand_id:product.info.brand_id,
     variant_id:variant.id,

@@ -1239,6 +1239,14 @@ img[lazy="loaded"] {
   }
 }
 
+.center-loader {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+
 /* Coupon Loader CSS End */
 /* Price details section pdp and cart */
 .price-details-container {

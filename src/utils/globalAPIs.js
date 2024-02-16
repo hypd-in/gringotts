@@ -322,6 +322,7 @@ export async function applyExpressCoupon(coupon_code) {
 
 export async function addItemToWishlist(itemInfo) {
   const store = useStore();
+  const router = useRouter()
   const creatorStore = useCreatorStore();
   var formData = {
     user_id: store.user.id,
