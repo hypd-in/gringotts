@@ -20,9 +20,9 @@
     <div v-else-if="!loading && collections.length > 0" class="collections">
       <CollectionComponent src="creator-store-collections" v-for="collection in creatorStore.collectionInfo.collections"
         :key="collection.id" :item="collection" />
-      <div class="target" ref="target"></div>
     </div>
 
+    <div class="target" ></div>
   </div>
 </template>
 
@@ -40,14 +40,12 @@ const loading = ref(false)
 
 let observer
 
-
 const runtimeConfig = useRuntimeConfig()
 const creatorStore = useCreatorStore()
 
 
-
 async function getCollections() {
-  if (page.value == 0) {
+  if (collectionPage.value == 0) {
     loading.value = true
   }
 
@@ -94,6 +92,9 @@ async function callback(entries) {
 }
 
 onMounted(() => {
+  
+  target.value = document.querySelector('.target')
+
   if (creatorStore.collectionInfo.collections) {
     collectionPage.value = creatorStore.collectionInfo.page
     collections.value = [...creatorStore.collectionInfo.collections]
@@ -112,7 +113,7 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.no-collections{
+.no-collections {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -122,6 +123,7 @@ onMounted(() => {
   font-size: 18px;
   height: 50vh;
 }
+
 .collections {
   min-height: calc(100dvh - 334px);
   display: grid;
