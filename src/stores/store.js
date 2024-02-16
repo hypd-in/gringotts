@@ -54,7 +54,9 @@ export const useStore = defineStore("store", () => {
   }
 
   function removeUserAddress(address) {
-    delete addresses.value[address.id];
+    if (address?.id) {
+      delete addresses.value[address.id];
+    }
   }
 
   function removeItemFromCart(item) {
