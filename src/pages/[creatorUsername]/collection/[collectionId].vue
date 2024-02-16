@@ -95,10 +95,15 @@ async function fetchCatalogInfo() {
     params.append("id", catalogIds[i]);
     totalNoOfProducts.value -= 1;
   };
+  if (params.size <= 0) {
+    return;
+  }
+
   if (totalNoOfProducts.value == catalogsSent.value) {
     observer.value.unobserve(target.value);
   }
-  await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic${params.size > 0 ? `?${params.toString()}` : ''}`, {
+
+  await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${params.toString()}`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -107,7 +112,7 @@ async function fetchCatalogInfo() {
   }).then((response) => {
     if (response.payload) {
       collectionProducts.value = [...collectionProducts.value, ...response.payload];
-      catalogsSent.value = maxLimit;
+      catalogsSent.value += maxLimit;
     }
     loadingProducts.value = false;
   }).catch((error) => {

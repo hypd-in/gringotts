@@ -109,6 +109,7 @@ async function fetchCatalogInfo() {
     })
     if (response.payload) {
       collectionProducts.value = [...response.payload];
+      catalogsSent.value += maxLimit;
     }
     if (totalNoOfLinks.value < 1) {
       observer.value.unobserve(target.value);
