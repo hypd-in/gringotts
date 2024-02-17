@@ -2,8 +2,8 @@
   <div class="curation-wrapper">
     <div class="sub-header">
       <div class="journey-path">
-        <NuxtImg placeholder="[50, 25, 20, 10]" :alt="creatorStore.info.name" width="32" height="32"
-          style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info?.profile_image?.src" />
+        <ImageFrame :alt="creatorStore.info.name" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
+          :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
         {{ creatorStore.info.name }} / Collections / &nbsp;
         <!-- <NuxtImg width="32" height="32" style="border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="collectionInfo.image.src" /> -->
         <span v-if="route.query.title" style="color: #000">{{
@@ -25,6 +25,7 @@
 </template>
 
 <script setup>
+import ImageFrame from '~/components/ImageFrame.vue';
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 import track from '~/utils/tracking-posthog';
 definePageMeta({
