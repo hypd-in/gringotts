@@ -20,6 +20,7 @@ useSeoMeta({
   title: "Refunds & Cancellations | HYPD | #getHYPD",
   ogTitle: "Refunds & Cancellations | HYPD | #getHYPD",
   twitterTitle: "Refunds & Cancellations | HYPD | #getHYPD",
+  twitterCard: "summary",
 })
 </script>
 
