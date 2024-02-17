@@ -31,14 +31,14 @@ async function confirmOnPageLoad() {
             },
         })
         if (response.payload) {
-            status.value = response.payload.status;
-            amount.value = response.payload.amount;
+            status.value = response.payload?.status;
+            amount.value = response.payload?.amount;
         }
         if (status.value == "initiated") {
             orderConfirmation();
             return;
         } else if (status.value == "failed") {
-            clearInterval(vm.check_order_status);
+            clearInterval(check_order_status.value);
             let path =
                 "/payment-failed?orderID=" +
                 route.query.order_id +
@@ -65,17 +65,17 @@ async function confirmOnPageLoad() {
             router.push(path);
 
             // Creating goKwikData Object to send every payment details to GoKwik to train CoD model
-            var goKwikData = {
-                order_type: "non-gk",
-                mid: this.$gokwick_mid,
-                moid: this.order_id,
-                environment: this.$gokwik_env,
-                request_id: this.gokwik_request_id,
-                gokwik_oid: "",
-            };
-            let a = {};
-            a["data"] = goKwikData;
-            sendDetailsToGoKwik([a], goKwikData.order_type);
+            // var goKwikData = {
+            //     order_type: "non-gk",
+            //     mid: this.$gokwick_mid,
+            //     moid:route.query.order_id,
+            //     environment: this.$gokwik_env,
+            //     request_id: this.gokwik_request_id,
+            //     gokwik_oid: "",
+            // };
+            // let a = {};
+            // a["data"] = goKwikData;
+            // sendDetailsToGoKwik([a], goKwikData.order_type);
         }
     }
 
@@ -98,9 +98,9 @@ function orderConfirmation() {
                     "Content-Type": "application/json",
                 },
             })
-            if (response.data.payload) {
-                status.value = response.payload.status;
-                amount.value = response.payload.amount;
+            if (response.payload) {
+                status.value = response.payload?.status;
+                amount.value = response.payload?.amount;
             }
             if (status.value == "initiated") {
                 return;
@@ -126,19 +126,21 @@ function orderConfirmation() {
                     path =
                         path + "&influencer_id=" + route.query?.influencer_id;
                 }
+                
                 router.push(path);
+
                 // Creating goKwikData Object to send every payment details to GoKwik to train CoD model
-                var goKwikData = {
-                    order_type: "non-gk",
-                    mid: this.$gokwick_mid,
-                    moid: this.order_id,
-                    environment: this.$gokwik_env,
-                    request_id: this.gokwik_request_id,
-                    gokwik_oid: "",
-                };
-                let a = {};
-                a["data"] = goKwikData;
-                sendDetailsToGoKwik([a], goKwikData.order_type);
+                // var goKwikData = {
+                //     order_type: "non-gk",
+                //     mid:  useRuntimeConfig().public.gokwick_mid,
+                //     moid:route.query.order_id,
+                //     environment:useRuntimeConfig().public.gokwik_env,
+                //     request_id: this.gokwik_request_id,
+                //     gokwik_oid: "",
+                // };
+                // let a = {};
+                // a["data"] = goKwikData;
+                // sendDetailsToGoKwik([a], goKwikData.order_type);
             }
         }
 
@@ -149,32 +151,32 @@ function orderConfirmation() {
     }, 5000);
 }
 
-function sendDetailsToGoKwik(dataArray, orderType) {
-    setTimeout(() => {
-        var gokwik_Script = document.createElement("script");
-        gokwik_Script.setAttribute(
-            "src",
-            "https://checkout.gokwik.co/integration.js"
-        );
-        document.head.appendChild(gokwik_Script);
-        gokwik_Script.onload = () => {
-            for (let i in dataArray) {
-                let merchantInfo = {
-                    order_type: orderType,
-                    mid: dataArray[i].data.mid,
-                    moid: dataArray[i].data.moid,
-                    environment: useRuntimeConfig().public.gokwik_env,
-                    request_id: dataArray[i].data.request_id,
-                    gokwik_oid: dataArray[i].data.gokwik_oid,
-                    showModal: false,
-                };
-                gokwikSdk.initPayment(merchantInfo);
-            }
-            // gokwikSdk.close();
-            // paying = false;
-        };
-    }, 800);
-}
+// function sendDetailsToGoKwik(dataArray, orderType) {
+//     setTimeout(() => {
+//         var gokwik_Script = document.createElement("script");
+//         gokwik_Script.setAttribute(
+//             "src",
+//             "https://checkout.gokwik.co/integration.js"
+//         );
+//         document.head.appendChild(gokwik_Script);
+//         gokwik_Script.onload = () => {
+//             for (let i in dataArray) {
+//                 let merchantInfo = {
+//                     order_type: orderType,
+//                     mid: dataArray[i].data.mid,
+//                     moid: dataArray[i].data.moid,
+//                     environment: useRuntimeConfig().public.gokwik_env,
+//                     request_id: dataArray[i].data.request_id,
+//                     gokwik_oid: dataArray[i].data.gokwik_oid,
+//                     showModal: false,
+//                 };
+//                 gokwikSdk.initPayment(merchantInfo);
+//             }
+//             // gokwikSdk.close();
+//             // paying = false;
+//         };
+//     }, 800);
+// }
 
 
 onMounted(() => {
@@ -186,7 +188,7 @@ onMounted(() => {
         if (route.query.order_id) {
             confirmOnPageLoad();
         } else {
-            router.push("/");
+            navigateTo("/");
         }
     }
 })
