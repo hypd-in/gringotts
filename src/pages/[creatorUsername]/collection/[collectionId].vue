@@ -5,7 +5,7 @@
         <ImageFrame :alt="creatorStore.info.name" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
           :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
         {{ creatorStore.info.name }} / Collections / &nbsp;
-        <!-- <NuxtImg width="32" height="32" style="border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="collectionInfo.image.src" /> -->
+        <!-- <ImageFrame style="width: 32px; height: 32px; border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="getReplacedSource(collectionInfo.image.src, 100)" /> -->
         <span v-if="route.query.title" style="color: #000">{{
           collectionName }}</span>
       </div>

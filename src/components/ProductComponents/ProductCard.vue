@@ -18,7 +18,6 @@
       <div @click="toggleWishlist" class="wishlist-icon" v-if="!isAffiliate" v-html="wishlistIcon"></div>
       <NuxtLink @click="trackProductNavigation" :to="goToProduct">
         <ImageFrame class="featured-image" :src="getReplacedSource(productImage, 450)" />
-        <!-- <ImageFrame /> -->
       </NuxtLink>
     </div>
     <NuxtLink @click="trackProductNavigation" :to="goToProduct">
