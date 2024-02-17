@@ -618,6 +618,9 @@ const creator = ref({});
 
 const store = useStore()
 
+
+
+
 if (route.params.creatorUsername) {
     const { data, pending: loadingCreatorInfo } = await useFetch(
         runtimeConfig.public.entityURL +
