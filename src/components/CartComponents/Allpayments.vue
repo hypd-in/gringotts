@@ -696,8 +696,8 @@ async function checkout() {
       // );
     }
   } catch (err) {
-    console.log("Error while checking out", err);
-    alert(err.response.data.error[0].message);
+    console.log("Error while checking out", err.response);
+    alert(err.response._data.error[0].message);
     checkingOut.value = false;
     emits("transactionLoader", false);
   }
