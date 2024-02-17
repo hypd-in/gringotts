@@ -133,10 +133,10 @@ export default defineNuxtConfig({
       script: [
         {
           defer: true,
-          src:
-            process.env.NODE_ENV != "production"
-              ? "https://sandbox.juspay.in/pay-v3.js"
-              : "https://api.juspay.in/pay-v3.js",
+          src:"https://sandbox.juspay.in/pay-v3.js",
+            // process.env.NODE_ENV != "production"
+            //   ? "https://sandbox.juspay.in/pay-v3.js"
+            //   : "https://api.juspay.in/pay-v3.js",
           type: "text/javascript",
         },
         // {
