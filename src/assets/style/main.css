@@ -1427,3 +1427,8 @@ a{
     text-decoration: none;
     color: inherit;
 }
+
+.read{
+  user-select: none;
+  cursor: pointer;
+}
