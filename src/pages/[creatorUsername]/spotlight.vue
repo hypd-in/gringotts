@@ -56,7 +56,7 @@ async function getCatalogIds() {
                   catalogIds.value = response;
                   await getCatalog();
             }
-
+            loading.value = false;
       }
       catch (err) {
             loading.value = false
@@ -110,9 +110,9 @@ async function getCatalog() {
                         await getCatalog();
                   }
             }
-            loading.value = false
+            loading.value = false;
       } catch (err) {
-            loading.value = true
+            loading.value = false;
             console.log(err)
       }
 }

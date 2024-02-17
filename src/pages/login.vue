@@ -341,6 +341,17 @@ onMounted(() => {
     })
   }
 })
+
+useSeoMeta({
+  title: "Login | HYPD | #getHypd",
+  ogTitle: "Login | HYPD | #getHypd",
+  twitterTitle: "Login | HYPD | #getHypd",
+  description: "Login to HYPD Store for a smooth experience",
+  ogDescription: "Login to HYPD Store for a smooth experience",
+  twitterDescription: "Login to HYPD Store for a smooth experience",
+  twitterCard: "summary",
+  lang: "en-IN"
+})
 </script>
 
 <style scoped>
