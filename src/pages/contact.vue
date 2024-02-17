@@ -31,6 +31,13 @@ definePageMeta({
   name: "ContactUs",
   layout: "public",
 });
+
+useSeoMeta({
+  title: "Contact Us | HYPD | #getHYPD",
+  ogTitle: "Contact Us | HYPD | #getHYPD",
+  twitterTitle: "Contact Us | HYPD | #getHYPD",
+  twitterCard: "summary",
+})
 </script>
 
 <style scoped>

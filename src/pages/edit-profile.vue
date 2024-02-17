@@ -209,6 +209,17 @@ watch(() => store.user, (newV) => {
     userInfo.value = { ...newV };
   }
 })
+
+useSeoMeta({
+  title: "Edit Profile | HYPD",
+  ogTitle: "Edit Profile | HYPD",
+  twitterTitle: "Edit Profile | HYPD",
+  description: "Edit your profile details on HYPD",
+  ogDescription: "Edit your profile details on HYPD",
+  twitterDescription: "Edit your profile details on HYPD",
+  twitterCard: "summary",
+  lang: "en-IN"
+})
 </script>
 
 <style scoped>

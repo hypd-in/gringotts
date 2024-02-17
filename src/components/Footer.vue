@@ -12,8 +12,8 @@
       <section class="links">
         <h3 class="heading">Shopping Online</h3>
         <div class="links">
-          <p>Order Status</p>
-          <p>Refunds and Cancellations</p>
+          <p @click="goToOrdersPage">Order Status</p>
+          <p @click="goToRefundsAndCancellation">Refunds and Cancellations</p>
           <p @click="goToContact">Contact Us</p>
         </div>
       </section>
@@ -41,10 +41,22 @@ function goToIndex() {
   });
 }
 
+function goToOrdersPage() {
+  navigateTo({
+    name: "Orders"
+  })
+}
+
 function goToContact() {
   navigateTo({
     name: "ContactUs",
   });
+}
+
+function goToRefundsAndCancellation() {
+  navigateTo({
+    name: "RefundsAndCancellation"
+  })
 }
 
 function goToPrivacyPolicy() {

@@ -442,6 +442,7 @@ button.reorder {
   color: var(--primary-orange);
   border: 1px solid var(--primary-orange);
   background: none !important;
+  max-width: 180px;
 }
 
 button:hover {

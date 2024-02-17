@@ -22,7 +22,7 @@
         :key="collection.id" :item="collection" />
     </div>
 
-    <div class="target" ></div>
+    <div class="target"></div>
   </div>
 </template>
 
@@ -92,7 +92,7 @@ async function callback(entries) {
 }
 
 onMounted(() => {
-  
+
   target.value = document.querySelector('.target')
 
   if (creatorStore.collectionInfo.collections) {
@@ -109,6 +109,18 @@ onMounted(() => {
     creator_username: creatorStore.info.username,
   })
 })
+
+useSeoMeta({
+  title: `Collections by ${creatorStore.info.name} | HYPD`,
+  ogTitle: `Collections by ${creatorStore.info.name} | HYPD`,
+  twitterTitle: `Collections by ${creatorStore.info.name} | HYPD`,
+  description: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,
+  ogDescription: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,
+  twitterDescription: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,
+  ogImage: `${creatorStore.info?.profile_image?.src}`,
+  twitterImage: `${creatorStore.info?.profile_image?.src}`,
+  twitterCard: "summary_large_image",
+});
 
 </script>
 

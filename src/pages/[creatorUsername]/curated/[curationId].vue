@@ -14,6 +14,7 @@
           <ProductCard v-for="product in products" :key="product?.id" :itemInfo="product" />
         </div>
       </div>
+      <div class="pagination-target" ref="target"></div>
     </div>
   </div>
 </template>
@@ -29,7 +30,11 @@ const config = useRuntimeConfig();
 const creatorStore = useCreatorStore();
 const route = useRoute();
 const curationInfo = ref({});
-const curationCatalogs = ref([]);
+const catalogIds = ref([]);
+const totalNoOfCatalogs = ref(0);
+const catalogsSent = ref(0);
+const observer = ref(null);
+const target = ref(null);
 const products = ref([]);
 
 if (route.params.curationId) {
@@ -46,7 +51,8 @@ if (route.params.curationId) {
   if (info.value) {
     curationInfo.value = { ...info.value.payload };
     if (curationInfo.value.sub_collections[0]?.catalog_ids.length > 0) {
-      await getCatalogInfo();
+      totalNoOfCatalogs.value = curationInfo.value.sub_collections[0]?.catalog_ids.length;
+      catalogIds.value = [...curationInfo.value.sub_collections[0]?.catalog_ids];
     }
   } else if (error) {
     console.log("Error fetching curation info");
@@ -54,22 +60,44 @@ if (route.params.curationId) {
 }
 
 async function getCatalogInfo() {
-  let ids = '';
-  curationInfo.value.sub_collections[0]?.catalog_ids.forEach((id, index) => {
-    ids += `${index == 0 ? '' : '&'}id=${id}`;
-  });
-  await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${ids}`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  }).then((response) => {
-    if (response.payload) {
-      products.value = [...response.payload]
+  try {
+    var params = new URLSearchParams();
+    var maxLimit = 20;
+    if (totalNoOfCatalogs.value < 20) {
+      maxLimit = totalNoOfCatalogs.value
     }
-  }).catch((err) => {
+    for (let i = catalogsSent.value; i < catalogsSent.value + maxLimit; i++) {
+      params.append("id", catalogIds.value[i]);
+      totalNoOfCatalogs.value -= 1;
+    }
+    if (params.size <= 0) {
+      return;
+    }
+    var response = await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${params.toString()}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+    if (response.payload) {
+      products.value = [...products.value, ...response.payload]
+      catalogsSent.value += maxLimit;
+    }
+    if (totalNoOfCatalogs.value < 1) {
+      observer.value.unobserve(target.value);
+    }
+  }
+  catch (err) {
     console.log("Errro fetching product Info", err);
+  }
+}
+
+function callback(entries) {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      getCatalogInfo();
+    }
   })
 }
 
@@ -87,7 +115,9 @@ useSeoMeta({
 })
 
 onMounted(async () => {
-  // await fetchCurationInfo();
+  if (target.value) {
+    observer.value = addingObserver(target.value, callback);
+  }
 });
 </script>
 
@@ -110,11 +140,9 @@ onMounted(async () => {
   background: #eeeeee;
   padding: 12px 16px;
   width: 100%;
-  height: 48px;
+  height: 56px;
   box-sizing: border-box;
-}
 
-.sub-header {
   position: sticky;
   top: 72px;
   z-index: 52;

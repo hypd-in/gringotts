@@ -3,17 +3,19 @@
     <div class="sub-header">
       <div class="journey-path">
         <NuxtImg width="32" style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info.profile_image.src" />
-        {{ creatorStore.info.name }} / Explore / &nbsp; <span v-if="route.query.title" style="color: #000">{{ route.query.title }}</span>
+        {{ creatorStore.info.name }} / Explore / &nbsp; <span v-if="route.query.title" style="color: #000">{{
+          route.query.title }}</span>
       </div>
     </div>
 
     <div class="curation-container">
       <div class="curation-products">
         <h2 class="heading">{{ route.query.title }}</h2>
-        <div class="product-listing-wrapper" v-if="categoryInfo.data?.length > 0">
-          <ProductCard v-for="product in categoryInfo.data" :key="product?.id" :itemInfo="product" />
+        <div class="product-listing-wrapper" v-if="products?.length > 0">
+          <ProductCard v-for="product in products" :key="product?.id" :itemInfo="product" />
         </div>
       </div>
+      <div class="pagination-target" ref="target"></div>
     </div>
   </div>
 </template>
@@ -26,27 +28,81 @@ definePageMeta({
 })
 const creatorStore = useCreatorStore();
 const config = useRuntimeConfig();
-const categoryInfo = ref({});
-const pageCount = ref(0);
 const route = useRoute();
+
+const categoryInfo = ref({});
+const target = ref(null);
+const observer = ref(null);
+const pageCount = ref(0);
+const products = ref([]);
+
 if (route.params.categoryId) {
-  await $fetch(`${config.public.catalogURL}/api/catalog/category`, {
+  const { data: response, error } = await useFetch(`${config.public.catalogURL}/api/categories`, {
     method: "POST",
     body: {
-      category_lvl3: [route.params.categoryId],
-      page: pageCount.value,
+      id: [route.params.categoryId], 
     },
+    credentials: "include",
     headers: {
-      "Content-Type": "application/json"
+      "Content-Type": "application/json",
     }
-  }).then((response) => {
-    if (response.payload) {
-      categoryInfo.value = { ...response.payload };
-    }
-  }).catch((err) => {
-    console.log(err);
   })
+  if (response) {
+    categoryInfo.value = {...response.value.payload[0]}
+  } else if (error) {
+    console.log("Error fetching category info", err);
+  }
 }
+
+async function fetchCollectionInfo() {
+  try {
+    var response = await $fetch(`${config.public.catalogURL}/api/catalog/category`, {
+      method: "POST",
+      body: {
+        category_lvl3: [route.params.categoryId],
+        page: pageCount.value,
+      },
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+    pageCount.value++;
+    if (response.payload?.data) {
+      categoryInfo.value = { ...response.payload };
+      products.value = [...products.value, ...response.payload.data];
+    } else {
+      observer.value.unobserve(target.value);
+    }
+  } catch (error) {
+    console.log("Error fetching catalog info", error);
+  }
+}
+
+useSeoMeta({
+  title: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
+  ogTitle: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
+  twitterTitle: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
+  description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
+  twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
+  ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
+  ogImage: categoryInfo.value?.img?.src,
+  twitterImage: categoryInfo.value?.img?.src,
+  twitterCard: "summary",
+  lang: "en-IN"
+})
+
+function callback(entries) {
+  entries.forEach(async (entry) => {
+    if (entry.isIntersecting) {
+      await fetchCollectionInfo();
+    }
+  });
+}
+onMounted(() => {
+  if (target.value) {
+    observer.value = addingObserver(target.value, callback);
+  }
+})
 </script>
 
 <style scoped>
@@ -55,11 +111,11 @@ if (route.params.categoryId) {
     display: none;
   }
 
-  .curation-container{
+  .curation-container {
     padding: 0 !important;
   }
 
-  h2{
+  h2 {
     font-family: Urbanist-SemiBold;
     font-size: 16px;
     position: fixed;
@@ -75,7 +131,7 @@ if (route.params.categoryId) {
   background: #eeeeee;
   padding: 12px 16px;
   width: 100%;
-  height: 48px;
+  height: 56px;
   box-sizing: border-box;
 }
 

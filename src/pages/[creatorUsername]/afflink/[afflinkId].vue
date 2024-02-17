@@ -38,33 +38,69 @@ definePageMeta({
 const route = useRoute();
 const creatorStore = useCreatorStore();
 const config = useRuntimeConfig();
-async function routeToAfflink() {
-  await $fetch(`${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`, {
+
+if (route.params.afflinkId) {
+  const { data, error } = await useFetch(`${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`, {
     method: "GET",
     credentails: "include",
     headers: {
       "Content-Type": "application/json",
     }
-  }).then((response) => {
-    if (response.payload) {
-      navigateTo(response.payload, {
-        external: true,
-        open: {
-          target: '_blank'
-        }
-      })
-    }
-  }).catch((error) => {
-    alert("There was an error routing ")
-    console.log("Error fetching afflink redirection", error);
   })
-}
-onMounted(async () => {
-  console.log(route.params.afflinkId);
-  if (route.params.afflinkId) {
-    await routeToAfflink();
+  if (data) {
+    console.log(data.value.payload);
+    navigateTo(data.value.payload, {
+      external: true,
+      open: {
+        target: '_blank'
+      }
+    })
+  } else if (error) {
+    alert("Sorry! there was an error routing to the partner website")
+    console.log("Error fetching afflink redirection", error);
   }
+}
+
+useSeoMeta({
+  title: `${creatorStore.info?.name} | HYPD`,
+  ogTitle: `${creatorStore.info?.name} | HYPD`,
+  twitterTitle: `${creatorStore.info?.name} | HYPD`,
+  description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
+  twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
+  ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
+  ogImage: creatorStore.info?.profile_image?.src,
+  twitterImage: creatorStore.info?.profile_image?.src,
+  twitterCard: "summary",
+  lang: "en-IN"
 })
+
+// async function routeToAfflink() {
+//   await $fetch(`${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`, {
+//     method: "GET",
+//     credentails: "include",
+//     headers: {
+//       "Content-Type": "application/json",
+//     }
+//   }).then((response) => {
+//     if (response.payload) {
+//       navigateTo(response.payload, {
+//         external: true,
+//         open: {
+//           target: '_blank'
+//         }
+//       })
+//     }
+//   }).catch((error) => {
+//     alert("There was an error routing ")
+//     console.log("Error fetching afflink redirection", error);
+//   })
+// }
+
+// onMounted(async () => {
+//   if (route.params.afflinkId) {
+//     await routeToAfflink();
+//   }
+// })
 
 </script>
 
