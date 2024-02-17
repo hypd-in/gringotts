@@ -418,6 +418,12 @@ definePageMeta({
   name: "PrivacyPolicy",
   layout: "public",
 });
+
+useSeoMeta({
+  title: "Privacy Policy | HYPD | #getHYPD",
+  ogTitle: "Privacy Policy | HYPD | #getHYPD",
+  twitterTitle: "Privacy Policy | HYPD | #getHYPD",
+})
 </script>
 
 <style scoped>
