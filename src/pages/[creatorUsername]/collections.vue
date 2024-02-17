@@ -38,7 +38,7 @@ const target = ref();
 
 const loading = ref(false)
 
-let observer
+const observer = ref()
 
 const runtimeConfig = useRuntimeConfig()
 const creatorStore = useCreatorStore()
@@ -101,7 +101,7 @@ onMounted(() => {
   }
 
   if (target.value) {
-    observer = addingObserver(target.value, callback);
+    observer.value = addingObserver(target.value, callback);
   }
 
   track('creator_store_collection:visit', {

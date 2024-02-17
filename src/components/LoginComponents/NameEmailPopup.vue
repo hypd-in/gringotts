@@ -87,6 +87,8 @@
   
   const router = useRouter();
 
+  const store = useStore()
+
   const runtimeConfig = useRuntimeConfig()
 
   const userEmail = ref("");
@@ -138,7 +140,7 @@
   async function checkEmailAddress() {
     try {
       verifyingEmail.value = true;
-      var response = await $fetch(runtimeConfig.publicentityURL + "/api/user/auth/email/check",{
+      var response = await $fetch(runtimeConfig.public.entityURL + "/api/user/auth/email/check",{
         method: "POST",
         body: {
           email: userEmail.value,
