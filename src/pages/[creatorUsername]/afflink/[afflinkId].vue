@@ -28,7 +28,6 @@
 </template>
 
 <script setup>
-import { onMounted } from 'vue';
 
 definePageMeta({
   name: "AfflinkRedirection",
@@ -48,13 +47,7 @@ if (route.params.afflinkId) {
     }
   })
   if (data) {
-    console.log(data.value.payload);
-    navigateTo(data.value.payload, {
-      external: true,
-      open: {
-        target: '_blank'
-      }
-    })
+    navigateTo(data.value.payload, { external: true })
   } else if (error) {
     alert("Sorry! there was an error routing to the partner website")
     console.log("Error fetching afflink redirection", error);

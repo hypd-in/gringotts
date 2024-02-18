@@ -51,7 +51,7 @@ async function toggleWishlist() {
   track("pdp:wishlist_button_click", {
     item_id: productStore.info?.id,
     brand_id: productStore.info?.brand_id,
-    variant_id: productStore.info.selected_variant?.id ?? null,
+    variant_id: productStore.info?.selected_variant?.id ?? null,
   });
 
   if (!isWishlisted.value) {
@@ -131,9 +131,9 @@ async function addToCart() {
 
 function buyNow() {
   track(" pdp:buy_now_click", {
-    item_id: productStore.info.id,
-    brand_id: productStore.info.brand_id,
-    variant_id: productStore.info.selected_variant.id,
+    item_id: productStore.info?.id,
+    brand_id: productStore.info?.brand_id,
+    variant_id: productStore.info?.selected_variant?.id,
   });
 
   if (!productStore.info?.selected_variant?.id) {
