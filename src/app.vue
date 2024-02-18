@@ -124,12 +124,53 @@ onMounted(async () => {
   store.saveHotSellingProducts(hotSellingProducts)
 
   // uncomment later
-  // this.trackingUTM();
+  trackingUTM();
   // tracking.trackingUserLanding();
 
   // Condition for check iFrame
   await fetchCategories();
 })
+function trackingUTM() {
+  var utmParams = useCookie("utmParams");
+  if (utmParams.value) {
+    return;
+  }
+  var utm = [];
+  var cookieValue = "";
+  var count = 0;
+  if (route.query?.utm_medium) {
+    utm[count] = `utm_medium=${route.query?.utm_medium}`;
+    count++;
+  }
+  if (route.query?.utm_campaign) {
+    utm[count] = `utm_campaign=${route.query?.utm_campaign}`;
+    count++;
+  }
+  if (route.query?.utm_source) {
+    utm[count] = `utm_source=${route.query?.utm_source}`;
+    count++;
+  }
+  if (route.query?.utm_source1) {
+    utm[count] = `utm_source1=${route.query?.utm_source1}`;
+    count++;
+  }
+  if (route.query?.utm_source2) {
+    utm[count] = `utm_source2=${route.query?.utm_source2}`;
+    count++;
+  }
+  utm.forEach((utmItem, index) => {
+    if (index > 0 && index != utm.length) {
+      cookieValue += "&";
+    }
+    cookieValue += utmItem;
+  });
+  if (cookieValue.length > 0) {
+    utmParams.value = cookieValue;
+    useCookie("utmParams", {
+      maxAge: 14 * 24 * 60 * 60 * 1000,
+    })
+  }
+}
 
 async function fetchCategories() {
   try {
