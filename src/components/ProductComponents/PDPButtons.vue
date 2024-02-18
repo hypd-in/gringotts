@@ -65,7 +65,7 @@ async function toggleWishlist() {
   track("pdp:wishlist_button_click", {
     item_id: productStore.info?.id,
     brand_id: productStore.info?.brand_id,
-    variant_id: productStore.info.selected_variant?.id ?? null,
+    variant_id: productStore.info?.selected_variant?.id ?? null,
   });
 
   if (!isWishlisted.value) {
@@ -78,10 +78,10 @@ async function toggleWishlist() {
     };
     track("wishlist:add", {
       location: "pdp",
-      catalog_name: productStore.info.name,
-      catalog_id: productStore.info.id,
-      brand_id: productStore.info.brand_id,
-      brand_name: productStore.info.brand_info.name,
+      catalog_name: productStore.info?.name,
+      catalog_id: productStore.info?.id,
+      brand_id: productStore.info?.brand_id,
+      brand_name: productStore.info?.brand_info?.name,
     });
     await addItemToWishlist(itemInfo);
   } else {
@@ -90,9 +90,9 @@ async function toggleWishlist() {
 }
 async function addToCart() {
   track("pdp:add_to_cart_click", {
-    item_id: productStore.info.id,
-    brand_id: productStore.info.brand_id,
-    variant_id: productStore.info.selected_variant.id,
+    item_id: productStore.info?.id,
+    brand_id: productStore.info?.brand_id,
+    variant_id: productStore.info?.selected_variant?.id,
   });
   if (!productStore.info?.selected_variant?.id) {
     emit("getVariant");
@@ -106,7 +106,7 @@ async function addToCart() {
     brand_id: productStore.info?.brand_info?.id,
     brand_name: productStore.info?.brand_info?.name,
     name: productStore.info?.name,
-    price: productStore.info?.retail_price.value,
+    price: productStore.info?.retail_price?.value,
     quantity: 1,
   };
   if (creatorStore.info?.id) {
@@ -145,9 +145,9 @@ async function addToCart() {
 
 function buyNow() {
   track(" pdp:buy_now_click", {
-    item_id: productStore.info.id,
-    brand_id: productStore.info.brand_id,
-    variant_id: productStore.info.selected_variant.id,
+    item_id: productStore.info?.id,
+    brand_id: productStore.info?.brand_id,
+    variant_id: productStore.info?.selected_variant?.id,
   });
 
   if (!productStore.info?.selected_variant?.id) {
