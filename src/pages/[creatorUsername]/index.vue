@@ -878,12 +878,13 @@ async function getBOTD() {
 
 onMounted(() => {
     trackingDetails = {
-        creator_name: creatorStore.info.name,
+        creator_name: creatorStore.info?.name,
         creator_username: route.params.creatorUsername,
     }
     track('creator_store:visit', {
         ...trackingDetails
     })
+    tracking.trackingLandingEvent("creator_store_landing");
 
     router.replace({
         name: "CreatorStore", params: {

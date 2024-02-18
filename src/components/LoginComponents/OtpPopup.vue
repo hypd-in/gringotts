@@ -145,6 +145,7 @@ async function confirmOTP() {
         await fetchCartInfo();
       }
       await addLocalStorageItemsToCart();
+      trackingUserLogin();
     }
   } catch (err) {
     otpInputs.value?.clearOTP();

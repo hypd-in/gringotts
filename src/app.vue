@@ -125,7 +125,7 @@ onMounted(async () => {
 
   // uncomment later
   // this.trackingUTM();
-  // tracking.trackingUserLanding();
+  trackingUserLanding();
 
   // Condition for check iFrame
   await fetchCategories();

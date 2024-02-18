@@ -13,8 +13,8 @@
           </g>
         </svg>
 
-        <input @click="track('search:click',{location: router.currentRoute.value.fullPath})" @keydown.enter="search" type="text" v-model="searchQuery" placeholder="Search Brand, Products"
-          autocomplete="off" />
+        <input @click="track('search:click', { location: router.currentRoute.value.fullPath })" @keydown.enter="search"
+          type="text" v-model="searchQuery" placeholder="Search Brand, Products" autocomplete="off" />
 
         <svg v-if="searchQuery?.length > 0" @click="clearInput" class="clear" width="20" height="20" viewBox="0 0 20 20"
           fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -109,6 +109,10 @@ onBeforeRouteLeave((to, from) => {
 //   }
 // });
 
+watch(searchQuery.value, (newV, oldV) => {
+  console.log("HERE", newV);
+})
+
 onUpdated(async () => {
   if (route.query.query != searchQuery.value) {
     if (route.query.query?.trim() != '') {
@@ -193,6 +197,7 @@ async function searchInput() {
         store.searchProducts.page + 1
       );
       fetchingSearchResults.value = false;
+      trackingSearch(searchQuery.value.trim(), creatorStore.info?.username)
     } else {
 
       track("serch_result:page_scroll_end")
