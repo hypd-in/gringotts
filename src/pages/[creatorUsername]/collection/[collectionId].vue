@@ -2,9 +2,12 @@
   <div class="curation-wrapper">
     <div class="sub-header">
       <div class="journey-path">
-        <ImageFrame :alt="creatorStore.info.name" style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
-          :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
-        {{ creatorStore.info.name }} / Collections / &nbsp;
+        <span @click="gotoStore">
+          <ImageFrame :alt="creatorStore.info.name"
+            style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
+            :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
+          {{ creatorStore.info.name }} / Collections / &nbsp;
+        </span>
         <!-- <ImageFrame style="width: 32px; height: 32px; border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="getReplacedSource(collectionInfo.image.src, 100)" /> -->
         <span v-if="route.query.title" style="color: #000">{{
           collectionName }}</span>
@@ -34,6 +37,7 @@ definePageMeta({
 })
 
 const route = useRoute();
+const router = useRouter()
 const creatorStore = useCreatorStore();
 const collectionInfo = ref({});
 const catalogsSent = ref(0);
@@ -81,6 +85,13 @@ useSeoMeta({
   twitterCard: "summary",
   lang: "en-IN"
 })
+
+function gotoStore() {
+  router.replace({
+    name: "CreatorStore",
+    creatorUsername: creatorStore.info.username
+  })
+}
 
 async function fetchCatalogInfo() {
   loadingProducts.value = true;
@@ -169,7 +180,12 @@ onMounted(() => {
   z-index: 52;
 }
 
+.journey-path span{
+  display: flex;
+  align-items: center;
+}
 .journey-path {
+  cursor: pointer;
   max-width: 1024px;
   margin: 0 auto;
   box-sizing: border-box;

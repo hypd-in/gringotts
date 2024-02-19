@@ -2,10 +2,13 @@
   <div class="curation-wrapper">
     <div class="sub-header">
       <div class="journey-path">
-        <NuxtImg :placeholder="[32, 32, 70, 10]" :alt="creatorStore.info.name" width="32" height="32"
-          style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info?.profile_image?.src" />
-        {{ creatorStore.info.name }} / Collections / &nbsp;
-        <!-- <NuxtImg width="32" height="32" style="border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="collectionInfo.image.src" /> -->
+        <span @click="gotoStore">
+          <ImageFrame  style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px" :alt="creatorStore.info.name"
+           :src="creatorStore.info?.profile_image?.src" />
+          {{ creatorStore.info.name }} / Collections / &nbsp;
+        </span>
+
+        <!-- <ImageFrame width="32" height="32" style="border-radius: 6px; margin-right: 6px; object-fit: cover;" :src="collectionInfo.image.src" /> -->
         <span v-if="route.query.title" style="color: #000">{{
           collectionName }}</span>
       </div>
@@ -24,13 +27,17 @@
 </template>
 
 <script setup>
+
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
+import ImageFrame from '~/components/ImageFrame.vue';
+
 definePageMeta({
   name: "AffiliateCollection",
   layout: "public"
 })
 
 const route = useRoute();
+const router = useRouter()
 const creatorStore = useCreatorStore();
 const collectionInfo = ref({});
 const linkIds = ref(null);
@@ -77,6 +84,13 @@ useSeoMeta({
   twitterCard: "summary",
   lang: "en-IN"
 })
+
+function gotoStore() {
+  router.replace({
+    name: "CreatorStore",
+    creatorUsername: creatorStore.info.username
+  })
+}
 
 function callback(entries) {
   entries.forEach((entry) => {
@@ -150,7 +164,12 @@ onMounted(() => {
   z-index: 52;
 }
 
+.journey-path span{
+  display: flex;
+  align-items: center;
+}
 .journey-path {
+  cursor: pointer;
   max-width: 1024px;
   margin: 0 auto;
   box-sizing: border-box;
