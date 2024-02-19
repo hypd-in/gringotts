@@ -87,9 +87,64 @@
               <h5 class="amount">{{ convertToINR(finalPrice) }}</h5>
             </div>
             <div class="buttons">
-              <button v-if="!['initiated', 'rto', 'failed'].includes(orderStatus?.code) && checkOrderDate"
+              <button v-show="!['initiated', 'rto', 'failed'].includes(orderStatus?.code) && checkOrderDate"
                 @click="downloadReceipt" class="download">Download Receipt</button>
-              <button class="price-details">Price Details</button>
+              <button class="price-details">
+                Price Details
+                <span class="price-details-container">
+                  <div class="price-details">
+                    Item Subtotal (*{{ orderDetails.item?.quantity }}):
+                    <span style="font-family: Edmondsans-M">
+                      {{
+                        convertToINR(
+                          orderDetails.item?.base_price?.value * orderDetails.item?.quantity
+                        )
+                      }}
+                    </span>
+                  </div>
+                  <div class="price-details">
+                    Retail Discount:
+                    <span style="font-family: Edmondsans-M">
+                      {{
+                        convertToINR(
+                          (orderDetails.item?.base_price?.value -
+                            orderDetails.item?.retail_price?.value) *
+                          orderDetails.item?.quantity
+                        )
+                      }}
+                    </span>
+                  </div>
+                  <div class="price-details" v-if="orderDetails.item?.shipping_charges">
+                    Shipping Charges:
+                    <span style="font-family: Edmondsans-M">
+                      {{
+                        convertToINR(orderDetails.item?.shipping_charges)
+                      }}
+                    </span>
+                  </div>
+                  <div class="price-details" v-if="orderDetails.item?.offer_value?.value > 0">
+                    Coupon Discount:
+                    <span style="font-family: Edmondsans-M">
+                      {{
+                        convertToINR(orderDetails.item?.offer_value?.value)
+                      }}
+                    </span>
+                  </div>
+                  <div class="price-details">
+                    Total Amount:
+                    <span
+                      v-if="(orderDetails?.item?.retail_price?.value - orderDetails.item?.offer_value?.value) < 0">1</span>
+                    <span v-else style="font-family: Edmondsans-M">
+                      {{
+                        convertToINR(orderDetails.item?.offer_value?.value > 0
+                          ? (orderDetails?.item?.retail_price?.value - orderDetails.item?.offer_value?.value)
+                          : orderDetails?.item?.retail_price?.value
+                        )
+                      }}
+                    </span>
+                  </div>
+                </span>
+              </button>
             </div>
           </section>
         </div>
@@ -250,7 +305,7 @@ const creatorProduct = computed(() => {
 })
 
 const savings = computed(() => {
-  return convertToINR(orderDetails.value?.offer_value?.value || 0 + (orderDetails.value?.item?.base_price.value - orderDetails.value?.item?.retail_price.value) * orderDetails.value.item?.quantity);
+  return convertToINR((orderDetails.value?.item?.offer_value?.value || 0) + ((orderDetails.value?.item?.base_price.value - orderDetails.value?.item?.retail_price.value) * orderDetails.value.item?.quantity));
 })
 const finalPrice = computed(() => {
   return (orderDetails.value?.item?.total_price?.value - (orderDetails?.value?.item?.offer_value?.value || 0));
@@ -908,5 +963,35 @@ h2.section-heading {
   display: flex !important;
   align-items: center;
   justify-content: center;
+}
+
+button.price-details .price-details-container {
+  visibility: hidden;
+  width: 180px;
+  background-color: #13141b;
+  color: #f8f8f8;
+  text-align: center;
+  border-radius: 6px;
+  padding: 10px;
+
+  position: absolute;
+  z-index: 1;
+  top: -35px;
+  right: 84px;
+}
+button.price-details:hover .price-details-container{
+  visibility: visible;
+}
+
+.price-details-container::after {
+  content: " ";
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  /* To the right of the tooltip */
+  margin-top: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent transparent black;
 }
 </style>
