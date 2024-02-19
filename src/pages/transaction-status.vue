@@ -22,14 +22,13 @@ const amount = ref(null)
 const check_order_status = ref(null)
 
 async function confirmOnPageLoad() {
+    console.log("ELSE in confirm")
     try {
         const response = await $fetch(useRuntimeConfig().public.orderURL +
             "/api/v2/order/transaction/status?order_id=" +
             route.query.order_id, {
             method: "GET",
-
             credentials: 'include',
-
             headers: {
                 "Content-Type": "application/json",
             },
@@ -190,7 +189,9 @@ onMounted(() => {
             // window.close();
         }
     } else {
+        console.log("ELSE")
         if (route.query.order_id) {
+            console.log("ELSE in")
             confirmOnPageLoad();
         } else {
             navigateTo("/");
