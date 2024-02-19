@@ -416,7 +416,6 @@ async function getBOTD() {
 }
 
 onMounted(() => {
-    console.log("config.public",config.public);
     trackingDetails = {
         creator_name: creatorStore.info?.name,
         creator_username: route.params.creatorUsername,
