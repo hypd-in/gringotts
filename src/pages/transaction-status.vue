@@ -33,6 +33,7 @@ async function confirmOnPageLoad() {
                 "Content-Type": "application/json",
             },
         })
+        console.log(response, "RES")
         if (response.payload) {
             status.value = response.payload?.status;
             amount.value = response.payload?.amount;
