@@ -185,7 +185,6 @@ const sendOTP = async () => {
 };
 
 const confirmOTP = async (otpValue) => {
-  console.log(phone_no.value.substring(6))
   submittingOTP.value = true;
   track('login:confirm_otp', { phone_no: '******' + phone_no.value.substring(6), otp: '****' + otpInputs?.value?.otp.substring(4) })
   try {
@@ -213,6 +212,7 @@ const confirmOTP = async (otpValue) => {
       await fetchCartInfo();
 
       track('user_login_success', { user_id: store.user.id })
+      trackingUserLogin();
 
       $posthog().identify(
         store.user.id,

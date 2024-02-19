@@ -25,8 +25,6 @@
 </template>
 
 <script setup>
-import { defineProps } from 'vue';
-
 const props = defineProps(['error'])
 
 const handleError = () => clearError({ redirect: '/hypd_store' })

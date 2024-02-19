@@ -299,13 +299,13 @@ function changeTab(options) {
 
     if (options == 'collections') {
         track('creator_store:collection_tab_click', {
-            creator_name: creatorStore.info.name,
-            creator_username: creatorStore.info.username,
+            creator_name: creatorStore.info?.name,
+            creator_username: creatorStore.info?.username,
         })
     } else {
         track('creator_store:spotlight_tab_click', {
-            creator_name: creatorStore.info.name,
-            creator_username: creatorStore.info.username,
+            creator_name: creatorStore.info?.name,
+            creator_username: creatorStore.info?.username,
         })
     }
 
@@ -417,12 +417,13 @@ async function getBOTD() {
 
 onMounted(() => {
     trackingDetails = {
-        creator_name: creatorStore.info.name,
+        creator_name: creatorStore.info?.name,
         creator_username: route.params.creatorUsername,
     }
     track('creator_store:visit', {
         ...trackingDetails
     })
+    trackingLandingEvent("creator_store_landing");
 
     router.replace({
         name: "CreatorStore", params: {

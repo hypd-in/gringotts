@@ -163,7 +163,6 @@ async function closePopup() {
 }
 
 async function moveItemToWishlist() {
-  console.log("FFF")
   wishlistingItem.value = true;
   if (!store.wishlistedItems[props.itemInfo?.catalog_id]?.catalog_id) {
     track('wishlist:add', {

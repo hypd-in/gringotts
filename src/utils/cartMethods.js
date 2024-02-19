@@ -21,7 +21,7 @@ if (process.browser) {
   routeQueries = new URLSearchParams(window.location.search);
 }
 
-// if (process.env.NODE_ENV != "production")
+if (process.env.NODE_ENV != "production")
 {
   couponURL = "https://coupon.getshitdone.in";
   catalogURL = "https://catalogv2.getshitdone.in";
@@ -30,14 +30,14 @@ if (process.browser) {
   orderURL = "https://orderv2.getshitdone.in";
   trackingURL = "https://tracking.getshitdone.in";
 }
-// else {
-//   couponURL = "https://coupon.hypd.store";
-//   catalogURL = "https://catalog2.hypd.store";
-//   cmsURL = "https://cms.hypd.store";
-//   entityURL = "https://entity.hypd.store";
-//   orderURL = "https://order2.hypd.store";
-//   trackingURL = "https://tracking.getshitdone.in";
-// }
+else {
+  couponURL = "https://coupon.hypd.store";
+  catalogURL = "https://catalog2.hypd.store";
+  cmsURL = "https://cms.hypd.store";
+  entityURL = "https://entity.hypd.store";
+  orderURL = "https://order2.hypd.store";
+  trackingURL = "https://tracking.getshitdone.in";
+}
 async function fetchItemInfo(id) {
   try {
     var response = await $fetch(catalogURL + "/api/app/catalog/" + id, {
@@ -231,6 +231,9 @@ export async function addItemToCart(itemInfo) {
 }
 
 export async function getCartItemsFromLocalStorage() {
+  if (!localStorage) {
+    return;
+  }
   var cartItems = localStorage.getItem("cart_items");
   const store = useStore();
   if (!cartItems) {
@@ -428,7 +431,7 @@ export async function clearLocalCartItems() {
   if (!store.user?.id) {
     return;
   }
-  if (localStorage.getItem("cart_items")) {
+  if (localStorage && localStorage.getItem("cart_items")) {
     localStorage.removeItem("cart_items");
   }
 }
