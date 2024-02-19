@@ -534,12 +534,6 @@ p {
     text-transform: uppercase;
 }
 
-.cart-wrapper {
-    height: calc(100vh);
-    height: calc(100dvh);
-    overflow: hidden scroll;
-}
-
 .cart-wrapper * {
     box-sizing: border-box;
 }
