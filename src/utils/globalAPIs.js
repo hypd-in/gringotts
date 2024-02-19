@@ -245,7 +245,7 @@ export function synthesizingCoupon(coupon_item) {
       if (
         bundle_catalog_count >= coupon_item.applicable_on.bundle.quantity &&
         coupon_item.applicable_on.bundle.amount >
-          store.getters.brandWiseCartItems[
+          store.brandWiseCartItems[
             coupon_item.applicable_on.bundle.brand_id
           ]?.totalRetailPrice
       ) {
