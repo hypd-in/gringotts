@@ -16,40 +16,39 @@ export default defineNuxtConfig({
   srcDir: "src",
   routeRules: {
     '/ingest/**': { proxy: 'https://app.posthog.com/**' },
-},
+  },
   runtimeConfig: {
     public:
-      // process.env.NODE_ENV !== "production"
-      //   ?
-      {
-        // posthog
-        posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
-        posthogHost: "https://app.posthog.com",
-        // 
-
-        catalogURL: "https://catalogv2.getshitdone.in",
-        entityURL: "https://entity.getshitdone.in",
-        cmsURL: "https://cms.getshitdone.in",
-        orderURL: "https://orderv2.getshitdone.in",
-        couponURL: "https://coupon.getshitdone.in",
-        cdn: "cdn.getshitdone.in",
-        base: "https://hypdstore.getshitdone.in",
-        checkoutURL: "https://checkout.getshitdone.in",
-        gokwik_env: "sandbox",
-        gokwick_mid: "3mt5u7iijbky068wbs",
-      },
-    // : {
-    //     catalogURL: "https://catalog2.hypd.store",
-    //     entityURL: "https://entity.hypd.store",
-    //     cmsURL: "https://cms.hypd.store",
-    //     orderURL: "https://orderv2.hypd.store",
-    //     couponURL: "https://coupon.hypd.store",
-    //     cdn: "cdn.hypd.store",
-    //     base: "https://www.hypd.store",
-    //     checkoutURL: "https://checkout.hypd.store",
-    //     gokwik_env: "production",
-    //     gokwick_mid: "3mt5u7iijbky068wba",
-    //   },
+      process.env.NODE_ENV !== "production"
+        ?
+        {
+          // posthog
+          posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
+          posthogHost: "https://app.posthog.com",
+      // 
+          catalogURL: "https://catalogv2.getshitdone.in",
+          entityURL: "https://entity.getshitdone.in",
+          cmsURL: "https://cms.getshitdone.in",
+          orderURL: "https://orderv2.getshitdone.in",
+          couponURL: "https://coupon.getshitdone.in",
+          cdn: "cdn.getshitdone.in",
+          base: "https://hypdstore.getshitdone.in",
+          checkoutURL: "https://checkout.getshitdone.in",
+          gokwik_env: "sandbox",
+          gokwick_mid: "3mt5u7iijbky068wbs",
+        }
+        : {
+          catalogURL: "https://catalog2.hypd.store",
+          entityURL: "https://entity.hypd.store",
+          cmsURL: "https://cms.hypd.store",
+          orderURL: "https://orderv2.hypd.store",
+          couponURL: "https://coupon.hypd.store",
+          cdn: "cdn.hypd.store",
+          base: "https://www.hypd.store",
+          checkoutURL: "https://checkout.hypd.store",
+          gokwik_env: "production",
+          gokwick_mid: "3mt5u7iijbky068wba",
+        },
   },
   nitro: {
     preset: "node-cluster",
@@ -133,10 +132,10 @@ export default defineNuxtConfig({
       script: [
         {
           defer: true,
-          src:"https://sandbox.juspay.in/pay-v3.js",
-            // process.env.NODE_ENV != "production"
-            //   ? "https://sandbox.juspay.in/pay-v3.js"
-            //   : "https://api.juspay.in/pay-v3.js",
+          src:
+            process.env.NODE_ENV != "production"
+              ? "https://sandbox.juspay.in/pay-v3.js"
+              : "https://api.juspay.in/pay-v3.js",
           type: "text/javascript",
         },
         // {
@@ -182,4 +181,3 @@ export default defineNuxtConfig({
     "@/assets/style/main.scss",
   ],
 });
-console.log("process.env.NODE_ENV", process.env.NODE_ENV)
