@@ -2,6 +2,7 @@ import { imitateCartInfo, deleteItemFormCart } from "./cartMethods";
 import { getUTMParams, createCouponsMap } from "./helperMethods";
 import track from "./tracking-posthog";
 
+console.log("process.env.NODE_ENV", process.env.NODE_ENV)
 export async function fetchUserInfo() {
   const store = useStore();
   try {
@@ -52,11 +53,10 @@ export function synthesizingCoupon(coupon_item) {
       if (eleigible_items_total == 0) {
         disabled = true;
         priorty_lvl = 2;
-        coupon_msg = `<div style="color: #fc404d;">This Offer is available on select ${
-          Object.keys(coupon_item.eligible_ids.brand).length > 1
+        coupon_msg = `<div style="color: #fc404d;">This Offer is available on select ${Object.keys(coupon_item.eligible_ids.brand).length > 1
             ? "brands."
             : `brand. <span class="link-eligible-items">View.</span></div>`
-        }`;
+          }`;
       }
       break;
     case "catalog":
@@ -69,11 +69,10 @@ export function synthesizingCoupon(coupon_item) {
       if (eleigible_items_total == 0) {
         disabled = true;
         priorty_lvl = 2;
-        coupon_msg = `<div style="color: #fc404d;">This Offer is available on select ${
-          Object.keys(coupon_item.eligible_ids.catalog).length > 0
+        coupon_msg = `<div style="color: #fc404d;">This Offer is available on select ${Object.keys(coupon_item.eligible_ids.catalog).length > 0
             ? "items"
             : "item"
-        }.`;
+          }.`;
       }
       break;
   }
@@ -133,7 +132,7 @@ export function synthesizingCoupon(coupon_item) {
         priorty_lvl = 1;
         coupon_msg = `<div style="color: #fc404d;">Add <span style="font-family: Urbanist-Bold;">₹${Math.floor(
           coupon_item?.min_purchase_value.value -
-            eleigible_items_total * (coupon_item.value / 100)
+          eleigible_items_total * (coupon_item.value / 100)
         )}</span> worth of items to avail this offer.</div>`;
         disabled = true;
       }
@@ -162,7 +161,7 @@ export function synthesizingCoupon(coupon_item) {
         Object.keys(store.cartItems).forEach((v_id) => {
           if (
             coupon_item?.eligible_ids?.catalog[
-              store.cartItems[v_id].catalog_info.id
+            store.cartItems[v_id].catalog_info.id
             ]
           ) {
             bxgy_item_count += 1 * store.cartItems[v_id].quantity;
@@ -174,41 +173,38 @@ export function synthesizingCoupon(coupon_item) {
       if (
         bxgy_item_count >=
         coupon_item.applicable_on.bxgy.get_count +
-          coupon_item.applicable_on.bxgy.buy_count
+        coupon_item.applicable_on.bxgy.buy_count
       ) {
         // BxGy Coupon eligible and Applicable
         // free_item_count = purchase_limit > FloorOf(BxGy_item_count/(get_ids + buy_ids)) ? FloorOf(BxGy_item_count/(get_ids + buy_ids)) * get_count : purchase_limit * get_count
         disabled = false;
         let free_item_count =
           coupon_item.applicable_on.bxgy.purchase_limit >
-          Math.floor(
-            bxgy_item_count /
+            Math.floor(
+              bxgy_item_count /
               (coupon_item.applicable_on.bxgy.get_count +
                 coupon_item.applicable_on.bxgy.buy_count)
           )
             ? Math.floor(
-                bxgy_item_count /
-                  (coupon_item.applicable_on.bxgy.get_count +
-                    coupon_item.applicable_on.bxgy.buy_count)
-              ) * coupon_item.applicable_on.bxgy.get_count
+              bxgy_item_count /
+              (coupon_item.applicable_on.bxgy.get_count +
+                coupon_item.applicable_on.bxgy.buy_count)
+            ) * coupon_item.applicable_on.bxgy.get_count
             : coupon_item.applicable_on.bxgy.purchase_limit *
-              coupon_item.applicable_on.bxgy.get_count;
+            coupon_item.applicable_on.bxgy.get_count;
 
-        coupon_msg = `<div style="color: #23d087;">Use this coupon to get ${free_item_count} ${
-          free_item_count > 1 ? "items" : "item"
-        } for ₹1 each.</div>`;
+        coupon_msg = `<div style="color: #23d087;">Use this coupon to get ${free_item_count} ${free_item_count > 1 ? "items" : "item"
+          } for ₹1 each.</div>`;
       } else {
         // BxGy Coupon eligible and not Applicable
         if (bxgy_item_count > 0) {
           disabled = true;
           priorty_lvl = 1;
-          coupon_msg = `<div style="color: #fc404d;">Add ${
-            coupon_item.applicable_on.bxgy.get_count +
+          coupon_msg = `<div style="color: #fc404d;">Add ${coupon_item.applicable_on.bxgy.get_count +
             coupon_item.applicable_on.bxgy.buy_count -
             bxgy_item_count
-          } more ${
-            bxgy_item_count > 1 ? "items" : "item"
-          } from the list of <span class="link-eligible-items">eligible products</span> to avail this offer.</div>`;
+            } more ${bxgy_item_count > 1 ? "items" : "item"
+            } from the list of <span class="link-eligible-items">eligible products</span> to avail this offer.</div>`;
         } else if (bxgy_item_count == 0) {
           disabled = true;
           priorty_lvl = 2;
@@ -245,9 +241,9 @@ export function synthesizingCoupon(coupon_item) {
       if (
         bundle_catalog_count >= coupon_item.applicable_on.bundle.quantity &&
         coupon_item.applicable_on.bundle.amount >
-          store.getters.brandWiseCartItems[
-            coupon_item.applicable_on.bundle.brand_id
-          ]?.totalRetailPrice
+        store.getters.brandWiseCartItems[
+          coupon_item.applicable_on.bundle.brand_id
+        ]?.totalRetailPrice
       ) {
         disabled = true;
         coupon_msg = `<div style="color: #fc404d;">Looks like the bundle amount is more than your eligible items total amount.</div>`;
@@ -392,9 +388,9 @@ export async function applyCartCoupon(coupon_code) {
   try {
     let response = await $fetch(
       useRuntimeConfig().public.entityURL +
-        "/api/app/cart/" +
-        store.user.id +
-        "/coupon",
+      "/api/app/cart/" +
+      store.user.id +
+      "/coupon",
       {
         method: "POST",
         credentials: "include",
@@ -441,8 +437,7 @@ export async function fetchWishlistedProducts() {
     return;
   } else {
     await $fetch(
-      `${useRuntimeConfig().public.entityURL}/api/v2/app/wishlist/${
-        store.user.id
+      `${useRuntimeConfig().public.entityURL}/api/v2/app/wishlist/${store.user.id
       }`,
       {
         method: "GET",
@@ -476,8 +471,8 @@ export async function fetchCartInfo(bypass) {
   try {
     var response = await $fetch(
       useRuntimeConfig().public.entityURL +
-        "/api/app/v2/cart/" +
-        store.user?.id,
+      "/api/app/v2/cart/" +
+      store.user?.id,
       {
         method: "GET",
         credentials: "include",
@@ -657,9 +652,9 @@ export function calculatingShippingChargesForLocalItems() {
         (range) => {
           if (
             range.min_value <=
-              store.brandWiseCartItems[brand_id].totalRetailPrice &&
+            store.brandWiseCartItems[brand_id].totalRetailPrice &&
             store.brandWiseCartItems[brand_id].totalRetailPrice <=
-              range.max_value
+            range.max_value
           ) {
             shipping_charges[brand_id] = { ...shipping_charges[brand_id] };
             shipping_charges[brand_id]["total_cod_shipping_charges"] =
@@ -678,9 +673,9 @@ export function calculatingShippingChargesForLocalItems() {
         (range) => {
           if (
             range.min_value <=
-              store.brandWiseCartItems[brand_id].totalRetailPrice &&
+            store.brandWiseCartItems[brand_id].totalRetailPrice &&
             store.brandWiseCartItems[brand_id].totalRetailPrice <=
-              range.max_value
+            range.max_value
           ) {
             shipping_charges[brand_id] = { ...shipping_charges[brand_id] };
             shipping_charges[brand_id]["total_prepaid_shipping_charges"] =
@@ -699,9 +694,9 @@ export function calculatingShippingChargesForLocalItems() {
         (range) => {
           if (
             range.min_value <=
-              store.brandWiseCartItems[brand_id].totalRetailPrice &&
+            store.brandWiseCartItems[brand_id].totalRetailPrice &&
             store.brandWiseCartItems[brand_id].totalRetailPrice <=
-              range.max_value
+            range.max_value
           ) {
             shipping_charges[brand_id] = { ...shipping_charges[brand_id] };
             shipping_charges[brand_id]["total_default_shipping_charges"] =
@@ -800,9 +795,9 @@ export async function removeCouponFromCart(bypassCart) {
   try {
     const response = await $fetch(
       useRuntimeConfig().public.entityURL +
-        "/api/app/cart/" +
-        store.user.id +
-        "/coupon",
+      "/api/app/cart/" +
+      store.user.id +
+      "/coupon",
       {
         method: "DELETE",
         credentials: "include",
@@ -845,8 +840,8 @@ export async function fetchAllCoupons() {
 
     var response = await $fetch(
       useRuntimeConfig().public.couponURL +
-        "/api/app/coupons?version=2" +
-        params,
+      "/api/app/coupons?version=2" +
+      params,
       {
         method: "GET",
         credentials: "include",
@@ -940,8 +935,7 @@ export async function fetchUserAddresses() {
     return;
   }
   await $fetch(
-    `${useRuntimeConfig().public.entityURL}/api/customer/${
-      store.user?.id
+    `${useRuntimeConfig().public.entityURL}/api/customer/${store.user?.id
     }/address`,
     {
       method: "GET",
