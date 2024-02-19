@@ -416,29 +416,6 @@ export async function applyCartCoupon(coupon_code) {
   }
 }
 
-// export async function getInfluencerById(creator_id) {
-//   try {
-//     const response = await $fetch(
-//       useRuntimeConfig().public.entityURL + "/api/app/influencer/" + creator_id,
-//       {
-//         method: "GET",
-//         credentials: "include",
-//         headers: {
-//           "Content-Type": "application/json",
-//         },
-//       }
-//     );
-//     const creator_info = { ...response.payload };
-//     if (creator_info && !creator_info?.profile_image) {
-//       creator_info["profile_image"] = {
-//         src: defaultProfileImage(),
-//       };
-//     }
-//     return { ...creator_info };
-//   } catch (error) {
-//     console.log("error: ", error);
-//   }
-// }
 
 export async function getGiftInfo() {
   try {

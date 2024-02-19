@@ -209,7 +209,7 @@ let trackingDetails = {}
 
 // computed
 const creatorProfilePic = computed(() => {
-    return optimizeImage(creator.value?.profile_image?.src, 350);
+    return optimizeImage(creatorStore.info?.profile_image?.src, 350);
 });
 
 function trackCreatorFollowButton() {

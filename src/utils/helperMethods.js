@@ -1,6 +1,7 @@
 // import { getData, setData } from "nuxt-storage/local-storage";
 
 export function optimizeImage(imageURL, resolution) {
+
   if (imageURL) {
     const hostName = new URL(imageURL).hostname;
     if (hostName == "d3d92s7oewgbjx.cloudfront.net") {

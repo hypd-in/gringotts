@@ -10,6 +10,10 @@ export const useCreatorStore = defineStore("creator", () => {
   const spotlight = ref([]);
 
   function saveCreatorInfo(creatorInfo) {
+    if (!creatorInfo.profile_image) {
+      creatorInfo["profile_image"] = { src: defaultProfileImage() };
+    }
+
     // runs everytime we save a creator
     info.value = { ...creatorInfo };
     let creators = {};
