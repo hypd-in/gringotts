@@ -22,18 +22,18 @@ const amount = ref(null)
 const check_order_status = ref(null)
 
 async function confirmOnPageLoad() {
+    console.log("ELSE in confirm")
     try {
         const response = await $fetch(useRuntimeConfig().public.orderURL +
             "/api/v2/order/transaction/status?order_id=" +
             route.query.order_id, {
             method: "GET",
-
             credentials: 'include',
-
             headers: {
                 "Content-Type": "application/json",
             },
         })
+        console.log(response, "RES")
         if (response.payload) {
             status.value = response.payload?.status;
             amount.value = response.payload?.amount;
@@ -184,12 +184,15 @@ function orderConfirmation() {
 
 
 onMounted(() => {
+    console.log(route.query, "QUERYT")
     if (window.innerWidth > 520) {
         if (route.query.order_id) {
-            window.close();
+            // window.close();
         }
     } else {
+        console.log("ELSE")
         if (route.query.order_id) {
+            console.log("ELSE in")
             confirmOnPageLoad();
         } else {
             navigateTo("/");
