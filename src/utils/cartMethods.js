@@ -21,7 +21,7 @@ if (process.browser) {
   routeQueries = new URLSearchParams(window.location.search);
 }
 
-if (process.env.NODE_ENV != "production")
+if (process.env.ENVIRONMENT != "production")
 {
   couponURL = "https://coupon.getshitdone.in";
   catalogURL = "https://catalogv2.getshitdone.in";
