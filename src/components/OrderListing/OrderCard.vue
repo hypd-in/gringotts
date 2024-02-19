@@ -27,9 +27,9 @@
           }}</span>
         </div>
         <div class="order-item-info">
-          <div class="item-info-wrapper">
-            <NuxtImg width="78" height="110" :placeholder="[78, 110, 75, 20]" style="border-radius: 12px;"
-              :src="item?.catalog_info?.featured_image?.src" />
+          <div class="item-info-wrapper" @click="goToOrderDetails(item?.id)">
+            <ImageFrame style="width: 78px; height: 110px ;border-radius: 12px;"
+              :src="getReplacedSource(item?.catalog_info?.featured_image?.src, 200)" />
             <div class="item-details">
               <div class="item-info">
                 <h5 class="brand-name">
@@ -76,6 +76,7 @@ import OrderTrackingComponent from '~/components/OrderTracking/OrderTrackingComp
 
 import track from "../../utils/tracking-posthog"
 import SubmitButton from '../SubmitButton.vue';
+import ImageFrame from '../ImageFrame.vue';
 
 
 const props = defineProps({
@@ -202,6 +203,7 @@ function goToOrderDetails(id) {
     item_id: id,
     brand_id: props.orderInfo?.brand_info.id
   })
+  trackingClickOnOrder(props.orderInfo, id);
   navigateTo({
     name: "OrderDetails",
     params: {
@@ -360,7 +362,7 @@ button {
   align-items: flex-start;
   gap: 16px;
   padding: 16px 24px;
-  cursor: default;
+  cursor: pointer;
   user-select: none;
 }
 

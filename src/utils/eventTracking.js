@@ -73,15 +73,22 @@ export function trackingClickEvent(event_name) {
 }
 
 // Tracking Click on Order from Order Listing
-export function trackingClickOnOrder(order) {
+export function trackingClickOnOrder(order, id) {
   var formData = {};
   formData["event"] = "clicked_on_order";
   formData["order_id"] = order?.order_id;
+  formData["item_id"] = id;
   sendTrackingData(formData);
 }
 
 // Tracking ProductClick From Web Store
-export function trackingProductClicks(event, creator, product_id, origin, source) {
+export function trackingProductClicks(
+  event,
+  creator,
+  product_id,
+  origin,
+  source
+) {
   var formData = {};
   formData["event"] = event;
   formData["creator_username"] = creator?.username;

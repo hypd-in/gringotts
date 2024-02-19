@@ -4,7 +4,7 @@
     <ClientOnly>
       <SideDrawer :class="{ 'slide-in-menu': openSideDrawer }" @closeDrawer="toggleSideDrawer" />
     </ClientOnly>
-    <div class="header">
+    <div class="header" :class="{'cart-header': hideHeaderContent}">
       <section class="desktop-header">
         <div @click="navigate" class="logo">
           HYPD
@@ -160,6 +160,10 @@ const openSideDrawer = ref(false);
 const searchInputQuery = ref("");
 const showDropDown = ref(false);
 const showWishlist = ref(false);
+
+const hideHeaderContent = computed(() => {
+  return ['CartItems', 'CartPayment'].includes(route?.name);
+})
 
 const noOfCartItems = computed(() => {
   return store.cartInfo.items?.length || 0;
@@ -588,5 +592,20 @@ button {
 
 .dark input {
   color: #fff;
+}
+
+.cart-header .search-input-bar,
+.cart-header .wishlist-desktop,
+.cart-header .cart-desktop,
+.cart-header .wishlist,
+.cart-header .cart,
+.cart-header .search
+{
+  display: none;
+}
+
+.cart-header .desktop-header{
+  grid-template-columns: 73px auto;
+  justify-content: space-between;
 }
 </style>
