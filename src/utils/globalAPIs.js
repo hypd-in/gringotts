@@ -2,7 +2,6 @@ import { imitateCartInfo, deleteItemFormCart } from "./cartMethods";
 import { getUTMParams, createCouponsMap } from "./helperMethods";
 import track from "./tracking-posthog";
 
-console.log("process.env.NODE_ENV", process.env.NODE_ENV)
 export async function fetchUserInfo() {
   const store = useStore();
   try {
