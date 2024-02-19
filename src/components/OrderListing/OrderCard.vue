@@ -134,7 +134,7 @@ function toggleTrackingPopup(id) {
     track("order:item_track_order_click", {
       order_no: props.orderInfo?.order_id,
       item_id: id,
-      brand_id: props.orderInfo?.brand_info.id
+      brand_id: props.orderInfo?.brand_info?.id
     })
   }
 }
@@ -201,7 +201,7 @@ function goToOrderDetails(id) {
   track('order:item_detail_click', {
     order_no: props.orderInfo?.order_id,
     item_id: id,
-    brand_id: props.orderInfo?.brand_info.id
+    brand_id: props.orderInfo?.brand_info?.id
   })
   trackingClickOnOrder(props.orderInfo, id);
   navigateTo({

@@ -182,3 +182,4 @@ export default defineNuxtConfig({
     "@/assets/style/main.scss",
   ],
 });
+console.log("process.env.NODE_ENV", process.env.NODE_ENV)
