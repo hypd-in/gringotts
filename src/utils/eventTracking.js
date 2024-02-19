@@ -81,9 +81,10 @@ export function trackingClickOnOrder(order) {
 }
 
 // Tracking ProductClick From Web Store
-export function trackingProductClicks(event, product_id, origin, source) {
+export function trackingProductClicks(event, creator, product_id, origin, source) {
   var formData = {};
   formData["event"] = event;
+  formData["creator_username"] = creator?.username;
   formData["product_id"] = product_id;
   formData["origin"] = origin;
   formData["source"] = source;
@@ -99,16 +100,6 @@ export function trackingSearch(search_query, creatorUsername) {
   if (creatorUsername) {
     formData["creator_username"] = creatorUsername;
   }
-  sendTrackingData(formData);
-}
-
-// Tracking Express Checkout on PDPDesktop & PDPMobile
-export function trackingExpressCheckout(product, variant_id) {
-  //In-House Tracking
-  var formData = {};
-  formData["event"] = "buy_now";
-  formData["product_id"] = product?.id;
-  formData["variant_id"] = variant_id;
   sendTrackingData(formData);
 }
 
@@ -194,24 +185,7 @@ var session_id =
   Math.floor(Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)).toString(
     36
   );
-// Home Page Landing
-if (useCookie("firstSiteVisit").value == null) {
-  useCookie("firstSiteVisit").value = true;
-  useCookie("firstSiteVisit", {
-    maxAge: 24 * 60 * 60,
-  });
-}
-if (!useCookie("clientRequestId").value) {
-  useCookie("clientRequestId").value =
-    Date.now().toString(36) +
-    Math.floor(
-      Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
-    ).toString(36);
 
-  useCookie("clientRequestId", {
-    maxAge: 12 * 30 * 24 * 60 * 60,
-  });
-}
 export function trackingStoreLanding(creator) {
   var formData = {};
   formData["event"] = "store_visit";
@@ -254,15 +228,15 @@ export function trackingJuspayRedirection(payment_method, order_id, value) {
 }
 
 //Event Listner for page_visibility_change
-document.addEventListener("visibilitychange", () => {
-  if (
-    document.visibilityState === "hidden" &&
-    tracking_data_array.length !== 0
-  ) {
-    //Sending Analytics Data
-    sendingAnalytics();
-  }
-});
+// document.addEventListener("visibilitychange", async () => {
+//   if (
+//     document.visibilityState === "hidden" &&
+//     tracking_data_array.length !== 0
+//   ) {
+//     //Sending Analytics Data
+//     await sendingAnalytics();
+//   }
+// });
 
 // Sending Analytics for tracking
 async function sendingAnalytics() {
@@ -316,6 +290,7 @@ async function sendingAnalytics() {
     }
   }
 }
+
 var trackingTimer = 0,
   trackingTimerInterval;
 function startTrackingTimer() {
@@ -383,6 +358,15 @@ export function trackingUser() {
   dataLayer.push({
     "user_id": store.user?.id,
   });
+}
+
+export function trackingBuyNow(product, creator, selected_variant_id) {
+  var formData = {};
+  formData["event"] = "buy_now";
+  formData["product_id"] = product?.id;
+  formData["creator_username"] = creator?.username;
+  formData["variant_id"] = selected_variant_id;
+  sendTrackingData(formData);
 }
 
 export function trackingAddToCart(product, creator, selected_variant_id) {

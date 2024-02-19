@@ -160,6 +160,7 @@ function formatDateWithTime(statusDate) {
 }
 
 async function reorder(item) {
+  trackingClickEvent("clicked_on_reorder");
   if (
     !!store.cartItems[item?.variant_id]
   ) {

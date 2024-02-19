@@ -141,16 +141,6 @@ export function splitCookieValue(value, valueSeperator, keySeperator) {
     return obj;
   }
 }
-export function getCookie(name) {
-  var nameEQ = name + "=";
-  var ca = document.cookie?.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") c = c.substring(1, c.length);
-    if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length, c.length);
-  }
-  return null;
-}
 
 export async function getCreatorUserName(id) {
   const router = useRouter();
@@ -177,7 +167,7 @@ export async function getCreatorUserName(id) {
   if (router.currentRoute.value.params.creator_username) {
     return router.currentRoute.value.params.creator_username;
   }
-  if (localStorage.getItem("creatorInfo") != null) {
+  if (localStorage && localStorage.getItem("creatorInfo") != null) {
     var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
     return creatorInfo?.creatorName;
   }

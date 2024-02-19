@@ -10,7 +10,6 @@
 
 <script setup>
 import Product from "~/components/ProductComponents/ProductCard.vue";
-// import { trackingSearch } from "@/eventTracking";
 const props = defineProps({
   products: Array,
 });
@@ -21,7 +20,7 @@ const searchQuery = computed(() => {
   return route.query.query;
 });
 onMounted(() => {
-  // trackingSearch(route.query.query, route.params.creator_username);
+  trackingSearch(searchQuery.value.trim(), route.params.creatorUsername);
 })
 </script>
 

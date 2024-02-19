@@ -27,13 +27,6 @@
 import { fetchCartInfo, getInfluencerById } from "@/utils/globalAPIs";
 import { getCreatorUserName } from "@/utils/helperMethods"
 
-// import {
-//   trackingClickEvent,
-//   trackingPaymentSuccessPage,
-//   trackingPaymentSuccessPageWithData,
-//   trackingPurchase,
-// } from "../eventTracking";
-
 const router = useRouter();
 
 const creatorInfo = ref({});
@@ -79,7 +72,7 @@ function goToCreatorStore() {
 function goToOrders() {
   if (store.user) {
     // uncmnt later
-    // trackingClickEvent("clicked_on_track_your_order");
+    trackingClickEvent("clicked_on_track_your_order");
     router.push("/orders");
   } else {
     router.push({ name: "Login", params: { redirect: "/orders" } });

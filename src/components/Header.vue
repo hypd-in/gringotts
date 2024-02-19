@@ -18,8 +18,9 @@
             <path d="M22 22L20 20" stroke="#292D32" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
           </svg>
 
-          <input v-model="searchInputQuery" @click="track('search:click',{location: router.currentRoute.value.fullPath})" @keypress.enter="goToExplore('desktop')" type="text"
-            placeholder="What are you looking for?" />
+          <input v-model="searchInputQuery"
+            @click="track('search:click', { location: router.currentRoute.value.fullPath })"
+            @keypress.enter="goToExplore('desktop')" type="text" placeholder="What are you looking for?" />
           <img @click="clearInput" v-if="searchInputQuery.length > 0" class="close-icon"
             src="/assets/icons/misc/close.svg" alt="close" />
         </div>
@@ -229,6 +230,7 @@ function toggleSideDrawer() {
 async function navigate() {
   var creatorUsername = await getCreatorUserName();
   if (creatorUsername) {
+    trackingClickEvent("clicked_on_visit_store");
     navigateTo(
       {
         name: "CreatorStore",
@@ -260,7 +262,7 @@ async function goBack() {
 }
 
 function toggleWishlist() {
-  if(!showWishlist.value){
+  if (!showWishlist.value) {
     track('wishlist:click', { location: router.currentRoute.value.fullPath })
   }
   if (!store.user?.id) {
@@ -283,6 +285,7 @@ function toggleWishlist() {
 }
 
 function goToCart() {
+  trackingClickEvent("clicked_cart_icon");
   navigateTo({
     name: "CartItems",
   });
@@ -291,6 +294,7 @@ async function goToExplore(device) {
   if (device == 'desktop') {
     track('search:visit', { query: searchInputQuery.value.trim() })
   }
+  trackingClickEvent("user_navigated_to_search");
   var creatorUsername = route.params.creatorUsername || await getCreatorUserName();
   if (creatorUsername) {
     await navigateTo({

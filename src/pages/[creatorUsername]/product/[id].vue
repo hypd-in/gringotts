@@ -63,9 +63,10 @@ useSeoMeta({
 });
 
 onMounted(() => {
-  // trackingProductClicks("product_view",
-  //   route.params.id,
-  // )
+  trackingProductClicks("product_view",
+    creatorStore.info,
+    route.params.id,
+  )
 })
 
 </script>

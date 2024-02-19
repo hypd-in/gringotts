@@ -472,6 +472,8 @@ function navigateToCreatorStore() {
     brand_id: store.orderDetails.brand_id,
   })
 
+  trackingClickEvent("clicked_on_visit_store");
+
   navigateTo({
     name: "CreatorStore",
     params: {

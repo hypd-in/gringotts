@@ -231,6 +231,9 @@ export async function addItemToCart(itemInfo) {
 }
 
 export async function getCartItemsFromLocalStorage() {
+  if (!localStorage) {
+    return;
+  }
   var cartItems = localStorage.getItem("cart_items");
   const store = useStore();
   if (!cartItems) {
@@ -428,7 +431,7 @@ export async function clearLocalCartItems() {
   if (!store.user?.id) {
     return;
   }
-  if (localStorage.getItem("cart_items")) {
+  if (localStorage && localStorage.getItem("cart_items")) {
     localStorage.removeItem("cart_items");
   }
 }

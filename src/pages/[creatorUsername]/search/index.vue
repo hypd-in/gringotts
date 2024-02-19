@@ -46,7 +46,6 @@ import SearchResults from "~/components/ExploreComponents/SearchResults.vue";
 import TrendingSearches from "~/components/ExploreComponents/TrendingSearches.vue";
 import { addingObserver } from "~/utils/helperMethods";
 import track from "~/utils/tracking-posthog";
-// import { trackingSearch } from "@/eventTracking";
 
 definePageMeta({
   name: "HypdExplore",
@@ -141,7 +140,7 @@ async function search(query) {
     searchQuery.value = query;
   }
   if (searchQuery.value.trim() != "") {
-    // trackingSearch(searchQuery.value)
+    
     await navigateTo({
       name: "HypdExplore",
       params: {
@@ -154,6 +153,7 @@ async function search(query) {
     });
     await searchInput();
   }
+  trackingSearch(searchQuery.value.trim(), route.params.creatorUsername);
   track('search:visit', { query: searchQuery.value.trim() })
 
 }

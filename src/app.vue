@@ -121,15 +121,41 @@ onMounted(async () => {
   })
 
   let hotSellingProducts = [...response?.payload];
-  store.saveHotSellingProducts(hotSellingProducts)
+  store.saveHotSellingProducts(hotSellingProducts);
 
-  // uncomment later
+  saveFirstVisit();
+  saveClientRequestId();
+
   trackingUserLanding();
   trackingUTM();
 
   // Condition for check iFrame
   await fetchCategories();
 })
+
+function saveFirstVisit() {
+  if (useCookie("firstSiteVisit").value == null) {
+    useCookie("firstSiteVisit").value = true;
+    useCookie("firstSiteVisit", {
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+  }
+}
+
+function saveClientRequestId() {
+  if (!useCookie("clientRequestId").value) {
+    useCookie("clientRequestId").value =
+      Date.now().toString(36) +
+      Math.floor(
+        Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
+      ).toString(36);
+
+    useCookie("clientRequestId", {
+      maxAge: 12 * 30 * 24 * 60 * 60 * 1000,
+    });
+  }
+}
+
 function trackingUTM() {
   var utmParams = useCookie("utmParams");
   if (utmParams.value) {

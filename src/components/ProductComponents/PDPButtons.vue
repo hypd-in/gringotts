@@ -140,6 +140,7 @@ function buyNow() {
     emit("getVariant");
     return;
   }
+
   navigateTo({
     name: "CartItems",
     query: {
@@ -150,11 +151,11 @@ function buyNow() {
       creatorUsername: creatorStore.info?.username,
     },
   });
-  // trackingAddToCart(
-  //   productStore.info,
-  //   creatorStore.info,
-  //   productStore.info.selected_variant?.id
-  // );
+  trackingBuyNow(
+    productStore.info,
+    creatorStore.info,
+    productStore.info.selected_variant?.id
+  );
 }
 
 function goToCart() {
