@@ -23,6 +23,7 @@ export default defineNuxtConfig({
         ?
         {
           // posthog
+          env: process.env.NODE_ENV,
           posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
           posthogHost: "https://app.posthog.com",
       // 
@@ -38,6 +39,7 @@ export default defineNuxtConfig({
           gokwick_mid: "3mt5u7iijbky068wbs",
         }
         : {
+          env: process.env.NODE_ENV,
           catalogURL: "https://catalog2.hypd.store",
           entityURL: "https://entity.hypd.store",
           cmsURL: "https://cms.hypd.store",
