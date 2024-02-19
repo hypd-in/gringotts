@@ -286,6 +286,7 @@ const isValidCardHolderName = ref(false);
 const validCardDetails = ref(false);
 const cardBrand = ref("");
 const upiId = ref("");
+const influencerId = ref()
 
 // Juspay Button Refs
 const juspayButton = ref(null);
@@ -768,7 +769,7 @@ async function checkoutWithJuspay() {
           "/payment-success?orderID=" +
           orderId.value +
           "&order_amount=" +
-          `${store.cartInfo.grand_total.value}`
+          `${store.cartInfo.grand_total.value}` + "&influencer_id=" + influencerId.value
         );
       },
       error_handler: function (
@@ -919,7 +920,7 @@ async function orderConfirmation() {
       })
 
       store.saveCartItemsFailSuccess([...store.cartInfo.items])
-      router.push("/payment-failed?orderID=" + orderId.value);
+      router.push("/payment-failed?orderID=" + orderId.value + '');
       window.removeEventListener("focus", orderConfirmation, true);
     } else if (response.payload == "confirmed") {
       // stops checking transaction status
@@ -932,7 +933,7 @@ async function orderConfirmation() {
         "/payment-success?orderID=" +
         orderId.value +
         "&order_amount=" +
-        `${store.cartInfo.grand_total.value}`
+        `${store.cartInfo.grand_total.value}` + "&influencer_id=" + influencerId.value
       );
       store.saveCartItemsFailSuccess([...store.cartItems])
       await fetchCartInfo();
@@ -991,7 +992,7 @@ function sendDetailsToGoKwik(dataArray, orderType) {
           "/payment-success?orderID=" +
           orderId.value +
           "&order_amount=" +
-          `${store.cartInfo.grand_total.value}`
+          `${store.cartInfo.grand_total.value}` + + "&influencer_id=" + influencerId.value
         );
       }
     };
@@ -1555,6 +1556,7 @@ onUpdated(() => {
   checkCartCODRange();
 });
 onMounted(async () => {
+  
   clearInterval(paymentStatusInterval.value);
   if (activePaymentMethod.value) {
     store.updateCartInfo({
@@ -1562,6 +1564,14 @@ onMounted(async () => {
     });
   }
   calculateShippingCharges();
+
+  if (creatorStore.info.id) {
+    influencerId.value = creatorStore.info.id
+  }
+  else {
+    influencerId.value = Object.keys(useCookie('creators').value)[0]
+  }
+  console.log(influencerId.value)
 
   isSafari.value =
     !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
