@@ -27,31 +27,20 @@
 import { fetchCartInfo, getInfluencerById } from "@/utils/globalAPIs";
 import { getCreatorUserName } from "@/utils/helperMethods"
 
-// import {
-//   trackingClickEvent,
-//   trackingPaymentSuccessPage,
-//   trackingPaymentSuccessPageWithData,
-//   trackingPurchase,
-// } from "../eventTracking";
-
+const store = useStore();
+const creatorStore = useCreatorStore();
+const route = useRoute();
 const router = useRouter();
 
-const creatorInfo = ref({});
-
-const store = useStore();
-
-const creatorStore = useCreatorStore();
-
-const route = useRoute();
-
 const emit = defineEmits(["getCartInfo"]);
-
 const props = defineProps([
   "isDesktop",
   "wishlisted_items",
   "cart_items",
   "user",
 ]);
+
+const creatorInfo = ref({});
 
 const getCreatorDetails = computed(() => {
   return creatorInfo.value?.creatorName
@@ -60,16 +49,15 @@ const getCreatorDetails = computed(() => {
 });
 
 function goToCreatorStore() {
-  // uncmnt later
-  // trackingPaymentSuccessPage(
-  //   "Continue_Shopping",
-  //   "User_Actions",
-  //   "Event_Continue_Shopping",
-  //   "Post_Purchase",
-  //   this.$route.query.orderID,
-  //   this.$route.query.order_amount,
-  //   this.user
-  // );
+  trackingPaymentSuccessPage(
+    "Continue_Shopping",
+    "User_Actions",
+    "Event_Continue_Shopping",
+    "Post_Purchase",
+    route.query.orderID,
+    route.query.order_amount,
+    store.user
+  );
 
   router.replace({
     name: "CreatorStore",
@@ -79,18 +67,10 @@ function goToCreatorStore() {
 function goToOrders() {
   if (store.user) {
     // uncmnt later
-    // trackingClickEvent("clicked_on_track_your_order");
+    trackingClickEvent("clicked_on_track_your_order");
     router.push("/orders");
   } else {
     router.push({ name: "Login", params: { redirect: "/orders" } });
-  }
-}
-function downloadApp() {
-  var x = confirm("Let's proceed to the app to help you track your orders.");
-  if (x) {
-    window.open("https://hypd.onelink.me/tBOn/5dac1a01", "_blank");
-  } else {
-    return;
   }
 }
 
@@ -98,12 +78,11 @@ function downloadApp() {
 function fbqPurchaseTracking() {
   let cartInfo = JSON.parse(localStorage.getItem("cartInfo")) || [];
 
-  // uncmnt later
-  // trackingPurchase(
-  //   this.$route.query.orderID,
-  //   cartInfo,
-  //   this.$route.query.order_amount
-  // );
+  trackingPurchase(
+    route.query.orderID,
+    cartInfo,
+    route.query.order_amount
+  );
 }
 //Tracking End
 
@@ -122,53 +101,48 @@ onMounted(async () => {
     creatorInfo.value = await getCreatorUserName()
   }
 
-  // uncmnt later
-  // fbqPurchaseTracking();
-  // if (store.user) {
-  // trackingPaymentSuccessPage(
-  //   "transaction",
-  //   "order_success",
-  //   "payment_success",
-  //   "post_purchase",
-  //   this.$route.query.orderID,
-  //   this.$route.query.order_amount,
-  //   this.user
-  // );
-  // }
+  fbqPurchaseTracking();
+  if (store.user) {
+    trackingPaymentSuccessPage(
+      "transaction",
+      "order_success",
+      "payment_success",
+      "post_purchase",
+      route.query.orderID,
+      route.query.order_amount,
+      store.user
+    );
+  }
 
   if (localStorage.getItem("cartItemsForGA")) {
     let itemsFromLocal = JSON.parse(localStorage.getItem("cartItemsForGA"));
 
-    // uncmnt later
-    // for (let i = 0; i < itemsFromLocal?.length; i++) {
+    for (let i = 0; i < itemsFromLocal?.length; i++) {
 
-    //   trackingPaymentSuccessPageWithData(
-    //     "transaction_successfull_from_cart",
-    //     "Ecommerce",
-    //     "Event_Payment_Success",
-    //     "Post_Purchase",
-    //     itemsFromLocal[i]?.creatorId,
-    //     itemsFromLocal[i]?.creatorUserName,
-    //     itemsFromLocal[i]?.productId,
-    //     itemsFromLocal[i]?.productName,
-    //     this.$route.query.orderID,
-    //     this.$route.query.order_amount
-    //   );
-    // }
+      trackingPaymentSuccessPageWithData(
+        "transaction_successfull_from_cart",
+        "Ecommerce",
+        "Event_Payment_Success",
+        "Post_Purchase",
+        itemsFromLocal[i]?.creatorId,
+        itemsFromLocal[i]?.creatorUserName,
+        itemsFromLocal[i]?.productId,
+        itemsFromLocal[i]?.productName,
+        route.query.orderID,
+        route.query.order_amount
+      );
+    }
+  } else {
+    trackingPaymentSuccessPage(
+      "transaction_successfull_from_cart",
+      "Ecommerce",
+      "Event_Payment_Success",
+      "Post_Purchase",
+      route.query.orderID,
+      route.query.order_amount,
+      store.user
+    );
   }
-
-  // uncmnt later
-  // else {
-  //   trackingPaymentSuccessPage(
-  //     "transaction_successfull_from_cart",
-  //     "Ecommerce",
-  //     "Event_Payment_Success",
-  //     "Post_Purchase",
-  //     this.$route.query.orderID,
-  //     this.$route.query.order_amount,
-  //     this.user
-  //   );
-  // }
 
   localStorage.removeItem("cartItemsForGA");
   fetchCartInfo();
@@ -187,13 +161,13 @@ onUnmounted(() => {
 </script>
 
 <style scoped>
-
 .buttons {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 }
+
 .wrapper {
   position: relative;
   height: calc(100vh - 73px);

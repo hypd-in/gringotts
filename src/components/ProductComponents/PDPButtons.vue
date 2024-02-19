@@ -1,23 +1,9 @@
 <template>
   <section class="buttons-section">
-    <button
-      @click="toggleWishlist"
-      :class="{ wishlisted: isWishlisted }"
-      class="wishlist-btn"
-      v-html="wishlistIcon"
-    ></button>
-    <Button
-      class="add-to-cart-btn"
-      :loading="addingToCart"
-      :defaultText="addToCartText"
-      @click="addToCart"
-    />
-    <Button
-      @click="buyNow"
-      class="buy-now-btn"
-      :loading="buyingNow"
-      defaultText="Buy Now"
-    />
+    <button @click="toggleWishlist" :class="{ wishlisted: isWishlisted }" class="wishlist-btn"
+      v-html="wishlistIcon"></button>
+    <Button class="add-to-cart-btn" :loading="addingToCart" :defaultText="addToCartText" @click="addToCart" />
+    <Button @click="buyNow" class="buy-now-btn" :loading="buyingNow" defaultText="Buy Now" />
   </section>
 </template>
 
@@ -94,7 +80,7 @@ async function addToCart() {
     brand_id: productStore.info?.brand_id,
     variant_id: productStore.info?.selected_variant?.id,
   });
-  if (!productStore.info?.selected_variant?.id) {
+  if (!productStore.info.selected_variant?.id) {
     emit("getVariant");
     return;
   } else if (!!store.cartItems[productStore.info?.selected_variant?.id]) {
@@ -136,11 +122,11 @@ async function addToCart() {
     //   ...productStore?.info,
     // });
   }
-  // trackingAddToCart(
-  //   productStore.info,
-  //   creatoStore.info,
-  //   productStore.info?.selected_variant?.id
-  // );
+  trackingAddToCart(
+    productStore.info,
+    creatorStore.info,
+    productStore.info?.selected_variant?.id
+  );
 }
 
 function buyNow() {
@@ -154,6 +140,7 @@ function buyNow() {
     emit("getVariant");
     return;
   }
+
   navigateTo({
     name: "CartItems",
     query: {
@@ -164,11 +151,11 @@ function buyNow() {
       creatorUsername: creatorStore.info?.username,
     },
   });
-  // trackingAddToCart(
-  //   productStore.info,
-  //   creatorStore.info,
-  //   productStore.info.selected_variant?.id
-  // );
+  trackingBuyNow(
+    productStore.info,
+    creatorStore.info,
+    productStore.info.selected_variant?.id
+  );
 }
 
 function goToCart() {

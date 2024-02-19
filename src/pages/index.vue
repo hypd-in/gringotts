@@ -862,7 +862,7 @@ function callback_8(entries) {
 }
 
 function goToLogin(event) {
-  // trackingClickEvent("clicked_on_join_the_waitlist");
+  trackingClickEvent("clicked_on_join_the_waitlist");
   track(event)
   document.getElementById("CTAlink").click();
 };

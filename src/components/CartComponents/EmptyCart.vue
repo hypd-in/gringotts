@@ -26,6 +26,7 @@
     if (!creator_username) {
       return;
     }
+    trackingClickEvent("clicked_on_go_to_store");
     router.push({
       name: "CreatorStore",
       params: { creatorUsername: creator_username },

@@ -103,7 +103,6 @@ function routeToCreatorCollection(collectionInfo) {
 }
 
 function routeToBrandProfile(brandInfo) {
-  console.log(brandInfo);
   navigateTo({
     name: "BrandProfile",
     params: {

@@ -206,7 +206,6 @@ async function cancelOrder() {
 }
 
 async function getRefundDetails() {
-  console.log("HERE");
   try {
     var response = await $fetch(`${config.public.orderURL}/api/order/item/${orderDetails.value?.item_id}/refund`, {
       method: "GET",

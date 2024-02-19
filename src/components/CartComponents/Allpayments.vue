@@ -1704,7 +1704,6 @@ watch(cartItemsToWatch, () => {
   padding: 8px 0;
   background: #fff;
   cursor: pointer;
-  overflow: scroll;
 }
 
 .banks-container>.bank:hover {

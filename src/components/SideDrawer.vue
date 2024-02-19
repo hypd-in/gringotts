@@ -162,6 +162,7 @@ function redirectToPath(pathName) {
 }
 
 async function logout() {
+  trackingClickEvent("clicked_on_logout");
   logoutUser({
     name: "CreatorStore",
     params: {

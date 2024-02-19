@@ -275,13 +275,13 @@ async function fetchPincodeDetails() {
     var response = await $fetch("https://api.postalpincode.in/pincode/" + address?.value?.postal_code, {
       method: "GET",
       headers: {
-        "Content-Type": "application/json",
+        "Content-Type": "text/plain",
       },
     });
-    if (response.data[0].PostOffice?.length > 0) {
+    if (response[0].PostOffice?.length > 0) {
       fetchedState.value = true;
       showStateDropDown.value = false;
-      var info = response?.data[0]?.PostOffice[0];
+      var info = response[0]?.PostOffice[0];
       if (info?.Block != "NA") {
         address.value.city = info?.Block;
       } else {
