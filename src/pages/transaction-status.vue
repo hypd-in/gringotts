@@ -184,9 +184,10 @@ function orderConfirmation() {
 
 
 onMounted(() => {
+    console.log(route.query, "QUERYT")
     if (window.innerWidth > 520) {
         if (route.query.order_id) {
-            window.close();
+            // window.close();
         }
     } else {
         if (route.query.order_id) {
