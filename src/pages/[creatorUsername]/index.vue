@@ -416,6 +416,7 @@ async function getBOTD() {
 }
 
 onMounted(() => {
+    console.log("Sushant",runtimeConfig.public.env);
     trackingDetails = {
         creator_name: creatorStore.info?.name,
         creator_username: route.params.creatorUsername,
