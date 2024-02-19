@@ -106,9 +106,10 @@ function orderConfirmation() {
                 status.value = response.payload?.status;
                 amount.value = response.payload?.amount;
             }
-            if (status.value == "initiated") {
-                return;
-            } else if (status.value == "failed") {
+            // if (status.value == "initiated") {
+            //     return;
+            // } else
+             if (status.value == "initiated") {
                 clearInterval(check_order_status.value);
                 let path =
                     "/payment-failed?orderID=" +
