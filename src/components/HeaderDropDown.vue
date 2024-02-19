@@ -113,12 +113,7 @@ function goToLogin() {
 
 async function routeToPath(pathName) {
   if (pathName == "logOut") {
-    logoutUser({
-      name: "CreatorStore",
-      params: {
-        creatorUsername: await getCreatorUserName(),
-      },
-    });
+    logoutUser();
     emit("close");
     return;
   } else if(pathName == 'MyAddresses'){
