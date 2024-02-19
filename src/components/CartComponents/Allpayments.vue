@@ -252,10 +252,6 @@
   
 <script setup>
 
-definePageMeta({
-  layout: "standalone"
-})
-
 import SubmitButton from "@/components/SubmitButton.vue";
 
 // import {

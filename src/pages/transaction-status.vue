@@ -11,6 +11,10 @@
   
 <script setup>
 
+definePageMeta({
+  layout: "standalone"
+})
+
 const route = useRoute()
 const router = useRouter()
 const status = ref("")
