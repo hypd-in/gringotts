@@ -36,11 +36,11 @@ else {
   cmsURL = "https://cms.hypd.store";
   entityURL = "https://entity.hypd.store";
   orderURL = "https://order2.hypd.store";
-  trackingURL = "https://tracking.getshitdone.in";
+  trackingURL = "https://tracking.hypd.store";
 }
 async function fetchItemInfo(id) {
   try {
-    var response = await $fetch(catalogURL + "/api/app/catalog/" + id, {
+    var response = await $fetch(useRuntimeConfig().public.catalogURL + "/api/app/catalog/" + id, {
       method: "GET",
       credentials: "include",
       headers: {
