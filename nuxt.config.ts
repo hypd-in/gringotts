@@ -19,11 +19,11 @@ export default defineNuxtConfig({
   },
   runtimeConfig: {
     public:
-      process.env.NODE_ENV !== "production"
+      process.env.ENVIRONMENT !== "production"
         ?
         {
+          env: process.env.ENVIRONMENT,
           // posthog
-          env: process.env.NODE_ENV,
           posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
           posthogHost: "https://app.posthog.com",
       // 
@@ -39,7 +39,7 @@ export default defineNuxtConfig({
           gokwick_mid: "3mt5u7iijbky068wbs",
         }
         : {
-          env: process.env.NODE_ENV,
+          env: process.env.ENVIRONMENT,
           catalogURL: "https://catalog2.hypd.store",
           entityURL: "https://entity.hypd.store",
           cmsURL: "https://cms.hypd.store",
@@ -135,7 +135,7 @@ export default defineNuxtConfig({
         {
           defer: true,
           src:
-            process.env.NODE_ENV != "production"
+            process.env.ENVIRONMENT != "production"
               ? "https://sandbox.juspay.in/pay-v3.js"
               : "https://api.juspay.in/pay-v3.js",
           type: "text/javascript",

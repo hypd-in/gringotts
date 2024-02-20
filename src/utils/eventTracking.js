@@ -180,7 +180,7 @@ export function trackingBrandPageLanding(brandInfo) {
 
 var trackingURL = "";
 
-if (process.env.NODE_ENV != "production") {
+if (process.env.ENVIRONMENT != "production") {
   trackingURL = "https://tracking.getshitdone.in";
 } else {
   trackingURL = "https://tracking.hypd.store";

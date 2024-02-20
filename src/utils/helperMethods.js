@@ -24,7 +24,7 @@ export function optimizeImage(imageURL, resolution) {
 export function getReplacedSource(source, height) {
   let newhostName;
   const filter = "/filters:strip_exif";
-  if (process.env.NODE_ENV != "production") {
+  if (process.env.ENVIRONMENT != "production") {
     newhostName = "cdn.getshitdone.in";
   } else {
     newhostName = "cdn.hypd.store";
