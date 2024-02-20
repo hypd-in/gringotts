@@ -119,7 +119,7 @@ useSeoMeta({
   twitterDescription: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,
   ogImage: `${creatorStore.info?.profile_image?.src}`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
-  twitterCard: "summary_large_image",
+  twitterCard: "summary",
 });
 
 </script>
