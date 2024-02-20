@@ -503,13 +503,13 @@ function downloadFile(data, fileName) {
 
 function navigateToBrandPage() {
   track('order_item:visit_brand_click', {
-    order_no: store.orderDetails.order_id,
-    item_id: store.orderDetails.item.id,
-    brand_id: store.orderDetails.brand_id,
+    order_no: store.orderDetails?.order_id,
+    item_id: store.orderDetails?.item?.id,
+    brand_id: store.orderDetails?.brand_id,
   })
 
   navigateTo({
-    name: "BrandPage",
+    name: "BrandProfile",
     params: {
       brandUsername: orderDetails.value?.brand_info?.username
     }
