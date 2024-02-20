@@ -458,7 +458,6 @@ export async function fetchWishlistedProducts() {
 }
 
 export async function fetchCartInfo(bypass) {
-
   let router = useRouter();
   const store = useStore();
   if (

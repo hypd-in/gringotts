@@ -707,11 +707,12 @@ async function checkout() {
     sendDetailsToGoKwik(response.payload.go_kwik, "cod");
     store.saveCartItemsFailSuccess([...store.cartInfo.items])
 
+    await fetchCartInfo();
+
     track('checkout:end', {
       order_id: orderId.value,
       ...orderDataToTrack,
     })
-
   } else if (orderId.value && activePaymentMethod.value != "Cash on Delivery") {
     if (skipPayment.value) {
       paymentLoader.value = false;
@@ -728,9 +729,6 @@ async function checkout() {
       await checkoutWithJuspay();
     }
   }
-
-
-
 }
 
 async function checkoutWithJuspay() {
