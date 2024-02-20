@@ -15,47 +15,46 @@ export default defineNuxtConfig({
   },
   srcDir: "src",
   routeRules: {
-    '/ingest/**': { proxy: 'https://app.posthog.com/**' },
+    "/ingest/**": { proxy: "https://app.posthog.com/**" },
   },
   runtimeConfig: {
     public:
       process.env.ENVIRONMENT !== "production"
-        ?
-        {
-          env: process.env.ENVIRONMENT,
-          // posthog
-          posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
-          posthogHost: "https://app.posthog.com",
+        ? {
+            env: process.env.ENVIRONMENT,
+            // posthog
+            posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
+            posthogHost: "https://app.posthog.com",
 
-          catalogURL: "https://catalogv2.getshitdone.in",
-          entityURL: "https://entity.getshitdone.in",
-          cmsURL: "https://cms.getshitdone.in",
-          orderURL: "https://orderv2.getshitdone.in",
-          couponURL: "https://coupon.getshitdone.in",
-          cdn: "cdn.getshitdone.in",
-          base: "https://hypdstore.getshitdone.in",
-          checkoutURL: "https://checkout.getshitdone.in",
-          gokwik_env: "sandbox",
-          gokwick_mid: "3mt5u7iijbky068wbs",
-        }
+            catalogURL: "https://catalogv2.getshitdone.in",
+            entityURL: "https://entity.getshitdone.in",
+            cmsURL: "https://cms.getshitdone.in",
+            orderURL: "https://orderv2.getshitdone.in",
+            couponURL: "https://coupon.getshitdone.in",
+            cdn: "cdn.getshitdone.in",
+            base: "https://hypdstore.getshitdone.in",
+            checkoutURL: "https://checkout.getshitdone.in",
+            gokwik_env: "sandbox",
+            gokwick_mid: "3mt5u7iijbky068wbs",
+          }
         : {
-          env: process.env.ENVIRONMENT,
+            env: process.env.ENVIRONMENT,
 
-          // posthog
-          posthogPublicKey: window.location.host == 'hypd.store' ? "phc_8lUC5VBFcaw8CNSF0IAmsnpaFT2Aw8T5jQcVMdBd8AK" : "phc_Bhp0EO8PIx162Q13YzxHhmBhbB9OQdcgzydkWnOwPL1",
-          posthogHost: "https://app.posthog.com",
-          
-          catalogURL: "https://catalog2.hypd.store",
-          entityURL: "https://entity.hypd.store",
-          cmsURL: "https://cms.hypd.store",
-          orderURL: "https://orderv2.hypd.store",
-          couponURL: "https://coupon.hypd.store",
-          cdn: "cdn.hypd.store",
-          base: "https://www.hypd.store",
-          checkoutURL: "https://checkout.hypd.store",
-          gokwik_env: "production",
-          gokwick_mid: "3mt5u7iijbky068wba",
-        },
+            // posthog
+            posthogPublicKey: "phc_Bhp0EO8PIx162Q13YzxHhmBhbB9OQdcgzydkWnOwPL1",
+            posthogHost: "https://app.posthog.com",
+
+            catalogURL: "https://catalog2.hypd.store",
+            entityURL: "https://entity.hypd.store",
+            cmsURL: "https://cms.hypd.store",
+            orderURL: "https://orderv2.hypd.store",
+            couponURL: "https://coupon.hypd.store",
+            cdn: "cdn.hypd.store",
+            base: "https://www.hypd.store",
+            checkoutURL: "https://checkout.hypd.store",
+            gokwik_env: "production",
+            gokwick_mid: "3mt5u7iijbky068wba",
+          },
   },
   nitro: {
     preset: "node-cluster",
