@@ -1072,3 +1072,24 @@ export async function logoutUser(redirectionPath) {
     }
   }
 }
+
+export async function getBrandPageProducts(formData) {
+  try {
+    const response = await $fetch(
+      `${useRuntimeConfig().public.catalogURL}/api/catalog/category`,
+      {
+        method: "POST",
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: formData
+      }
+    );
+    return response.payload
+
+  } catch (error) {
+    console.log("error: ", error);
+    return []
+  }
+}
