@@ -26,7 +26,7 @@ export default defineNuxtConfig({
           // posthog
           posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
           posthogHost: "https://app.posthog.com",
-      // 
+          
           catalogURL: "https://catalogv2.getshitdone.in",
           entityURL: "https://entity.getshitdone.in",
           cmsURL: "https://cms.getshitdone.in",

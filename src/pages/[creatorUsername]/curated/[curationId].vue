@@ -1,9 +1,15 @@
 <template>
   <div class="curation-wrapper">
     <div class="sub-header">
+
       <div class="journey-path">
-        <NuxtImg width="32" style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info.profile_image.src" />
-        {{ creatorStore.info.name }} / Explore / &nbsp; <span style="color: #000">{{ curationInfo.title }}</span>
+        <span @click="gotoStore">
+          <ImageFrame :alt="creatorStore.info.name"
+            style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
+            :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
+          {{ creatorStore.info.name }} / Explore / &nbsp;
+        </span>
+        <span style="color: #000">{{ curationInfo.title }}</span>
       </div>
     </div>
 
@@ -21,6 +27,7 @@
 
 <script setup>
 import ProductCard from '~/components/ProductComponents/ProductCard.vue';
+import ImageFrame from '~/components/ImageFrame.vue';
 
 definePageMeta({
   name: "CuratedCollection",
@@ -36,6 +43,8 @@ const catalogsSent = ref(0);
 const observer = ref(null);
 const target = ref(null);
 const products = ref([]);
+
+const router = useRouter()
 
 if (route.params.curationId) {
   const { data: info, error } = await useFetch(`${config.public.catalogURL}/api/app/subcollection`, {
@@ -114,6 +123,14 @@ useSeoMeta({
   twitterCard: 'summary'
 })
 
+function gotoStore() {
+  router.replace({
+    name: "CreatorStore",
+    creatorUsername: creatorStore.info.username
+  })
+}
+
+
 onMounted(async () => {
   if (target.value) {
     observer.value = addingObserver(target.value, callback);
@@ -148,7 +165,13 @@ onMounted(async () => {
   z-index: 52;
 }
 
+.journey-path span{
+  display: flex;
+  align-items: center;
+}
+
 .journey-path {
+  cursor: pointer;
   max-width: 1024px;
   margin: 0 auto;
   box-sizing: border-box;
