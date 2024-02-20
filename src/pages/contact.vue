@@ -10,7 +10,7 @@
         care of the rest!
       </p>
 
-      <SubmitButton defaultText="Reach Out To Us" class="button" />
+      <SubmitButton @submit="openFCwidget" defaultText="Reach Out To Us" class="button" />
     </div>
 
     <div class="address">
@@ -27,6 +27,8 @@
 
 <script setup>
 import SubmitButton from "~/components/SubmitButton.vue";
+
+const store = useStore()
 definePageMeta({
   name: "ContactUs",
   layout: "public",
@@ -38,6 +40,40 @@ useSeoMeta({
   twitterTitle: "Contact Us | HYPD | #getHYPD",
   twitterCard: "summary",
 })
+
+function openFCwidget() {
+  window.FreshworksWidget("open");
+  // If user is logged in, Auto fill Details (name, email)
+  if (store.user) {
+    window.FreshworksWidget("identify", "ticketForm", {
+      name: store.user.full_name,
+      email: store.user.email,
+    });
+  }
+  window.FreshworksWidget("hide", "ticketForm", [
+    "custom_fields.cf_item_id",
+  ]);
+}
+
+onMounted(() => {
+  window.FreshworksWidget("boot");
+  setTimeout(() => {
+    if (store.user) {
+      window.FreshworksWidget("identify", "ticketForm", {
+        name: store.user.full_name,
+        email: store.user.email,
+      });
+      window.FreshworksWidget("hide", "ticketForm", [
+        "custom_fields.cf_item_id",
+      ]);
+    }
+  }, 500);
+})
+
+onBeforeUnmount(() => {
+  window.FreshworksWidget("destroy");
+})
+
 </script>
 
 <style scoped>
@@ -47,6 +83,7 @@ div.page-wrapper {
   margin: 0 auto;
   box-sizing: border-box;
 }
+
 h1.page-heading {
   font-family: Urbanist-Bold;
   text-align: center;

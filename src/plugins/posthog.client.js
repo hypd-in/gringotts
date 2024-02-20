@@ -2,11 +2,10 @@ import { defineNuxtPlugin } from "#app";
 import posthog from "posthog-js";
 export default defineNuxtPlugin((nuxtApp) => {
   const runtimeConfig = useRuntimeConfig();
-  console.log(process.env, "DD");
   const posthogClient = posthog.init(runtimeConfig.public.posthogPublicKey, {
     // api_host: runtimeConfig.public.posthogHost || "https://app.posthog.com",
     api_host:
-      process.env.NODE_ENV != "production"
+    runtimeConfig.public.env != "production"
         ? "https://hypdstore.getshitdone.in/ingest"
         : "https://beta.hypd.store/ingest",
     ui_host: "https://app.posthog.com", // or https://eu.posthog.com if your PostHog is hosted in Europe

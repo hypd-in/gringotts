@@ -585,6 +585,34 @@ async function fetchSimilarProducts(id) {
   }
 }
 
+onBeforeUnmount(()=>{
+  window.FreshworksWidget("destroy");
+})
+
+onMounted(()=>{
+  window.FreshworksWidget("boot");
+
+  setTimeout(() => {
+    window.FreshworksWidget("identify", "ticketForm", {
+      name: store.user?.full_name,
+      email: store.user?.email,
+      custom_fields: {
+        cf_order_id: parseInt(store.orderDetails?.order_id),
+        cf_brand_name: store.orderDetails?.brand_info.name,
+        cf_item_id: store.orderDetails?.item_id,
+      },
+    });
+    window.FreshworksWidget("disable", "ticketForm", [
+      "custom_fields.cf_brand_name",
+    ]);
+    window.FreshworksWidget("hide", "ticketForm", [
+      "custom_fields.cf_item_id",
+    ]);
+  }, 1000);
+
+
+})
+
 onBeforeMount(async () => {
   await fetchOrderDetails();
   track('order_item:visit', {
