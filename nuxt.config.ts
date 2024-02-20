@@ -144,6 +144,19 @@ export default defineNuxtConfig({
               : "https://api.juspay.in/pay-v3.js",
           type: "text/javascript",
         },
+        {
+          defer: true,
+          async: true,
+          onload: "window.FreshworksWidget('destroy')",
+          src: "https://ind-widget.freshworks.com/widgets/84000002837.js",
+          type: "text/javascript",
+        },
+        {
+          children: `window.fwSettings = {
+            'widget_id': 84000002837,
+          };
+          !function () { if ("function" != typeof window.FreshworksWidget) { var n = function () { n.q.push(arguments) }; n.q = [], window.FreshworksWidget = n } }() `,
+        },
         // {
         //   children: `! function (t, e) {
         //     var o, n, p, r;
