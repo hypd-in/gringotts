@@ -26,7 +26,7 @@ export default defineNuxtConfig({
           // posthog
           posthogPublicKey: "phc_ogcVEeBL1LN5RCHFwNv80rmPrUCRcOKfmFSdgFqvne2",
           posthogHost: "https://app.posthog.com",
-          
+
           catalogURL: "https://catalogv2.getshitdone.in",
           entityURL: "https://entity.getshitdone.in",
           cmsURL: "https://cms.getshitdone.in",
@@ -40,6 +40,11 @@ export default defineNuxtConfig({
         }
         : {
           env: process.env.ENVIRONMENT,
+
+          // posthog
+          posthogPublicKey: window.location.host == 'hypd.store' ? "phc_8lUC5VBFcaw8CNSF0IAmsnpaFT2Aw8T5jQcVMdBd8AK" : "phc_Bhp0EO8PIx162Q13YzxHhmBhbB9OQdcgzydkWnOwPL1",
+          posthogHost: "https://app.posthog.com",
+          
           catalogURL: "https://catalog2.hypd.store",
           entityURL: "https://entity.hypd.store",
           cmsURL: "https://cms.hypd.store",
