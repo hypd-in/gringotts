@@ -21,32 +21,33 @@ if (process.browser) {
   routeQueries = new URLSearchParams(window.location.search);
 }
 
-if (process.env.ENVIRONMENT != "production")
-{
+if (process.env.ENVIRONMENT != "production") {
   couponURL = "https://coupon.getshitdone.in";
   catalogURL = "https://catalogv2.getshitdone.in";
   cmsURL = "https://cms.getshitdone.in";
   entityURL = "https://entity.getshitdone.in";
   orderURL = "https://orderv2.getshitdone.in";
   trackingURL = "https://tracking.getshitdone.in";
-}
-else {
+} else {
   couponURL = "https://coupon.hypd.store";
   catalogURL = "https://catalog2.hypd.store";
   cmsURL = "https://cms.hypd.store";
   entityURL = "https://entity.hypd.store";
   orderURL = "https://order2.hypd.store";
-  trackingURL = "https://tracking.getshitdone.in";
+  trackingURL = "https://tracking.hypd.store";
 }
 async function fetchItemInfo(id) {
   try {
-    var response = await $fetch(catalogURL + "/api/app/catalog/" + id, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
+    var response = await $fetch(
+      useRuntimeConfig().public.catalogURL + "/api/app/catalog/" + id,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     if (response.payload) {
       return response.payload;
@@ -203,7 +204,7 @@ export async function addItemToCart(itemInfo) {
     brand_name,
   };
 
-  track("cart:add", {...dataToTrack})
+  track("cart:add", { ...dataToTrack });
 
   //itemInfo must contain a field "id" which is user's id, along with the product info
   try {

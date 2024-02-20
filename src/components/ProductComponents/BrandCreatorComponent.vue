@@ -91,25 +91,37 @@ async function goToBrandPage() {
         title: brandInfo.value?.name,
       }
     })
+  } else {
+    var brand = await getBrandInfoFromBrandId(brandInfo.value?.id)
+    navigateTo({
+      name: "BrandProfile",
+      params: {
+        creatorUsername: creatorUsername,
+        brandUsername: brand?.username,
+      },
+      query: {
+        title: brandInfo.value?.name,
+      }
+    })
   }
 }
 
-async function goToCreatorStore() {
-  var creatorUsername = creatorStore.info?.username || await getCreatorUserName();
+  async function goToCreatorStore() {
+    var creatorUsername = creatorStore.info?.username || await getCreatorUserName();
 
-  track('pdp:visit_creator_click', {
-    item_id: productStore.info.id,
-    brand_id: productStore.info.brand_id,
-    creator_username:creatorUsername
-  })
+    track('pdp:visit_creator_click', {
+      item_id: productStore.info.id,
+      brand_id: productStore.info.brand_id,
+      creator_username: creatorUsername
+    })
 
-  navigateTo({
-    name: "CreatorStore",
-    params: {
-      creatorUsername: creatorUsername,
-    },
-  });
-}
+    navigateTo({
+      name: "CreatorStore",
+      params: {
+        creatorUsername: creatorUsername,
+      },
+    });
+  }
 </script>
 
 <style scoped>

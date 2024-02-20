@@ -2,21 +2,15 @@
   <section>
     <div class="brand-profile">
       <div class="display-picture">
-        <img
-          :src="getReplacedSource(brandStore.brandInfo?.cover_img?.src)"
-          :alt="brandStore.brandInfo.name"
-        />
+        <img :src="getReplacedSource(brandStore.brandInfo?.cover_img?.src)" :alt="brandStore.brandInfo.name" />
       </div>
       <div class="name">
         {{ brandStore.brandInfo.name }}
       </div>
       <p class="bio" v-if="brandStore.brandInfo?.bio">
         {{ brandBio }}
-        <span
-          style="color: #fb6c23; cursor: pointer"
-          @click="toggleBio"
-          v-show="bioLength == 120 && brandStore.brandInfo.bio.length > 120"
-        >
+        <span style="color: #fb6c23; cursor: pointer" @click="toggleBio"
+          v-show="bioLength == 120 && brandStore.brandInfo.bio.length > 120">
           View More
         </span>
       </p>
@@ -26,16 +20,9 @@
     <div style="border-top: 2px solid #0000001a">
       <h3>All Products</h3>
       <div class="product-listing-wrapper">
-        <Product
-          v-for="product in brandStore.products"
-          :key="product?.id"
-          :itemInfo="product"
-        />
+        <Product v-for="product in brandStore.products" :key="product?.id" :itemInfo="product" />
       </div>
-      <div
-        v-if="fetchingProducts"
-        style="display: flex; justify-content: center"
-      >
+      <div v-if="fetchingProducts" style="display: flex; justify-content: center">
         <div class="lds-ellipsis">
           <div></div>
           <div></div>
@@ -51,7 +38,7 @@
 <script setup>
 definePageMeta({
   name: "BrandProfile",
-    layout: "public",
+  layout: "public",
 });
 import { getBrandPageProducts } from "~/utils/globalAPIs";
 import { getReplacedSource } from "~/utils/helperMethods.js";
@@ -62,8 +49,8 @@ const brandStore = useBrandProfileStore();
 const route = useRoute();
 const { data: brandInfo, pending: loadingBrandInfo } = await useFetch(
   runtimeConfig.public.entityURL +
-    "/api/app/brand/username/" +
-    route.params.brandUsername,
+  "/api/app/brand/username/" +
+  route.params.brandUsername,
   {
     key: "brand_profile_info",
     methods: "GET",
@@ -83,7 +70,6 @@ const fetchingProducts = ref(false);
 const target = ref(null);
 const callback = (entries) => {
   entries.forEach(async (entry) => {
-    console.log("sushant");
     if (
       entry.isIntersecting &&
       !fetchingProducts.value &&
@@ -169,11 +155,13 @@ useSeoMeta({
 section {
   padding: 0 16px;
   max-width: 980px;
-  margin: 0 auto ;
+  margin: 0 auto;
 }
+
 .product-listing-wrapper {
   padding: 0;
 }
+
 .brand-profile {
   display: grid;
   grid-template-columns: 150px 4fr;
@@ -182,6 +170,7 @@ section {
   max-width: 630px;
   margin: 24px auto;
 }
+
 .display-picture {
   height: 150px;
   width: 150px;
@@ -190,15 +179,18 @@ section {
   grid-row: 1 / span 2;
   border: 1px solid #d8d8d8;
 }
+
 .display-picture img {
   height: 100%;
   width: 100%;
 }
+
 .name {
   color: #13141b;
   font-size: 24px;
   font-family: Urbanist-ExtraBold;
 }
+
 .bio {
   font-family: Urbanist-Medium;
   line-height: 1.5;
@@ -208,11 +200,13 @@ section {
   max-width: 430px;
   grid-column: 2 / 2;
 }
+
 h3 {
   color: #13141b;
   font-family: Urbanist-Bold;
   text-align: center;
 }
+
 @media screen and (min-width: 0) and (max-width: 480px) {
   .brand-profile {
     grid-template-columns: 104px 4fr;
@@ -225,20 +219,24 @@ h3 {
     align-items: center;
     margin: 20px 0 12px;
   }
+
   .display-picture {
     height: 104px;
     width: 104px;
     grid-row: unset;
   }
+
   .display-picture img {
     height: 100%;
     width: 100%;
   }
+
   .name {
     color: #13141b;
     font-size: 18px;
     font-family: Urbanist-ExtraBold;
   }
+
   .bio {
     font-family: Urbanist-Medium;
     line-height: 1.5;

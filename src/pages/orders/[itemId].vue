@@ -501,17 +501,23 @@ function downloadFile(data, fileName) {
   link.click();
 }
 
-function navigateToBrandPage() {
+async function navigateToBrandPage() {
   track('order_item:visit_brand_click', {
-    order_no: store.orderDetails.order_id,
-    item_id: store.orderDetails.item.id,
-    brand_id: store.orderDetails.brand_id,
+    order_no: store.orderDetails?.order_id,
+    item_id: store.orderDetails?.item?.id,
+    brand_id: store.orderDetails?.brand_id,
   })
 
+  var brandInfo = await getBrandInfoFromBrandId(orderDetails.value?.brand_info?.id)
+
   navigateTo({
-    name: "BrandPage",
+    name: "BrandProfile",
     params: {
-      brandUsername: orderDetails.value?.brand_info?.username
+      brandUsername: brandInfo?.username,
+      creatorUsername: await getCreatorUserName(),
+    },
+    query: {
+      title: brandInfo?.name,
     }
   })
 }
@@ -976,7 +982,8 @@ button.price-details .price-details-container {
   top: -35px;
   right: 84px;
 }
-button.price-details:hover .price-details-container{
+
+button.price-details:hover .price-details-container {
   visibility: visible;
 }
 

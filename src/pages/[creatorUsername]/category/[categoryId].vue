@@ -132,14 +132,7 @@ onMounted(() => {
   }
 
   h2 {
-    font-family: Urbanist-SemiBold;
-    font-size: 16px;
-    position: fixed;
-    top: 19px;
-    left: calc(16px + 24px + 8px);
-    z-index: 52;
-    padding: 0 !important;
-    display: block !important;
+    display: none !important;
   }
 }
 
