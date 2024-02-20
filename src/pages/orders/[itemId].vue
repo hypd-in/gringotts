@@ -515,6 +515,9 @@ async function navigateToBrandPage() {
     params: {
       brandUsername: brandInfo?.username,
       creatorUsername: await getCreatorUserName(),
+    },
+    query: {
+      title: brandInfo?.name,
     }
   })
 }
