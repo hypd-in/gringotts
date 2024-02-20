@@ -20,7 +20,7 @@
       <section class="info">
         <h3 class="heading">Information</h3>
         <div class="links">
-          <p>About Us</p>
+          <!-- <p>About Us</p> -->
           <p @click="goToPrivacyPolicy">Privacy Policy</p>
           <p @click="goToTerms">Terms and Conditions</p>
           <p>Careers</p>

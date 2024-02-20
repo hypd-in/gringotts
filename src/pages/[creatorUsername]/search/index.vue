@@ -108,9 +108,6 @@ onBeforeRouteLeave((to, from) => {
 //   }
 // });
 
-watch(searchQuery.value, (newV, oldV) => {
-  console.log("HERE", newV);
-})
 
 onUpdated(async () => {
   if (route.query.query != searchQuery.value) {

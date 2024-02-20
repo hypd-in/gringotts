@@ -2,8 +2,13 @@
   <div class="curation-wrapper">
     <div class="sub-header">
       <div class="journey-path">
-        <NuxtImg width="32" style="border-radius: 50%; margin-right: 6px" :src="creatorStore.info.profile_image.src" />
-        {{ creatorStore.info.name }} / Explore / &nbsp; <span v-if="route.query.title" style="color: #000">{{
+        <span @click="gotoStore">
+          <ImageFrame :alt="creatorStore.info.name"
+            style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
+            :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
+          {{ creatorStore.info.name }} / Explore / &nbsp;
+        </span>
+       <span v-if="route.query.title" style="color: #000">{{
           route.query.title }}</span>
       </div>
     </div>
@@ -22,6 +27,8 @@
 
 <script setup>
 import ProductCard from "~/components/ProductComponents/ProductCard"
+import ImageFrame from "~/components/ImageFrame.vue";
+
 definePageMeta({
   name: "CategoryCuration",
   layout: "default",
@@ -29,6 +36,7 @@ definePageMeta({
 const creatorStore = useCreatorStore();
 const config = useRuntimeConfig();
 const route = useRoute();
+const router = useRouter()
 
 const categoryInfo = ref({});
 const target = ref(null);
@@ -98,6 +106,14 @@ function callback(entries) {
     }
   });
 }
+
+function gotoStore() {
+  router.replace({
+    name: "CreatorStore",
+    creatorUsername: creatorStore.info.username
+  })
+}
+
 onMounted(() => {
   if (target.value) {
     observer.value = addingObserver(target.value, callback);
@@ -135,7 +151,13 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
+.journey-path span{
+  display: flex;
+  align-items: center;
+}
+
 .journey-path {
+  cursor: pointer;
   max-width: 1024px;
   margin: 0 auto;
   box-sizing: border-box;
