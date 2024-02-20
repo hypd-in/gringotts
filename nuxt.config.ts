@@ -47,7 +47,7 @@ export default defineNuxtConfig({
             catalogURL: "https://catalog2.hypd.store",
             entityURL: "https://entity.hypd.store",
             cmsURL: "https://cms.hypd.store",
-            orderURL: "https://orderv2.hypd.store",
+            orderURL: "https://order2.hypd.store",
             couponURL: "https://coupon.hypd.store",
             cdn: "cdn.hypd.store",
             base: "https://www.hypd.store",
