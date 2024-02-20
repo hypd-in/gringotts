@@ -1011,7 +1011,7 @@ async function checkCODEligible() {
           line1: store.cartInfo.shipping_address.line1,
           district: store.cartInfo.shipping_address.district,
           city: store.cartInfo.shipping_address.city,
-          state: store.cartInfo.shipping_address,
+          state: store.cartInfo.shipping_address.state,
           postal_code: store.cartInfo.shipping_address.postal_code,
           plain_address: store.cartInfo.shipping_address.plain_address,
         },
