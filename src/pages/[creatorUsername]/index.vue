@@ -191,7 +191,7 @@ useSeoMeta({
     ogDescription: `Shop from ${creatorStore.info.name}'s store on HYPD`,
     ogImage: `${creatorStore.info?.profile_image?.src}`,
     twitterImage: `${creatorStore.info?.profile_image?.src}`,
-    twitterCard: "summary_large_image",
+    twitterCard: "summary",
 });
 
 const isLoading = ref(false);
