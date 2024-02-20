@@ -9,7 +9,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     autocapture: false,
     capture_pageview: false, // we add manual pageview capturing below
     loaded: (posthog) => {
-      if (import.meta.env.MODE === "development") posthog.debug();
+      if (import.meta.env.MODE === "development") posthog.debug(false);
     },
   });
 

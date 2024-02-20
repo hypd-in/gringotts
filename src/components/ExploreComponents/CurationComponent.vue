@@ -129,21 +129,20 @@ function routeToCuratedCollection(subCuration) {
 }
 
 async function getBrandInfoByBrandId(id) {
-  await $fetch(`${useRuntimeConfig().public.entityURL}/api/app/brand/${id}`, {
-    method: "GET",
-    credentials: "include",
-    headers: {
-      "Content-Type": "application/json",
+  try {
+    var response = await $fetch(`${useRuntimeConfig().public.entityURL}/api/app/brand/${id}`, {
+      method: "GET",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      }
+    })
+    if (response) {
+      return { ...response.payload };
     }
-  }).then((response) => {
-    if (response.payload) {
-      return response.payload;
-    } else {
-      return;
-    }
-  }).catch((err) => {
-    console.log("Error fetching brand using id", err);
-  })
+  } catch (error) {
+    console.log("Error fetching brand info");
+  }
 }
 </script>
 

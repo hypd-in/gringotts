@@ -1569,7 +1569,6 @@ onMounted(async () => {
   else {
     influencerId.value = Object.keys(useCookie('creators').value)[0]
   }
-  console.log(influencerId.value)
 
   isSafari.value =
     !!navigator.platform && /iPad|iPhone|iPod/.test(navigator.platform);
