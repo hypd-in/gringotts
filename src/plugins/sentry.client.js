@@ -14,6 +14,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     app: nuxtApp.vueApp,
     dsn: sentry.dsn,
     environment: sentry.environment,
+    trackComponents: true,
     initialScope: {
       tags: {
         "Hypd Store": "Hypd Store",
