@@ -46,7 +46,6 @@ export function getReplacedSource(source, height) {
     }
     return newURL;
   } else if (source.includes(newHostName)) {
-    console.log(source, height, `${source}?height=${height ?? 550}`);
     return `${source}?height=${height ?? 550}`;
   } else {
     return source;

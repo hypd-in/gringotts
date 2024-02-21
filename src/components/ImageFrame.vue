@@ -34,7 +34,6 @@ const source = computed(() => {
 })
 
 onBeforeMount(() => {
-  console.log("AITHE", props.src);
   if (source.value.includes("shopify")) {
     let a;
     if (
@@ -62,7 +61,6 @@ onBeforeMount(() => {
   }
 })
 function loadImage() {
-  console.log("HERE", source.value, src_details.value);
   var newImg = new Image();
   newImg.onload = () => {
     target.value.setAttribute("src", source.value);
