@@ -91,7 +91,7 @@ onBeforeMount(async () => {
   await fetchAllCoupons();
   // created
   document.addEventListener("visibilitychange", async () => {
-    if(store.cartInfo.items.length){
+    if(store.cartInfo?.items && store.cartInfo?.items?.length){
       store.saveCartItemsFailSuccess([...store.cartInfo.items])
     }
     if (
