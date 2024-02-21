@@ -400,6 +400,7 @@ export async function applyCartCoupon(coupon_code) {
       }
     );
     if (response.payload) {
+      console.log(response, "RESP")
       // uncmnt later
       // trackingApplyCouponCode(coupon_code);
 

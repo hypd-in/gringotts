@@ -75,7 +75,7 @@ const applyCoupon = async () => {
         payload = await applyCartCoupon(props.couponInfo.code);
     }
 
-    console.log(store.cartDataToTrack , payload.coupon_value.value, "BRO check")
+    console.log(store.cartDataToTrack , payload, "BRO check")
 
     track('cart_coupon:coupon_apply_click', { ...store.cartDataToTrack, coupon: { ...store.cartDataToTrack.coupon, discount_added: payload.coupon_value.value, discount_removed: 0 } })
     
