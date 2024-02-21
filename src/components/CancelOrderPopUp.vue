@@ -215,6 +215,7 @@ async function getRefundDetails() {
       },
     })
 
+    console.log("Refund Details => ", response);
     if (response.payload) {
       refundableAmount.value = response.payload.amount;
       refundStatus.value = response.payload.status;

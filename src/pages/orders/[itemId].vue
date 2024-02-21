@@ -6,9 +6,9 @@
         <h2 class="heading">Order Details</h2>
         <NuxtLink :to="creatorProduct">
           <div class="item-details">
-            <NuxtImg v-if="orderDetails.item?.catalog_info?.featured_image" width="125" height="180"
-              style="border-radius: 12px;" :src="orderDetails.item?.catalog_info?.featured_image?.src"
-              :placeholder="[125, 180, 50, 20]" />
+            <ImageFrame v-if="orderDetails.item?.catalog_info?.featured_image"
+              style="border-radius: 12px;  width: 125px; height:180px"
+              :src="getReplacedSource(orderDetails.item?.catalog_info?.featured_image?.src, 300)" />
             <div class="item-info">
               <h4 class="brand-name">
                 {{ orderDetails?.brand_info?.name }}
@@ -167,8 +167,8 @@
 
         <div class="card brand-creator-card">
           <section class="brand-info" @click="navigateToBrandPage" v-if="orderDetails?.brand_info">
-            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
-              v-if="orderDetails?.brand_info?.logo?.src" :src="orderDetails?.brand_info?.logo?.src" />
+            <ImageFrame style="border-radius: 8px; object-fit: cover; width: 48px; height: 48px;"
+              v-if="orderDetails?.brand_info?.logo?.src" :src="getReplacedSource(orderDetails?.brand_info?.logo?.src, 96)" />
             <div class="brand-name">
               <label>Fullfilled By</label>
               <h5 style="font-family: Urbanist-Bold;">{{ orderDetails?.brand_info?.name }}</h5>
@@ -176,8 +176,8 @@
             <img class="go-to" src="~/assets/icons/misc/arrow-right.svg" alt="" srcset="">
           </section>
           <section v-if="creatorInfo?.id" class="creator-info" @click="navigateToCreatorStore">
-            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
-              v-if="creatorInfo?.profile_image?.src" :src="creatorInfo?.profile_image?.src" />
+            <ImageFrame style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;"
+              v-if="creatorInfo?.profile_image?.src" :src="getReplacedSource(creatorInfo?.profile_image?.src, 96)" />
             <div class="brand-name">
               <label>Curated for you by</label>
               <h5 style="font-family: Urbanist-Bold;">{{ creatorInfo?.name }}</h5>
@@ -206,6 +206,7 @@ import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 import track from "../../utils/tracking-posthog"
 import CancelOrderPopUp from '~/components/CancelOrderPopUp.vue';
 import SubmitButton from '~/components/SubmitButton.vue';
+import ImageFrame from '~/components/ImageFrame.vue';
 
 definePageMeta({
   name: "OrderDetails",

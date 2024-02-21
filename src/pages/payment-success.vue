@@ -1,6 +1,6 @@
 <template>
   <div class="payment-result">
-    <div class="payment-result wrapper pl-14 pr-14">
+    <div class="payment-result wrapper">
       <div class="middle-align">
         <img src="@/assets/illustrations/p-success.svg" alt="" />
         <div class="title mt-45">Payment Successful!</div>
@@ -11,10 +11,10 @@
           }}!
         </div>
         <div class="buttons">
-          <button v-if="creatorInfo && creatorInfo.creatorName" class="primary-button mt-60" @click="goToCreatorStore">
+          <button v-if="creatorInfo && creatorInfo.creatorName" class="primary-button" @click="goToCreatorStore">
             Continue Shopping
           </button>
-          <button class="secondary-button mt-20" @click="goToOrders">
+          <button class="secondary-button" @click="goToOrders">
             Track Your Order
           </button>
         </div>
@@ -92,6 +92,13 @@ onMounted(async () => {
       ...creatorStore.info,
       creatorName: creatorStore.info.username,
     };
+  } else if (route.query.influencer_id) {
+    let creator = await getInfluencerById(route.query.influencer_id);
+    if (creator) {
+      creatorInfo.value = {
+        creatorName: creator?.username
+      }
+    }
   } else if (!creatorStore.info.id && store.cartItemsFailSuccess.length > 0) {
     let name = await getInfluencerById(store.cartItemsFailSuccess[store.cartItemsFailSuccess.length - 1].source.id)
     creatorInfo.value = {
@@ -166,12 +173,16 @@ onUnmounted(() => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 16px;
+  padding: 16px 0;
 }
 
 .wrapper {
   position: relative;
-  height: calc(100vh - 73px);
-  overflow-y: scroll;
+  height: calc(100vh - 48px);
+  height: calc(100dvh - 48px);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .middle-align {
@@ -188,13 +199,13 @@ onUnmounted(() => {
 }
 
 .subtitle {
-  font-size: 18px;
+  font-size: 16px;
   color: #13141b;
 }
 
 .paragraph {
   color: #a9a9a9;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .primary-button {

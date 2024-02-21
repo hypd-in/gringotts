@@ -572,21 +572,23 @@ export function trackingAddPaymentInfo(payment_method, cart_details) {
 
 export function trackingPurchase(order_id, cartInfo, value) {
   let items = [];
-  cartInfo.items.forEach((item) => {
-    items.push({
-      item_id: item.id,
-      item_name: item.catalog_info.name,
-      brand: item?.brand_info?.name,
-      creator_username: getCreatorInfo(item.source?.id).username,
-      creator_name: getCreatorInfo(item.source?.id).name,
-      affiliation: getCreatorInfo(item.source?.id).username,
-      item_variant: item.variants[item.variant_id].attribute,
-      price: item?.retail_price.value,
-      tax: 0,
-      shipping: 0,
-      quantity: item.quantity,
+  if (cartInfo?.items) {
+    cartInfo.items.forEach((item) => {
+      items.push({
+        item_id: item.id,
+        item_name: item.catalog_info.name,
+        brand: item?.brand_info?.name,
+        creator_username: getCreatorInfo(item.source?.id).username,
+        creator_name: getCreatorInfo(item.source?.id).name,
+        affiliation: getCreatorInfo(item.source?.id).username,
+        item_variant: item.variants[item.variant_id].attribute,
+        price: item?.retail_price.value,
+        tax: 0,
+        shipping: 0,
+        quantity: item.quantity,
+      });
     });
-  });
+  }
   // dataLayer.push({
   //   event: "purchase",
   //   user_id: store.state.user?.id,
@@ -603,7 +605,7 @@ export function trackingPurchase(order_id, cartInfo, value) {
   formData["event"] = "purchase";
   formData["order_id"] = order_id;
   formData["order_value"] = value;
-  formData["coupon_applied"] = cartInfo.coupon?.code;
+  formData["coupon_applied"] = cartInfo?.coupon?.code;
   formData["items"] = items.map((item) => {
     return { "catalog_id": item.item_id, "quantity": item.quantity };
   });
