@@ -1,16 +1,40 @@
 <template>
   <section>
     <div class="brand-profile">
-      <div class="display-picture">
-        <img :src="getReplacedSource(brandStore.brandInfo?.cover_img?.src)" :alt="brandStore.brandInfo.name" />
+      <div class="display-picture" @click="trackClickBrandImg()">
+        <img
+          :src="getReplacedSource(brandStore?.brandInfo?.cover_img?.src)"
+          :alt="brandStore.brandInfo.name"
+        />
       </div>
       <div class="name">
         {{ brandStore.brandInfo.name }}
       </div>
+      <div class="follow-section">
+        <span @click="trackClickFollowers()">
+          <b style="font-family: Urbanist-Bold">{{
+            !is_following
+              ? brandStore.brandInfo.followers_count
+              : brandStore.brandInfo.followers_count + 1
+          }}</b>
+          Followers</span
+        >
+        <button
+          @click="follow()"
+          class="follow-btn"
+          :class="{ active: is_following }"
+        >
+          {{ is_following ? "Following" : "Follow" }}
+        </button>
+      </div>
+
       <p class="bio" v-if="brandStore.brandInfo?.bio">
         {{ brandBio }}
-        <span style="color: #fb6c23; cursor: pointer" @click="toggleBio"
-          v-show="bioLength == 120 && brandStore.brandInfo.bio.length > 120">
+        <span
+          style="color: #fb6c23; cursor: pointer"
+          @click="toggleBio"
+          v-show="bioLength == 120 && brandStore.brandInfo.bio.length > 120"
+        >
           View More
         </span>
       </p>
@@ -19,10 +43,21 @@
   <section style="margin-bottom: 40px">
     <div style="border-top: 2px solid #0000001a">
       <h3>All Products</h3>
-      <div class="product-listing-wrapper">
-        <Product v-for="product in brandStore.products" :key="product?.id" :itemInfo="product" />
+      <div
+        class="product-listing-wrapper"
+        v-if="brandStore?.products?.length > 0"
+      >
+        <Product
+          v-for="product in brandStore.products"
+          :key="product?.id"
+          :itemInfo="product"
+          :src="'brandPage'"
+        />
       </div>
-      <div v-if="fetchingProducts" style="display: flex; justify-content: center">
+      <div
+        v-if="fetchingProducts"
+        style="display: flex; justify-content: center"
+      >
         <div class="lds-ellipsis">
           <div></div>
           <div></div>
@@ -30,12 +65,31 @@
           <div></div>
         </div>
       </div>
-      <div id="pagiation-footer"></div>
+      <div id="pagination-footer"></div>
     </div>
   </section>
+  <FilterSortChip
+    v-if="brandStore?.brandInfo"
+    :source="true"
+    @openSorting="openSortFilter"
+    @openFilters="openSortFilter"
+  />
+
+  <FilterSort
+    v-if="showFilter"
+    :filter_type="filter_type"
+    :brand_id="brandStore.brandInfo.id"
+    @applyFilterAndFetch="applyFilterAndFetch"
+    @closeFilter="closeFilter"
+    :filter="filters"
+  />
 </template>
 
 <script setup>
+import FilterSortChip from "~/components/SortFilterChip.vue";
+import track from "~/utils/tracking-posthog";
+import FilterSort from "~/components/FilterSort.vue";
+
 definePageMeta({
   name: "BrandProfile",
   layout: "public",
@@ -46,12 +100,13 @@ import Product from "~/components/ProductComponents/ProductCard.vue";
 
 const runtimeConfig = useRuntimeConfig();
 const brandStore = useBrandProfileStore();
+const store = useStore();
 const creatorStore = useCreatorStore();
 const route = useRoute();
 const { data: brandInfo, pending: loadingBrandInfo } = await useFetch(
   runtimeConfig.public.entityURL +
-  "/api/app/brand/username/" +
-  route.params.brandUsername,
+    "/api/app/brand/username/" +
+    route.params.brandUsername,
   {
     key: "brand_profile_info",
     methods: "GET",
@@ -61,10 +116,12 @@ const { data: brandInfo, pending: loadingBrandInfo } = await useFetch(
   }
 );
 brandStore.saveBrand(brandInfo.value.payload);
-
+const filter_type = ref("Category");
+// const show_fliters = ref("");
+const is_following = ref(false);
 const bioLength = ref(120);
 const filters = ref({});
-const page = ref(0);
+const showFilter = ref(false);
 const receivedAllInfo = ref(false);
 const observer = ref(null);
 const fetchingProducts = ref(false);
@@ -76,12 +133,28 @@ const callback = (entries) => {
       !fetchingProducts.value &&
       !receivedAllInfo.value
     ) {
-      if (brandStore.products.length > 0) {
-        page.value += 1;
+      if (brandStore.products?.length > 0) {
+        brandStore.addPage();
         await fetchProducts();
       }
     }
   });
+};
+const follow = async () => {
+  is_following.value = !is_following.value;
+  track("brand:followers_click", {
+    brand_id: brandInfo.value.payload?.id,
+    creator_username: route.params?.creatorUsername,
+  });
+  let data = {
+    customer_id: store.user.id,
+    id: brandStore.brandInfo.id,
+  };
+  if (is_following.value) {
+    await followBrand(data, "unfollow");
+  } else {
+    await followBrand(data, "follow");
+  }
 };
 const brandBio = computed(() => {
   if (bioLength.value == 120) {
@@ -97,14 +170,13 @@ const toggleBio = () => {
 };
 const fetchProducts = async () => {
   fetchingProducts.value = true;
-
   let body = {
     brand_ids: [brandStore.brandInfo.id],
-    page: page.value,
+    page: brandStore.page,
     ...filters.value,
   };
   let response = await getBrandPageProducts(body);
-  if (response.data.length > 0) {
+  if (response?.data?.length > 0) {
     brandStore.addProducts(response.data);
   } else {
     receivedAllInfo.value = true;
@@ -121,20 +193,52 @@ const addingObserver = (target_ele, callbackFn) => {
   observer.value = new IntersectionObserver(callbackFn, options);
   return observer.value.observe(target_ele);
 };
+const trackClickBrandImg = () => {
+  track("brand:profile_image_click", {
+    brand_id: brandInfo.value.payload?.id,
+    creator_username: route.params?.creatorUsername,
+  });
+};
+const trackClickFollowers = () => {
+  track("brand:followers_click", {
+    brand_id: brandInfo.value.payload?.id,
+    creator_username: route.params?.creatorUsername,
+  });
+};
+const closeFilter = () => {
+  showFilter.value = false;
+};
+const openSortFilter = (type) => {
+  showFilter.value = true;
+  filter_type.value = type;
+};
+const applyFilterAndFetch = (filter) => {
+  brandStore.resetPage();
+  brandStore.clearProducts();
+  filters.value = filter;
+  receivedAllInfo.value = false;
+  fetchProducts();
+  showFilter.value = false;
+};
 onBeforeMount(() => {
   if (
     route.params.brandUsername == brandStore.brandInfo.username &&
     brandStore.products.length == 0
   ) {
     fetchProducts();
-  } else {
-    console.log("else");
   }
   nextTick(() => {
-    target.value = document.getElementById("pagiation-footer");
+    target.value = document.getElementById("pagination-footer");
     if (target.value) {
       observer.value = addingObserver(target.value, callback);
     }
+  });
+});
+
+onMounted(() => {
+  track("brand:visit", {
+    brand_id: brandInfo.value?.payload?.id || "",
+    creator_username: route?.params?.creatorUsername || "",
   });
 });
 
@@ -168,6 +272,7 @@ section {
   grid-template-columns: 150px 4fr;
   grid-template-rows: 29px calc(100% - 29px);
   column-gap: 30px;
+  row-gap: 12px;
   max-width: 630px;
   margin: 24px auto;
 }
@@ -177,10 +282,16 @@ section {
   width: 150px;
   border-radius: 50%;
   overflow: hidden;
-  grid-row: 1 / span 2;
+  grid-row: 1 / span 3;
   border: 1px solid #d8d8d8;
 }
-
+.follow-section {
+  display: flex;
+  font-size: 12px;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+}
 .display-picture img {
   height: 100%;
   width: 100%;
@@ -200,6 +311,7 @@ section {
   white-space: pre-line;
   max-width: 430px;
   grid-column: 2 / 2;
+  margin: 0;
 }
 
 h3 {
@@ -207,11 +319,24 @@ h3 {
   font-family: Urbanist-Bold;
   text-align: center;
 }
-
+.follow-btn {
+  outline: none;
+  border: 1px solid black;
+  background: #fff;
+  padding: 7px 12px;
+  font-size: 12px;
+  font-family: Urbanist-Bold;
+  border-radius: 8px;
+}
+.follow-btn.active {
+  background: var(--primary-orange);
+  border: 1px solid var(--primary-orange);
+  color: #fff;
+}
 @media screen and (min-width: 0) and (max-width: 480px) {
   .brand-profile {
     grid-template-columns: 104px 4fr;
-    grid-template-rows: 104px auto;
+    grid-template-rows: 1fr 1fr auto;
     /* grid-template-rows: 29px auto; */
 
     column-gap: 20px;
@@ -224,18 +349,21 @@ h3 {
   .display-picture {
     height: 104px;
     width: 104px;
-    grid-row: unset;
+    grid-row: 1 / span 2;
   }
 
   .display-picture img {
     height: 100%;
     width: 100%;
   }
-
   .name {
     color: #13141b;
     font-size: 18px;
     font-family: Urbanist-ExtraBold;
+    align-self: end;
+  }
+  .follow-section {
+    align-self: start;
   }
 
   .bio {

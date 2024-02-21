@@ -86,8 +86,6 @@
 
 <script setup>
 import SubmitButton from "@/components/SubmitButton.vue";
-// import { trackingAddShippingInfo } from "@/eventTracking";
-
 
 const emit = defineEmits(["close", "selectAddress"]);
 const props = defineProps({
@@ -410,6 +408,9 @@ async function submitAddress() {
       emit("close");
       await fetchUserAddresses();
       submittingAddress.value = false;
+      if (!data.id) {
+        trackingAddShippingInfo(store.cartInfo);
+      }
     }
   }).catch((error) => {
     emit("close");

@@ -14,7 +14,7 @@
           <div class="selector" :class="{ selected: selectedReason === reason }">
             <div class="selected-inside"></div>
           </div>
-          <div class="reason pointer medium f-16" :class="{
+          <div class="reason pointer medium" :class="{
             't-black': selectedReason === reason,
             't-grey': selectedReason !== reason,
           }">
@@ -41,9 +41,9 @@
           <div class="refundable-amount">
             {{ convertToINR(refundableAmount) }}
           </div>
-          <div @click="goToProduct()" class="view-policy-btn">View Policy</div>
+          <div @click="goToProduct" class="view-policy-btn">View Policy</div>
         </div>
-        <div class="cancel-btn" @click="cancelOrder()">
+        <div class="cancel-btn" @click="cancelOrder">
           <SubmitButton :loading="cancellingOrder" defaultText="Continue" :disabled="disabledState"
             :style="'width: 100%; color: rgb(255, 255, 255);'" />
         </div>
@@ -54,72 +54,6 @@
 
 <script setup>
 import SubmitButton from "@/components/SubmitButton.vue";
-// export default {
-//   methods: {
-//     cancelOrder() {
-//       this.loading = true;
-//       if (this.selectedReason) {
-//         var reason = this.selectedReason;
-//         if (this.selectedReason === "Others (Please Specify)") {
-//           reason = this.reasonForCancellation;
-//         }
-//         this.axios({
-//           data: {
-//             item_id: this.order.item_id,
-//             reason: reason,
-//           },
-//           headers: {
-//             "Content-Type": "application/json",
-//           },
-//         })
-//           .then((response) => {
-//             if (response.data.payload) {
-//               this.$emit("update", this.order.item_id, reason);
-//               this.$emit("close");
-//               this.$emit("createAlert", "Success", "Order Cancelled");
-//             }
-//           })
-//           .catch((error) => {
-//             alert(error.response.data.error[0].message);
-//           })
-//           .finally(() => {
-//             this.loading = false;
-//             this.$emit("close");
-//           });
-//       } else {
-//         this.loading = false;
-//         return;
-//       }
-//     },
-//     goToProduct() {
-//       let path;
-//       if (this.order?.source?.username) {
-//         path = {
-//           name: "creatorProduct",
-//           params: {
-//             creator_username: this.order.source.username,
-//             product_id: this.order?.catalog_id,
-//           },
-//           query: {
-//             title: this.order.item_name,
-//           },
-//         };
-//       } else {
-//         path = {
-//           name: "product",
-//           params: {
-//             product_id: this.order.product_id,
-//           },
-//           query: {
-//             title: this.order.item_name,
-//           },
-//         };
-//       }
-//       this.$router.push(path);
-//     },
-
-//   },
-// };
 
 const config = useRuntimeConfig();
 
@@ -161,6 +95,20 @@ function closePopup() {
   emit("close");
 }
 
+async function goToProduct() {
+  let path = {
+    name: "CreatorProduct",
+    params: {
+      creatorUsername: await getCreatorUserName(orderDetails.value.item?.source?.id),
+      id: orderDetails.value?.item?.catalog_info?.id,
+    },
+    query: {
+      title: orderDetails.value?.item?.catalog_info?.name,
+    },
+  };
+  navigateTo(path);
+}
+
 function selectReason(input) {
   selectedReason.value = input;
   if (selectedReason.value === "Others (Please Specify)") {
@@ -195,6 +143,7 @@ async function cancelOrder() {
       }
     })
     if (response.payload) {
+      trackingRefund(orderDetails.value);
       emit("close");
     }
     cancellingOrder.value = false;
@@ -207,15 +156,13 @@ async function cancelOrder() {
 
 async function getRefundDetails() {
   try {
-    var response = await $fetch(`${config.public.orderURL}/api/order/item/${orderDetails.value?.item_id}/refund`, {
+    var response = await $fetch(`${config.public.orderURL}/api/order/item/${orderDetails.value?.item?.id}/refund`, {
       method: "GET",
       credentials: "include",
       headers: {
         "Content-Type": "application/json",
       },
     })
-
-    console.log("Refund Details => ", response);
     if (response.payload) {
       refundableAmount.value = response.payload.amount;
       refundStatus.value = response.payload.status;
@@ -226,7 +173,7 @@ async function getRefundDetails() {
 }
 
 onMounted(async () => {
-  if (orderDetails.value.item_id) {
+  if (orderDetails.value.item?.id) {
     await getRefundDetails();
   }
   document.body.style.overflow = "hidden";
@@ -292,9 +239,9 @@ onBeforeUnmount(() => {
   background: #ffffff 0% 0% no-repeat padding-box;
   border: 1px solid #e0e0e0;
   border-radius: 20px;
-  width: 85%;
+  width: calc(100% - 32px - 12px);
   outline: none;
-  font: normal normal normal 16px/18px Urbanist-Medium;
+  font: normal normal normal 14px/16px Urbanist-Medium;
   letter-spacing: 0;
   resize: none;
 }
@@ -310,13 +257,14 @@ textarea::placeholder {
 }
 
 .reason-container {
-  display: flex;
+  display: grid;
+  grid-template-columns: 18px calc(100% - 18px - 10px);
   gap: 10px;
-  align-items: center;
+  align-items: flex-start;
   border-bottom: 0.5px solid #e0e0e0;
   padding: 16px 0;
 
-  font: normal normal normal 18px/17px Urbanist-Medium;
+  font: normal normal normal 16px/18px Urbanist-Medium;
   letter-spacing: 0;
   color: #585858;
 }
@@ -365,6 +313,7 @@ textarea::placeholder {
 .reason {
   text-align: left;
   transition-duration: 0.15s;
+  font-size: 14px;
 }
 
 .no-refund-banner {

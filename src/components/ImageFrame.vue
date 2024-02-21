@@ -51,10 +51,10 @@ onBeforeMount(() => {
       a = a.join(".");
       src_details.value = a;
     }
-  } else if (source.value.includes(config.public.cdn) && source.value.includes("?height")) {
+  } else if (source.value?.includes(config.public.cdn) && source.value?.includes("?height")) {
     src_details.value =
       source.value.split("?height")[0] + "?height=8";
-  } else if (source.value.includes(config.public.cdn)) {
+  } else if (source.value?.includes(config.public.cdn)) {
     src_details.value = source.value + "?height=8";
   } else {
     return source.value;
@@ -63,12 +63,16 @@ onBeforeMount(() => {
 function loadImage() {
   var newImg = new Image();
   newImg.onload = () => {
-    target.value.setAttribute("src", source.value);
+    if (target.value) {
+      target.value.setAttribute("src", source.value);
+    }
     loading.value = false;
   };
   newImg.src = source.value;
   if (newImg.complete) {
-    target.value.setAttribute("src", source.value);
+    if (target.value) {
+      target.value.setAttribute("src", source.value);
+    }
     loading.value = false;
   }
   newImg.src = source.value;

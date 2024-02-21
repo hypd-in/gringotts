@@ -103,9 +103,6 @@ import {
 } from "@/utils/globalAPIs";
 import track from "~/utils/tracking-posthog";
 
-// uncmnt later
-// import { trackingBeginCheckout } from "@/eventTracking";
-
 // Props, Emits, Store etc..
 const router = useRouter();
 const route = useRoute();
@@ -400,8 +397,7 @@ function completePayment() {
         );
 
 
-        // uncmnt later
-        // trackingBeginCheckout(store.cartInfo);
+        trackingBeginCheckout(store.cartInfo);
     } else if (
         !store.user?.id ||
         !store.user?.full_name ||

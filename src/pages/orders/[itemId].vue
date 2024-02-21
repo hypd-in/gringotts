@@ -136,7 +136,7 @@
                       v-if="(orderDetails?.item?.retail_price?.value - orderDetails.item?.offer_value?.value) < 0">1</span>
                     <span v-else style="font-family: Edmondsans-M">
                       {{
-                        convertToINR(orderDetails.item?.total_price.value)
+                        convertToINR(finalPrice)
                       }}
                     </span>
                   </div>
@@ -168,7 +168,8 @@
         <div class="card brand-creator-card">
           <section class="brand-info" @click="navigateToBrandPage" v-if="orderDetails?.brand_info">
             <ImageFrame style="border-radius: 8px; object-fit: cover; width: 48px; height: 48px;"
-              v-if="orderDetails?.brand_info?.logo?.src" :src="getReplacedSource(orderDetails?.brand_info?.logo?.src, 96)" />
+              v-if="orderDetails?.brand_info?.logo?.src"
+              :src="getReplacedSource(orderDetails?.brand_info?.logo?.src, 96)" />
             <div class="brand-name">
               <label>Fullfilled By</label>
               <h5 style="font-family: Urbanist-Bold;">{{ orderDetails?.brand_info?.name }}</h5>
@@ -385,7 +386,11 @@ async function reorder(item) {
     catalog_id: item?.catalog_info?.id,
     quantity: 1,
   };
-  if (creatorStore.info?.id) {
+  if (item?.source) {
+    itemInfo["source"] = {
+      ...item?.source
+    }
+  } else if (creatorStore.info?.id) {
     itemInfo["source"] = {
       id: creatorStore.info?.id,
       type: "creator_store",
@@ -395,6 +400,7 @@ async function reorder(item) {
     itemInfo["id"] = store.user.id;
     addingToCart.value = true;
     await addItemToCart(itemInfo);
+    trackingAddToCart(orderDetails.value, orderDetails.value?.source, orderDetails.value?.item?.variant_id);
     addingToCart.value = false;
     navigateTo({
       name: "CartItems",
