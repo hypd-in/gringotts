@@ -67,7 +67,7 @@ const props = defineProps({
   creator: Object,
   src: String
 });
-const emit = defineEmits(["buttonAction"]);
+const emit = defineEmits(["buttonAction", "closeWishlist"]);
 const route = useRoute();
 const store = useStore();
 const creatorStore = useCreatorStore();
@@ -259,6 +259,9 @@ const goToProduct = computed(() => {
 })
 
 function trackProductNavigation() {
+  if(props.src == 'wishlist'){
+    emit("closeWishlist")
+  }
   if (props.src == 'order-detail-page') {
     track('order_item:similar_product_click', {
       order_no: store.orderDetails?.order_id,

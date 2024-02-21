@@ -14,7 +14,7 @@
 
       <div class="wishlisted-products" v-if="noOfWishlistedProducts > 0">
         <div class="product-listing-wrapper">
-          <ProductCard v-for="product in wishlistedProducts" :itemInfo="product" :key="product?.id" origin="wishlist" />
+          <ProductCard v-for="product in wishlistedProducts" :itemInfo="product" :key="product?.id" src="wishlist" @closeWishlist="close"/>
         </div>
       </div>
       <div v-else class="empty-cart">
