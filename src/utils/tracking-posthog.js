@@ -5,6 +5,7 @@ export default function track(event, params) {
     posthog = $posthog();
   }
 
+  // console.log(event, params);
   if (params) {
     posthog.capture(event, params);
   } else {
