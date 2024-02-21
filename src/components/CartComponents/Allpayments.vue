@@ -274,7 +274,7 @@ const creatorStore = useCreatorStore()
 
 // props and emits
 const props = defineProps(["user"]);
-const emits = defineEmits(["transactionLoader", "getCartInfo", "triggerLogin"]);
+const emits = defineEmits(["transactionLoader", "triggerLogin"]);
 
 // Juspay details
 const juspayMerchantId = ref("hypd");
@@ -704,7 +704,9 @@ async function checkout() {
 
   if (activePaymentMethod.value == "Cash on Delivery") {
     sendDetailsToGoKwik(response.payload.go_kwik, "cod");
-    store.saveCartItemsFailSuccess([...store.cartInfo.items])
+    if(store.cartInfo.items.length>0){
+      store.saveCartItemsFailSuccess([...store.cartInfo.items])
+    }
 
     await fetchCartInfo();
 
@@ -786,7 +788,9 @@ async function checkoutWithJuspay() {
           error: error_message
         })
 
-        store.saveCartItemsFailSuccess([...store.cartInfo.items])
+        if(store.cartInfo.items.length>0){
+          store.saveCartItemsFailSuccess([...store.cartInfo.items])
+        }
         router.push("/payment-failed?orderID=" + orderId.value);
       },
     });
@@ -916,7 +920,9 @@ async function orderConfirmation() {
         error: 'status : failed in /status'
       })
 
-      store.saveCartItemsFailSuccess([...store.cartInfo.items])
+      if (store.cartInfo.items.length > 0) {
+        store.saveCartItemsFailSuccess([...store.cartInfo.items])
+      }
       router.push("/payment-failed?orderID=" + orderId.value + '');
       window.removeEventListener("focus", orderConfirmation, true);
     } else if (response.payload == "confirmed") {
@@ -932,7 +938,9 @@ async function orderConfirmation() {
         "&order_amount=" +
         `${store.cartInfo.grand_total.value}` + "&influencer_id=" + influencerId.value
       );
-      store.saveCartItemsFailSuccess([...store.cartItems])
+      if (store.cartInfo.items.length > 0) {
+        store.saveCartItemsFailSuccess([...store.cartInfo.items])
+      }
       await fetchCartInfo();
 
 
@@ -1553,7 +1561,7 @@ onUpdated(() => {
   checkCartCODRange();
 });
 onMounted(async () => {
-  
+
   clearInterval(paymentStatusInterval.value);
   if (activePaymentMethod.value) {
     store.updateCartInfo({
