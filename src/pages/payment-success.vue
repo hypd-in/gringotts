@@ -86,7 +86,7 @@ function fbqPurchaseTracking() {
 //Tracking End
 
 onMounted(async () => {
-  await fetchCartInfo();
+  // await fetchCartInfo();
   if (creatorStore.info.id) {
     creatorInfo.value = {
       ...creatorStore.info,
@@ -152,7 +152,7 @@ onMounted(async () => {
   }
 
   localStorage.removeItem("cartItemsForGA");
-  fetchCartInfo();
+  await fetchCartInfo();
 });
 
 onBeforeMount(() => {
