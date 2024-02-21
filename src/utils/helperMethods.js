@@ -25,7 +25,7 @@ export function getReplacedSource(source, height) {
   var newHostName = useRuntimeConfig().public.cdn;
   let hostName = "d3d92s7oewgbjx.cloudfront.net";
   let hostName2 = "dmk9je7eclmvw.cloudfront.net";
-  if (source?.includes(hostName)) {
+  if (source && source?.includes(hostName)) {
     let newURL = source.replace(hostName, newHostName);
 
     if (newURL.includes(filter)) {
@@ -35,7 +35,7 @@ export function getReplacedSource(source, height) {
       }
     }
     return newURL;
-  } else if (source?.includes(hostName2)) {
+  } else if (source && source?.includes(hostName2)) {
     let newURL = source.replace(hostName2, newHostName);
 
     if (newURL.includes(filter)) {
@@ -45,7 +45,7 @@ export function getReplacedSource(source, height) {
       }
     }
     return newURL;
-  } else if (source.includes(newHostName)) {
+  } else if (source && source.includes(newHostName)) {
     return `${source}?height=${height ?? 550}`;
   } else {
     return source;

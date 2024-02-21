@@ -36,6 +36,11 @@ export default defineNuxtConfig({
             checkoutURL: "https://checkout.getshitdone.in",
             gokwik_env: "sandbox",
             gokwick_mid: "3mt5u7iijbky068wbs",
+
+            sentry: {
+              dsn: "https://6b14ff42cfead1578923e8ce23ab7936@sentry.hypd.store/11",
+              environment: "development",
+            },
           }
         : {
             env: process.env.ENVIRONMENT,
@@ -54,6 +59,11 @@ export default defineNuxtConfig({
             checkoutURL: "https://checkout.hypd.store",
             gokwik_env: "production",
             gokwick_mid: "3mt5u7iijbky068wba",
+
+            sentry: {
+              dsn: "https://6b14ff42cfead1578923e8ce23ab7936@sentry.hypd.store/11",
+              environment: "production",
+            },
           },
   },
   nitro: {

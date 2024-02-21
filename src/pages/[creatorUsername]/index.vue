@@ -158,22 +158,25 @@ const creator = ref({});
 const store = useStore()
 
 
-
-
 if (route.params.creatorUsername) {
-    const { data, pending: loadingCreatorInfo } = await useFetch(
-        runtimeConfig.public.entityURL +
-        "/api/app/influencer/username/" +
-        route.params.creatorUsername,
-        {
-            key: "influencer_info_store",
-            methods: "GET",
-            headers: {
-                "Content-Type": "application/json",
-            },
-        }
-    );
-    creatorStore.saveCreatorInfo(data?.value?.payload);
+    try {
+        const { data, pending: loadingCreatorInfo, error } = await useFetch(
+            runtimeConfig.public.entityURL +
+            "/api/app/influencer/username/" +
+            route.params.creatorUsername,
+            {
+                key: "influencer_info_store",
+                methods: "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            }
+        );
+        creatorStore.saveCreatorInfo(data?.value?.payload);
+    }
+    catch (err) {
+        console.log(err)
+    }
 }
 
 const props = defineProps([
@@ -416,7 +419,6 @@ async function getBOTD() {
 }
 
 onMounted(() => {
-    console.log("Sushant",runtimeConfig.public.env);
     trackingDetails = {
         creator_name: creatorStore.info?.name,
         creator_username: route.params.creatorUsername,

@@ -10,7 +10,7 @@ export const useCreatorStore = defineStore("creator", () => {
   const spotlight = ref([]);
 
   function saveCreatorInfo(creatorInfo) {
-    if (!creatorInfo.profile_image) {
+    if (creatorInfo && !creatorInfo?.profile_image ) {
       creatorInfo["profile_image"] = { src: defaultProfileImage() };
     }
 
@@ -34,6 +34,7 @@ export const useCreatorStore = defineStore("creator", () => {
 
     // check if creator exists in that cookie
     if (
+      creatorInfo &&
       !creators[creatorInfo.id] &&
       creatorInfo?.id &&
       creatorInfo?.name &&
