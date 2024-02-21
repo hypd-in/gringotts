@@ -32,7 +32,6 @@ const creatorStore = useCreatorStore();
 const route = useRoute();
 const router = useRouter();
 
-const emit = defineEmits(["getCartInfo"]);
 const props = defineProps([
   "isDesktop",
   "wishlisted_items",
@@ -87,6 +86,7 @@ function fbqPurchaseTracking() {
 //Tracking End
 
 onMounted(async () => {
+  await fetchCartInfo();
   if (creatorStore.info.id) {
     creatorInfo.value = {
       ...creatorStore.info,
@@ -156,7 +156,6 @@ onMounted(async () => {
 });
 
 onBeforeMount(() => {
-  emit("getCartInfo");
   if (!route.query.orderID) {
     router.push("/");
   }

@@ -213,6 +213,7 @@ const openSortFilter = (type) => {
   filter_type.value = type;
 };
 const applyFilterAndFetch = (filter) => {
+  scrollTo(0, 0);
   brandStore.resetPage();
   brandStore.clearProducts();
   filters.value = filter;
@@ -270,7 +271,7 @@ section {
 .brand-profile {
   display: grid;
   grid-template-columns: 150px 4fr;
-  grid-template-rows: 29px calc(100% - 29px);
+  grid-template-rows: 29px 32px calc(100% - 29px);
   column-gap: 30px;
   row-gap: 12px;
   max-width: 630px;
