@@ -381,6 +381,9 @@ h3.brand-name {
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 p.item-name {
