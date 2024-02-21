@@ -63,12 +63,16 @@ onBeforeMount(() => {
 function loadImage() {
   var newImg = new Image();
   newImg.onload = () => {
-    target.value.setAttribute("src", source.value);
+    if (target.value) {
+      target.value.setAttribute("src", source.value);
+    }
     loading.value = false;
   };
   newImg.src = source.value;
   if (newImg.complete) {
-    target.value.setAttribute("src", source.value);
+    if (target.value) {
+      target.value.setAttribute("src", source.value);
+    }
     loading.value = false;
   }
   newImg.src = source.value;
