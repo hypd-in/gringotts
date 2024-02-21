@@ -34,6 +34,7 @@ export default defineNuxtConfig({
             cdn: "cdn.getshitdone.in",
             base: "https://hypdstore.getshitdone.in",
             checkoutURL: "https://checkout.getshitdone.in",
+            trackingURL: "https://tracking.getshitdone.in",
             gokwik_env: "sandbox",
             gokwick_mid: "3mt5u7iijbky068wbs",
 
@@ -57,6 +58,8 @@ export default defineNuxtConfig({
             cdn: "cdn.hypd.store",
             base: "https://www.hypd.store",
             checkoutURL: "https://checkout.hypd.store",
+            trackingURL: "https://tracking.hypd.store",
+
             gokwik_env: "production",
             gokwick_mid: "3mt5u7iijbky068wba",
 

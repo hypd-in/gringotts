@@ -178,13 +178,7 @@ export function trackingBrandPageLanding(brandInfo) {
   sendTrackingData(formData);
 }
 
-var trackingURL = "";
 
-if (process.env.ENVIRONMENT != "production") {
-  trackingURL = "https://tracking.getshitdone.in";
-} else {
-  trackingURL = "https://tracking.hypd.store";
-}
 // Tracking Starts
 // Create session_id
 var session_id =
@@ -252,7 +246,7 @@ async function sendingAnalytics() {
   trackingTimer = 0;
   if (useCookie("clientRequestId").value) {
     // Saving Tracking URL
-    let url = trackingURL + "/api/track";
+    let url = useRuntimeConfig().public.trackingURL + "/api/track";
 
     // Tracking Data Object
 
