@@ -1,7 +1,6 @@
 // import { getData, setData } from "nuxt-storage/local-storage";
 
 export function optimizeImage(imageURL, resolution) {
-
   if (imageURL) {
     const hostName = new URL(imageURL).hostname;
     if (hostName == "d3d92s7oewgbjx.cloudfront.net") {
@@ -22,17 +21,12 @@ export function optimizeImage(imageURL, resolution) {
 }
 
 export function getReplacedSource(source, height) {
-  let newhostName;
   const filter = "/filters:strip_exif";
-  if (process.env.ENVIRONMENT != "production") {
-    newhostName = "cdn.getshitdone.in";
-  } else {
-    newhostName = "cdn.hypd.store";
-  }
+  var newHostName = useRuntimeConfig().public.cdn;
   let hostName = "d3d92s7oewgbjx.cloudfront.net";
   let hostName2 = "dmk9je7eclmvw.cloudfront.net";
   if (source?.includes(hostName)) {
-    let newURL = source.replace(hostName, newhostName);
+    let newURL = source.replace(hostName, newHostName);
 
     if (newURL.includes(filter)) {
       newURL = newURL + "?height=" + "550";
@@ -42,7 +36,7 @@ export function getReplacedSource(source, height) {
     }
     return newURL;
   } else if (source?.includes(hostName2)) {
-    let newURL = source.replace(hostName2, newhostName);
+    let newURL = source.replace(hostName2, newHostName);
 
     if (newURL.includes(filter)) {
       newURL = newURL + "?height=" + "550";
@@ -51,6 +45,9 @@ export function getReplacedSource(source, height) {
       }
     }
     return newURL;
+  } else if (source.includes(newHostName)) {
+    console.log(source, height, `${source}?height=${height ?? 550}`);
+    return `${source}?height=${height ?? 550}`;
   } else {
     return source;
   }

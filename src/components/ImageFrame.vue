@@ -8,98 +8,90 @@
   'padding-left': firstChild,
   'padding-right': lastChild,
   'blur-img-effect': loading,
-}" ref="dp" style="height: 100%; width: 100%;" :alt="alt" />
+}" ref="target" style="height: 100%; width: 100%;" :alt="alt" />
   </figure>
 </template>
 
-<script>
-export default {
-  props: [
-    "src",
-    "border_radius",
-    "objectFit",
-    "firstChild",
-    "lastChild",
-    "alt",
-  ],
-  data() {
-    return {
-      observer: null,
-      target: null,
-      loading: true,
-      src_details: "",
-    };
-  },
+<script setup>
+const props = defineProps({
+  src: String,
+  border_radius: String,
+  objectFit: String,
+  firstChild: String,
+  lastChild: String,
+  alt: String,
+});
 
+const observer = ref(null);
+const target = ref(null);
+const loading = ref(true);
+const src = ref("");
+const src_details = ref(null);
+const config = useRuntimeConfig();
 
-  created() {
-    if (this.src.includes("shopify")) {
-      let a;
-      if (
-        this.src.split(".")[this.src.split(".").length - 2].slice(-1) == "x"
-      ) {
-        let link_breakdown = this.src.split(".");
-        let sub_link = link_breakdown[link_breakdown.length - 2].split("_");
-        sub_link.pop();
-        sub_link = [...sub_link, "8x"];
-        link_breakdown[link_breakdown.length - 2] = sub_link.join("_");
-        this.src_details = link_breakdown.join(".");
-      } else {
-        a = this.src.split(".");
-        a[a.length - 2] = a[a.length - 2] + "_8x";
-        a = a.join(".");
-        this.src_details = a;
-      }
-    } else if (this.src.includes(this.$cdn) && this.src.includes("?height")) {
-      this.src_details =
-        this.src.split("?height")[0] + "?height=8";
-    } else if (this.src.includes(this.$cdn)) {
-      this.src_details = this.src + "?height=8";
+const source = computed(() => {
+  return props.src || "";
+})
+
+onBeforeMount(() => {
+  console.log("AITHE", props.src);
+  if (source.value.includes("shopify")) {
+    let a;
+    if (
+      source.value.split(".")[source.value.split(".").length - 2].slice(-1) == "x"
+    ) {
+      let link_breakdown = source.value.split(".");
+      let sub_link = link_breakdown[link_breakdown.length - 2].split("_");
+      sub_link.pop();
+      sub_link = [...sub_link, "8x"];
+      link_breakdown[link_breakdown.length - 2] = sub_link.join("_");
+      src_details.value = link_breakdown.join(".");
     } else {
-      return this.src;
+      a = source.value.split(".");
+      a[a.length - 2] = a[a.length - 2] + "_8x";
+      a = a.join(".");
+      src_details.value = a;
     }
-  },
-  methods: {
-    addingObserver() {
-      let options = {
-        rootMargin: "0px",
-        root: null,
-        threshold: 0.1,
-      };
-      this.observer = new IntersectionObserver(this.callback, options);
-      this.target = this.$refs.dp;
-      this.observer.observe(this.target);
-    },
-    callback(entries) {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          this.loadImage();
-          this.observer.unobserve(this.target);
-        }
-      });
-    },
-    loadImage() {
-      var newImg = new Image();
-      let vm = this;
-      newImg.onload = () => {
-        vm.$refs.dp?.setAttribute("src", vm.src);
-        vm.loading = false;
-      };
-      newImg.src = this.src;
-      if (newImg.complete) {
-        vm.$refs.dp?.setAttribute("src", vm.src);
-        vm.loading = false;
-      }
-      newImg.src = this.src;
-    },
-  },
-  mounted() {
-    if (this.$refs.dp) {
-      this.$refs.dp.setAttribute("src", this.src_details);
+  } else if (source.value.includes(config.public.cdn) && source.value.includes("?height")) {
+    src_details.value =
+      source.value.split("?height")[0] + "?height=8";
+  } else if (source.value.includes(config.public.cdn)) {
+    src_details.value = source.value + "?height=8";
+  } else {
+    return source.value;
+  }
+})
+function loadImage() {
+  console.log("HERE", source.value, src_details.value);
+  var newImg = new Image();
+  newImg.onload = () => {
+    target.value.setAttribute("src", source.value);
+    loading.value = false;
+  };
+  newImg.src = source.value;
+  if (newImg.complete) {
+    target.value.setAttribute("src", source.value);
+    loading.value = false;
+  }
+  newImg.src = source.value;
+}
+
+function callback(entries) {
+  entries.forEach((entry) => {
+    if (entry.isIntersecting) {
+      loadImage();
+      observer.value.unobserve(target.value);
     }
-    this.addingObserver();
-  },
-};
+  })
+}
+
+onMounted(() => {
+  if (target.value) {
+    target.value.setAttribute("src", src_details.value);
+  }
+
+  observer.value = addingObserver(target.value, callback);
+});
 </script>
 
 <style scoped>
