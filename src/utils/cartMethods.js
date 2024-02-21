@@ -374,7 +374,7 @@ export async function getExpressCheckoutProductInfo(
   if (productId && variantId) {
     try {
       var response = await $fetch(
-        catalogURL + "/api/app/catalog/" + productId,
+        useRuntimeConfig().public.catalogURL + "/api/app/catalog/" + productId,
         {
           method: "GET",
           credentials: "include",

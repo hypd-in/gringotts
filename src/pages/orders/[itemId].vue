@@ -6,9 +6,9 @@
         <h2 class="heading">Order Details</h2>
         <NuxtLink :to="creatorProduct">
           <div class="item-details">
-            <NuxtImg v-if="orderDetails.item?.catalog_info?.featured_image" width="125" height="180"
-              style="border-radius: 12px;" :src="orderDetails.item?.catalog_info?.featured_image?.src"
-              :placeholder="[125, 180, 50, 20]" />
+            <ImageFrame v-if="orderDetails.item?.catalog_info?.featured_image"
+              style="border-radius: 12px;  width: 125px; height:180px"
+              :src="getReplacedSource(orderDetails.item?.catalog_info?.featured_image?.src, 300)" />
             <div class="item-info">
               <h4 class="brand-name">
                 {{ orderDetails?.brand_info?.name }}
@@ -136,7 +136,7 @@
                       v-if="(orderDetails?.item?.retail_price?.value - orderDetails.item?.offer_value?.value) < 0">1</span>
                     <span v-else style="font-family: Edmondsans-M">
                       {{
-                        convertToINR(orderDetails.item?.total_price.value)
+                        convertToINR(finalPrice)
                       }}
                     </span>
                   </div>
@@ -167,8 +167,9 @@
 
         <div class="card brand-creator-card">
           <section class="brand-info" @click="navigateToBrandPage" v-if="orderDetails?.brand_info">
-            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
-              v-if="orderDetails?.brand_info?.logo?.src" :src="orderDetails?.brand_info?.logo?.src" />
+            <ImageFrame style="border-radius: 8px; object-fit: cover; width: 48px; height: 48px;"
+              v-if="orderDetails?.brand_info?.logo?.src"
+              :src="getReplacedSource(orderDetails?.brand_info?.logo?.src, 96)" />
             <div class="brand-name">
               <label>Fullfilled By</label>
               <h5 style="font-family: Urbanist-Bold;">{{ orderDetails?.brand_info?.name }}</h5>
@@ -176,8 +177,8 @@
             <img class="go-to" src="~/assets/icons/misc/arrow-right.svg" alt="" srcset="">
           </section>
           <section v-if="creatorInfo?.id" class="creator-info" @click="navigateToCreatorStore">
-            <NuxtImg width="48" height="48" style="border-radius: 8px; object-fit: cover;"
-              v-if="creatorInfo?.profile_image?.src" :src="creatorInfo?.profile_image?.src" />
+            <ImageFrame style="width: 48px; height: 48px; border-radius: 8px; object-fit: cover;"
+              v-if="creatorInfo?.profile_image?.src" :src="getReplacedSource(creatorInfo?.profile_image?.src, 96)" />
             <div class="brand-name">
               <label>Curated for you by</label>
               <h5 style="font-family: Urbanist-Bold;">{{ creatorInfo?.name }}</h5>
@@ -206,6 +207,7 @@ import ProductCard from '~/components/ProductComponents/ProductCard.vue';
 import track from "../../utils/tracking-posthog"
 import CancelOrderPopUp from '~/components/CancelOrderPopUp.vue';
 import SubmitButton from '~/components/SubmitButton.vue';
+import ImageFrame from '~/components/ImageFrame.vue';
 
 definePageMeta({
   name: "OrderDetails",
@@ -384,7 +386,11 @@ async function reorder(item) {
     catalog_id: item?.catalog_info?.id,
     quantity: 1,
   };
-  if (creatorStore.info?.id) {
+  if (item?.source) {
+    itemInfo["source"] = {
+      ...item?.source
+    }
+  } else if (creatorStore.info?.id) {
     itemInfo["source"] = {
       id: creatorStore.info?.id,
       type: "creator_store",
@@ -394,6 +400,7 @@ async function reorder(item) {
     itemInfo["id"] = store.user.id;
     addingToCart.value = true;
     await addItemToCart(itemInfo);
+    trackingAddToCart(orderDetails.value, orderDetails.value?.source, orderDetails.value?.item?.variant_id);
     addingToCart.value = false;
     navigateTo({
       name: "CartItems",
@@ -428,15 +435,15 @@ function openTracking() {
 }
 
 function navigateToContactUs() {
+
   track('order_item:item_need_help', {
-    order_no: store.orderDetails.order_id,
-    item_id: store.orderDetails.item.id,
-    brand_id: store.orderDetails.brand_id,
-    current_status: store.orderDetails.order_status.code
+    order_no: store.orderDetails?.order_id,
+    item_id: store.orderDetails?.item.id,
+    brand_id: store.orderDetails?.brand_id,
+    current_status: store.orderDetails?.order_status?.code
   })
-  navigateTo({
-    name: "ContactUs",
-  })
+
+  window.FreshworksWidget("open");
 }
 
 function formatDate(orderDate) {
@@ -584,6 +591,34 @@ async function fetchSimilarProducts(id) {
     console.log("Error fetching errors", error);
   }
 }
+
+onBeforeUnmount(() => {
+  window.FreshworksWidget("destroy");
+})
+
+onMounted(() => {
+  window.FreshworksWidget("boot");
+
+  setTimeout(() => {
+    window.FreshworksWidget("identify", "ticketForm", {
+      name: store.user?.full_name,
+      email: store.user?.email,
+      custom_fields: {
+        cf_order_id: parseInt(store.orderDetails?.order_id),
+        cf_brand_name: store.orderDetails?.brand_info.name,
+        cf_item_id: store.orderDetails?.item_id,
+      },
+    });
+    window.FreshworksWidget("disable", "ticketForm", [
+      "custom_fields.cf_brand_name",
+    ]);
+    window.FreshworksWidget("hide", "ticketForm", [
+      "custom_fields.cf_item_id",
+    ]);
+  }, 1000);
+
+
+})
 
 onBeforeMount(async () => {
   await fetchOrderDetails();

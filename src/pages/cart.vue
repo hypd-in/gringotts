@@ -103,9 +103,6 @@ import {
 } from "@/utils/globalAPIs";
 import track from "~/utils/tracking-posthog";
 
-// uncmnt later
-// import { trackingBeginCheckout } from "@/eventTracking";
-
 // Props, Emits, Store etc..
 const router = useRouter();
 const route = useRoute();
@@ -400,8 +397,7 @@ function completePayment() {
         );
 
 
-        // uncmnt later
-        // trackingBeginCheckout(store.cartInfo);
+        trackingBeginCheckout(store.cartInfo);
     } else if (
         !store.user?.id ||
         !store.user?.full_name ||
@@ -544,7 +540,7 @@ p {
 
 .cart-container {
     display: grid;
-    grid-template-columns: calc(50% - 16px - 1px) calc(14px) calc(50% - 16px - 8px);
+    grid-template-columns: calc(50% - 16px - 8px) calc(14px) calc(50% - 16px - 8px);
 
     max-width: 1029px;
     align-items: flex-start;
@@ -643,14 +639,14 @@ section,
 
     .cart-wrapper {
         padding: 0;
-        height: calc(100vh - 49px - 69px);
-        height: calc(100dvh - 49px - 69px);
+        min-height: calc(100vh - 49px - 69px);
+        min-height: calc(100dvh - 49px - 69px);
         margin: 0 auto 69px;
         background: var(--background-grey, #f9f9f9);
     }
 
     .cart-wrapper.cart-wrapper-error {
-        height: calc(100dvh - 49px - 80px);
+        min-height: calc(100dvh - 49px - 80px);
         margin: 0 auto 80px;
     }
 

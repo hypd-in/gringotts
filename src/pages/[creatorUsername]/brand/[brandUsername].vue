@@ -43,7 +43,10 @@
   <section style="margin-bottom: 40px">
     <div style="border-top: 2px solid #0000001a">
       <h3>All Products</h3>
-      <div class="product-listing-wrapper" v-if="brandStore?.products?.length > 0">
+      <div
+        class="product-listing-wrapper"
+        v-if="brandStore?.products?.length > 0"
+      >
         <Product
           v-for="product in brandStore.products"
           :key="product?.id"
@@ -54,8 +57,8 @@
       <div
         v-if="fetchingProducts"
         style="display: flex; justify-content: center"
-      > 
-        <div class="lds-ellipsis" >
+      >
+        <div class="lds-ellipsis">
           <div></div>
           <div></div>
           <div></div>
@@ -71,7 +74,7 @@
     @openSorting="openSortFilter"
     @openFilters="openSortFilter"
   />
-  
+
   <FilterSort
     v-if="showFilter"
     :filter_type="filter_type"
@@ -79,7 +82,7 @@
     @applyFilterAndFetch="applyFilterAndFetch"
     @closeFilter="closeFilter"
     :filter="filters"
-  /> 
+  />
 </template>
 
 <script setup>
@@ -98,6 +101,7 @@ import Product from "~/components/ProductComponents/ProductCard.vue";
 const runtimeConfig = useRuntimeConfig();
 const brandStore = useBrandProfileStore();
 const store = useStore();
+const creatorStore = useCreatorStore();
 const route = useRoute();
 const { data: brandInfo, pending: loadingBrandInfo } = await useFetch(
   runtimeConfig.public.entityURL +
@@ -117,7 +121,7 @@ const filter_type = ref("Category");
 const is_following = ref(false);
 const bioLength = ref(120);
 const filters = ref({});
-const showFilter = ref(false)
+const showFilter = ref(false);
 const receivedAllInfo = ref(false);
 const observer = ref(null);
 const fetchingProducts = ref(false);
@@ -202,11 +206,11 @@ const trackClickFollowers = () => {
   });
 };
 const closeFilter = () => {
-  showFilter.value = false
-}
+  showFilter.value = false;
+};
 const openSortFilter = (type) => {
-  showFilter.value = true
-  filter_type.value = type
+  showFilter.value = true;
+  filter_type.value = type;
 };
 const applyFilterAndFetch = (filter) => {
   brandStore.resetPage();
@@ -214,7 +218,7 @@ const applyFilterAndFetch = (filter) => {
   filters.value = filter;
   receivedAllInfo.value = false;
   fetchProducts();
-  showFilter.value = false
+  showFilter.value = false;
 };
 onBeforeMount(() => {
   if (
@@ -239,15 +243,15 @@ onMounted(() => {
 });
 
 useSeoMeta({
-  ogtitle: () => brandInfo.value?.payload?.name,
-  description: () => brandInfo.value?.payload?.bio,
-  ogImage: () => brandInfo.value?.payload?.cover_img?.src,
-  ogDescription: () => brandInfo.value?.payload?.bio,
-  ogImage: () => brandInfo.value?.payload?.cover_img?.src,
-  ogUrl: () => brandInfo.value?.payload?.website,
-  twitterTitle: () => brandInfo.value?.payload?.name,
-  twitterDescription: () => brandInfo.value?.payload?.bio,
-  twitterImage: () => brandInfo.value?.payload?.cover_img?.src,
+  title: `${brandInfo.value?.payload?.name} | ${creatorStore.info?.name} | HYPD | #getHYPD`,
+  ogtitle: `${brandInfo.value?.payload?.name} | ${creatorStore.info?.name} | HYPD | #getHYPD`,
+  description: brandInfo.value?.payload?.bio,
+  ogDescription: brandInfo.value?.payload?.bio,
+  ogImage: brandInfo.value?.payload?.cover_img?.src,
+  ogUrl: brandInfo.value?.payload?.website,
+  twitterTitle: brandInfo.value?.payload?.name,
+  twitterDescription: brandInfo.value?.payload?.bio,
+  twitterImage: brandInfo.value?.payload?.cover_img?.src,
   twitterCard: "summary",
 });
 </script>
@@ -266,7 +270,7 @@ section {
 .brand-profile {
   display: grid;
   grid-template-columns: 150px 4fr;
-  grid-template-rows: 29px 32px 100%;
+  grid-template-rows: 29px calc(100% - 29px);
   column-gap: 30px;
   row-gap: 12px;
   max-width: 630px;

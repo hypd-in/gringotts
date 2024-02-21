@@ -80,7 +80,7 @@ const props = defineProps({
   creator: Object,
   src: String,
 });
-const emit = defineEmits(["buttonAction"]);
+const emit = defineEmits(["buttonAction", "closeWishlist"]);
 const route = useRoute();
 const store = useStore();
 const creatorStore = useCreatorStore();
@@ -277,6 +277,9 @@ const goToProduct = computed(() => {
 });
 
 function trackProductNavigation() {
+  if (props.src == "wishlist") {
+    emit("closeWishlist");
+  }
   if (props.src == "order-detail-page") {
     track("order_item:similar_product_click", {
       order_no: store.orderDetails?.order_id,
@@ -385,6 +388,7 @@ onMounted(() => {
   width: 100%;
   min-width: 160px;
   height: 240px !important;
+  min-height: 240px;
   border-radius: 12px;
   overflow: hidden;
   object-fit: cover;
@@ -417,6 +421,9 @@ h3.brand-name {
   font-size: 12px;
   line-height: 16px;
   letter-spacing: 0.4px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 p.item-name {

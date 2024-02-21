@@ -126,6 +126,11 @@ export const useStore = defineStore("store", () => {
     orders.value.userOrders = [...orders.value.userOrders, ...data];
   }
 
+  function resetUserOrders() {
+    orders.value.userOrders = [];
+    orders.value.page = 0;
+  }
+
   function updateOrdersPageCount(newPage) {
     orders.value.page = newPage;
   }
@@ -234,6 +239,7 @@ export const useStore = defineStore("store", () => {
     saveUserOrders,
     saveOrderDetails,
     updateOrdersPageCount,
+    resetUserOrders,
     saveExploreCurations,
     saveExploreCategoryCurations,
     updateExplorePageCount,

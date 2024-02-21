@@ -4,7 +4,7 @@
     <ClientOnly>
       <SideDrawer :class="{ 'slide-in-menu': openSideDrawer }" @closeDrawer="toggleSideDrawer" />
     </ClientOnly>
-    <div class="header" :class="{'cart-header': hideHeaderContent}">
+    <div class="header" :class="{ 'cart-header': hideHeaderContent }">
       <section class="desktop-header">
         <div @click="navigate" class="logo">
           HYPD
@@ -74,8 +74,8 @@
               </svg>
               <span v-if="store.user?.id"> Profile </span>
             </button>
+            <DropDown @close="showDropDown = false" v-if="showDropDown" />
           </ClientOnly>
-          <DropDown @close="showDropDown = false" v-if="showDropDown" />
         </div>
       </section>
       <section class="mobile-header">
@@ -599,12 +599,11 @@ button {
 .cart-header .cart-desktop,
 .cart-header .wishlist,
 .cart-header .cart,
-.cart-header .search
-{
+.cart-header .search {
   display: none;
 }
 
-.cart-header .desktop-header{
+.cart-header .desktop-header {
   grid-template-columns: 73px auto;
   justify-content: space-between;
 }

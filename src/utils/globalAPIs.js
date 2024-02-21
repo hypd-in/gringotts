@@ -350,9 +350,7 @@ export async function addItemToWishlist(itemInfo) {
       );
       if (response.payload) {
         await fetchWishlistedProducts();
-
-        // uncomment later
-        // trackingWishlistingProducts(itemInfo);
+        trackingWishlistingProducts(itemInfo);
       }
     } catch (err) {
       console.log("Error Adding item to Wishlist", err);
@@ -400,6 +398,7 @@ export async function applyCartCoupon(coupon_code) {
       }
     );
     if (response.payload) {
+      console.log(response, "RESP")
       // uncmnt later
       // trackingApplyCouponCode(coupon_code);
 
