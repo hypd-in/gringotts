@@ -136,7 +136,7 @@
                       v-if="(orderDetails?.item?.retail_price?.value - orderDetails.item?.offer_value?.value) < 0">1</span>
                     <span v-else style="font-family: Edmondsans-M">
                       {{
-                        convertToINR(orderDetails.item?.total_price.value)
+                        convertToINR(finalPrice)
                       }}
                     </span>
                   </div>
