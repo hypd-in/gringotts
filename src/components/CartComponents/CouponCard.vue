@@ -70,17 +70,11 @@ const applyCoupon = async () => {
     let payload = null;
     loading.value = true;
     if (route.query.isExpress) {
-        payload = await applyExpressCoupon(props.couponInfo.code);
+        payload = await applyExpressCoupon(props.couponInfo?.code);
     } else {
-        payload = await applyCartCoupon(props.couponInfo.code);
+        payload = await applyCartCoupon(props.couponInfo?.code);
     }
-
-    console.log(store.cartDataToTrack , payload, "BRO check")
-
-    track('cart_coupon:coupon_apply_click', { ...store.cartDataToTrack, coupon: { ...store.cartDataToTrack.coupon, discount_added: payload.coupon_value.value, discount_removed: 0 } })
-    
-    console.log("FUCK ME")
-    
+    track('cart_coupon:coupon_apply_click', { ...store.cartDataToTrack, coupon: { ...store.cartDataToTrack?.coupon, discount_added: payload?.coupon_value?.value, discount_removed: 0 } })
     loading.value = false;
     if (payload) {
         emit("close");
