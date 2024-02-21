@@ -7,22 +7,15 @@
         <span class="error">(Please select a variant)</span>
       </h2>
       <div class="variant-listing">
-        <div
-          v-for="variant in productVariants"
-          :key="variant.id"
-          class="variant-wrapper"
-          :class="{
-            'selected-variant': isSelected(variant.id),
-            'oos-variant': isOutOfStock(variant),
-          }"
-        >
+        <div v-for="variant in productVariants" :key="variant.id" class="variant-wrapper" :class="{
+          'selected-variant': isSelected(variant.id),
+          'oos-variant': isOutOfStock(variant),
+        }">
           <div @click="selectVariant(variant)" class="variant">
             {{ variant.attribute }}
           </div>
-          <div
-            v-if="variant?.inventory_info?.unit_in_stock < 10"
-            class="low-in-stock tag"
-          >
+          <div v-if="variant?.inventory_info?.unit_in_stock < 10 && variant?.inventory_info?.unit_in_stock > 0"
+            class="low-in-stock tag">
             {{ variant.inventory_info?.unit_in_stock }} Left
           </div>
         </div>
@@ -58,9 +51,9 @@ const variantType = computed(() => {
 function selectVariant(variant) {
 
   track('pdp:select_variant_click', {
-    item_id:product.info.id,
-    brand_id:product.info.brand_id,
-    variant_id:variant.id,
+    item_id: product.info.id,
+    brand_id: product.info.brand_id,
+    variant_id: variant.id,
   })
 
   if (variant.id == product.info?.selected_variant?.id) {
@@ -92,6 +85,7 @@ function isOutOfStock(variant) {
 .variant-section {
   padding: 0px;
 }
+
 h2 {
   color: var(--primary-black, #13141b);
   font-family: Urbanist-Bold;
@@ -151,6 +145,7 @@ h2 {
   opacity: 50%;
   position: relative;
 }
+
 .oos-variant .variant::after {
   content: "";
   position: absolute;
@@ -168,6 +163,7 @@ h2 {
   font-family: "Urbanist-Bold";
   border: 1px solid var(--links, #4791ff);
 }
+
 .selected-variant .variant:hover {
   font-family: "Urbanist-Bold" !important;
   border: 1px solid var(--links, #4791ff) !important;
@@ -198,15 +194,19 @@ h2 {
   0% {
     transform: translateX(0px);
   }
+
   25% {
     transform: translateX(-4px);
   }
+
   50% {
     transform: translateX(0px);
   }
+
   75% {
     transform: translateX(4px);
   }
+
   100% {
     transform: translateX(0px);
   }
@@ -223,6 +223,7 @@ h2 {
   padding: 0 0 0 4px;
   animation: wiggle 0.25s linear 0s 1;
 }
+
 .wiggle .error {
   display: inline;
 }
