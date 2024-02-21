@@ -337,34 +337,34 @@ export function trackingViewItems() {
   const store = useStore();
   const product = useProductStore();
   const creator = useCreatorStore();
-  // dataLayer.push({
-  //   event: "view_item",
-  //   user_id: store.user?.id,
-  //   user_name: store.user?.full_name,
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: product.info?.retail_price.value,
-  //     items: [
-  //       {
-  //         item_id: product.info?.id,
-  //         item_name: product.info?.name,
-  //         affiliation: creator.info?.username,
-  //         price: product.info?.retail_price.value,
-  //         creator_username: creator.info?.username,
-  //         creator_name: creator?.name,
-  //         brand: product.info?.brand_info?.name,
-  //       },
-  //     ],
-  //   },
-  // });
+  dataLayer.push({
+    event: "view_item",
+    user_id: store.user?.id,
+    user_name: store.user?.full_name,
+    ecommerce: {
+      currency: "INR",
+      value: product.info?.retail_price.value,
+      items: [
+        {
+          item_id: product.info?.id,
+          item_name: product.info?.name,
+          affiliation: creator.info?.username,
+          price: product.info?.retail_price.value,
+          creator_username: creator.info?.username,
+          creator_name: creator?.name,
+          brand: product.info?.brand_info?.name,
+        },
+      ],
+    },
+  });
 }
 
 // Create funnel Events GA4
 export function trackingUser() {
   const store = useStore();
-  // dataLayer.push({
-  //   "user_id": store.user?.id,
-  // });
+  dataLayer.push({
+    "user_id": store.user?.id,
+  });
 }
 
 export function trackingBuyNow(product, creator, selected_variant_id) {
@@ -377,31 +377,31 @@ export function trackingBuyNow(product, creator, selected_variant_id) {
 }
 
 export function trackingAddToCart(product, creator, selected_variant_id) {
-  // dataLayer.push({
-  //   event: "add_to_cart",
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: product.retail_price.value,
-  //     items: [
-  //       {
-  //         item_id: product.id || product?.item_id,
-  //         brand: product?.brand_info?.name,
-  //         creator_username: creator?.username,
-  //         creator_name: creator?.name,
-  //         item_name: product.name || product?.item_name,
-  //         affiliation: creator?.username,
-  //         item_variant:
-  //           product?.variants?.filter((variant) => {
-  //             if (variant.id == selected_variant_id) {
-  //               return variant.attribute;
-  //             }
-  //           })[0]?.attribute || product?.variant_type,
-  //         price: product?.retail_price?.value,
-  //         quantity: 1,
-  //       },
-  //     ],
-  //   },
-  // });
+  dataLayer.push({
+    event: "add_to_cart",
+    ecommerce: {
+      currency: "INR",
+      value: product.retail_price.value,
+      items: [
+        {
+          item_id: product.id || product?.item_id,
+          brand: product?.brand_info?.name,
+          creator_username: creator?.username,
+          creator_name: creator?.name,
+          item_name: product.name || product?.item_name,
+          affiliation: creator?.username,
+          item_variant:
+            product?.variants?.filter((variant) => {
+              if (variant.id == selected_variant_id) {
+                return variant.attribute;
+              }
+            })[0]?.attribute || product?.variant_type,
+          price: product?.retail_price?.value,
+          quantity: 1,
+        },
+      ],
+    },
+  });
 
   var formData = {};
   formData["event"] = "add_to_cart";
@@ -412,26 +412,26 @@ export function trackingAddToCart(product, creator, selected_variant_id) {
 }
 
 export function trackingRemoveFromCart(product) {
-  // dataLayer.push({
-  //   event: "remove_from_cart",
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: product.retail_price.value,
-  //     items: [
-  //       {
-  //         item_id: product.catalog_info.id,
-  //         item_name: product.catalog_info.name,
-  //         brand: product?.brand_info?.name,
-  //         creator_username: getCreatorInfo(product.source?.id).username,
-  //         creator_name: getCreatorInfo(product.source?.id).name,
-  //         affiliation: getCreatorInfo(product.source?.id).username,
-  //         item_variant: product.variants[product.variant_id].attribute,
-  //         price: product?.retail_price?.value,
-  //         quantity: 1,
-  //       },
-  //     ],
-  //   },
-  // });
+  dataLayer.push({
+    event: "remove_from_cart",
+    ecommerce: {
+      currency: "INR",
+      value: product.retail_price.value,
+      items: [
+        {
+          item_id: product.catalog_info.id,
+          item_name: product.catalog_info.name,
+          brand: product?.brand_info?.name,
+          creator_username: getCreatorInfo(product.source?.id).username,
+          creator_name: getCreatorInfo(product.source?.id).name,
+          affiliation: getCreatorInfo(product.source?.id).username,
+          item_variant: product.variants[product.variant_id].attribute,
+          price: product?.retail_price?.value,
+          quantity: 1,
+        },
+      ],
+    },
+  });
 
   var formData = {};
   formData["event"] = "remove_from_cart";
@@ -445,24 +445,24 @@ export function trackingRemoveFromCart(product) {
 export function trackingWishlistingProducts(product) {
   const creatorStore = useCreatorStore();
   // GA4 Tracking
-  // dataLayer.push({
-  //   event: "add_to_wishlist",
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: product?.retail_price?.value,
-  //     items: [
-  //       {
-  //         item_id: product?.id,
-  //         brand: product?.brand_info?.name,
-  //         creator_username: creatorStore?.info?.username,
-  //         creator_name: creatorStore?.info?.name,
-  //         item_name: product?.catalog_info?.name,
-  //         affiliation: creatorStore?.info?.username,
-  //         price: product?.retail_price?.value,
-  //       },
-  //     ],
-  //   },
-  // });
+  dataLayer.push({
+    event: "add_to_wishlist",
+    ecommerce: {
+      currency: "INR",
+      value: product?.retail_price?.value,
+      items: [
+        {
+          item_id: product?.id,
+          brand: product?.brand_info?.name,
+          creator_username: creatorStore?.info?.username,
+          creator_name: creatorStore?.info?.name,
+          item_name: product?.catalog_info?.name,
+          affiliation: creatorStore?.info?.username,
+          price: product?.retail_price?.value,
+        },
+      ],
+    },
+  });
 
   //In House Tracking
   var formData = {};
@@ -486,17 +486,17 @@ export function trackingBeginCheckout(cart_details) {
       quantity: item.quantity,
     });
   });
-  // dataLayer.push({
-  //   event: "begin_checkout",
-  //   // user_id: store.state.user?.id,
-  //   // user_name: store.state.user?.full_name,
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: cart_details.grand_total.value,
-  //     coupon: cart_details?.coupon?.code,
-  //     items: items,
-  //   },
-  // });
+  dataLayer.push({
+    event: "begin_checkout",
+    // user_id: store.state.user?.id,
+    // user_name: store.state.user?.full_name,
+    ecommerce: {
+      currency: "INR",
+      value: cart_details.grand_total.value,
+      coupon: cart_details?.coupon?.code,
+      items: items,
+    },
+  });
 
   var formData = {};
   formData["event"] = "begin_checkout";
@@ -521,17 +521,17 @@ export function trackingAddShippingInfo(cart_details) {
       price: item?.retail_price?.value,
     });
   });
-  // dataLayer.push({
-  //   event: "add_shipping_info",
-  //   // user_id: store.state.user?.id,
-  //   // user_name: store.state.user?.full_name,
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: cart_details.grand_total.value,
-  //     coupon: cart_details?.coupon?.code,
-  //     items: items,
-  //   },
-  // });
+  dataLayer.push({
+    event: "add_shipping_info",
+    // user_id: store.state.user?.id,
+    // user_name: store.state.user?.full_name,
+    ecommerce: {
+      currency: "INR",
+      value: cart_details.grand_total.value,
+      coupon: cart_details?.coupon?.code,
+      items: items,
+    },
+  });
 }
 
 export function trackingAddPaymentInfo(payment_method, cart_details) {
@@ -549,18 +549,18 @@ export function trackingAddPaymentInfo(payment_method, cart_details) {
       quantity: item.quantity,
     });
   });
-  // dataLayer.push({
-  //   event: "add_payment_info",
-  //   // user_id: store.state.user?.id,
-  //   // user_name: store.state.user?.full_name,
-  //   ecommerce: {
-  //     currency: "INR",
-  //     value: cart_details.grand_total.value,
-  //     coupon: cart_details?.coupon?.code,
-  //     items: items,
-  //     payment_type: payment_method,
-  //   },
-  // });
+  dataLayer.push({
+    event: "add_payment_info",
+    // user_id: store.state.user?.id,
+    // user_name: store.state.user?.full_name,
+    ecommerce: {
+      currency: "INR",
+      value: cart_details.grand_total.value,
+      coupon: cart_details?.coupon?.code,
+      items: items,
+      payment_type: payment_method,
+    },
+  });
 
   var formData = {};
   formData["event"] = "add_payment_info";
@@ -589,18 +589,18 @@ export function trackingPurchase(order_id, cartInfo, value) {
       });
     });
   }
-  // dataLayer.push({
-  //   event: "purchase",
-  //   user_id: store.state.user?.id,
-  //   user_name: store.state.user?.full_name,
-  //   ecommerce: {
-  //     transaction_id: order_id,
-  //     currency: "INR",
-  //     value: value,
-  //     coupon: cartInfo?.coupon?.code,
-  //     items: items,
-  //   },
-  // });
+  dataLayer.push({
+    event: "purchase",
+    user_id: store.state.user?.id,
+    user_name: store.state.user?.full_name,
+    ecommerce: {
+      transaction_id: order_id,
+      currency: "INR",
+      value: value,
+      coupon: cartInfo?.coupon?.code,
+      items: items,
+    },
+  });
   var formData = {};
   formData["event"] = "purchase";
   formData["order_id"] = order_id;
@@ -624,17 +624,17 @@ export function trackingRefund(orderData) {
       price: orderData.item?.retail_price?.value,
     },
   ];
-  // dataLayer.push({
-  //   event: "refund",
-  //   ecommerce: {
-  //     transaction_id: orderData.order_id,
-  //     currency: "INR",
-  //     value: orderData.grand_total.value,
-  //     tax: 0,
-  //     shipping: 0,
-  //     items: items,
-  //   },
-  // });
+  dataLayer.push({
+    event: "refund",
+    ecommerce: {
+      transaction_id: orderData.order_id,
+      currency: "INR",
+      value: orderData.grand_total.value,
+      tax: 0,
+      shipping: 0,
+      items: items,
+    },
+  });
 
   var formData = {};
   formData["event"] = "refund";
@@ -654,12 +654,12 @@ export function trackingSaleCollectionClick(
   collectionType
 ) {
   const creatorStore = useCreatorStore();
-  // dataLayer.push({
-  //   "event": "sale_collection_click",
-  //   "sale_name": saleName,
-  //   "sub_collection_name": collectionTitle + " - " + (collectionIndex + 1),
-  //   "sub_collection_id": subCollectionId,
-  //   "collection_type": collectionType,
-  //   "creator_username": creatorStore.info?.username,
-  // });
+  dataLayer.push({
+    "event": "sale_collection_click",
+    "sale_name": saleName,
+    "sub_collection_name": collectionTitle + " - " + (collectionIndex + 1),
+    "sub_collection_id": subCollectionId,
+    "collection_type": collectionType,
+    "creator_username": creatorStore.info?.username,
+  });
 }
