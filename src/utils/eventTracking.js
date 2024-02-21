@@ -571,6 +571,7 @@ export function trackingAddPaymentInfo(payment_method, cart_details) {
 }
 
 export function trackingPurchase(order_id, cartInfo, value) {
+  const store = useStore();
   let items = [];
   if (cartInfo?.items) {
     cartInfo.items.forEach((item) => {
