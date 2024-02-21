@@ -9,10 +9,6 @@
 
 <script setup>
 import Button from "@/components/SubmitButton.vue";
-// import { addItemToCart } from "@/customMethods/cartMethods";
-// import { trackingAddToCart } from "@/eventTracking";
-import { computed, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
 import track from "~/utils/tracking-posthog";
 
 const route = useRoute();

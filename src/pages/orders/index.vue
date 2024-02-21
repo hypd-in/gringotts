@@ -14,6 +14,9 @@
     </div>
 
     <div class="pagination-element" ref="target"></div>
+
+    <!-- <div v-if="store.orders.userOrders.length == 0 && !fetchingOrders">
+    </div> -->
   </div>
 </template>
 
@@ -32,7 +35,7 @@ definePageMeta({
 const observer = ref(null);
 const target = ref(null);
 const config = useRuntimeConfig();
-const fetchingOrders = ref(false);
+const fetchingOrders = ref(true);
 
 const store = useStore();
 
@@ -75,6 +78,7 @@ async function callback(entries) {
 }
 
 onMounted(async () => {
+  store.resetUserOrders();
   fetchingOrders.value = true;
   var user = await fetchUserInfo();
   if (!user?.id) {
@@ -205,4 +209,5 @@ h2.heading {
   }
 }
 
-/* Loader End*/</style>
+/* Loader End*/
+</style>

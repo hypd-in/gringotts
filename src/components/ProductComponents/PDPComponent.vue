@@ -106,7 +106,6 @@ import VariantSelector from "@/components/ProductComponents/VariantSelector.vue"
 import { convertToINR, getCreatorUserName, optimizeImage } from "~/utils/helperMethods";
 import BrandCreatorComponent from "@/components/ProductComponents/BrandCreatorComponent.vue";
 import SimilarProducts from "@/components/ProductComponents/SimilarProductsComponent.vue";
-// import { trackingViewItems } from "../../eventTracking.js";
 
 import track from "~/utils/tracking-posthog";
 
@@ -115,6 +114,7 @@ const router = useRouter();
 const config = useRuntimeConfig();
 const product = useProductStore();
 const creator = useCreatorStore();
+const store = useStore();
 
 const productOffers = ref([]);
 const viewDescription = ref(false);
@@ -212,7 +212,7 @@ onMounted(async () => {
     ...trackingDetails,
     creator_username: route.params?.creatorUsername
   })
-
+  trackingViewItems(store.user);
 });
 
 async function getProductOffers() {

@@ -1,20 +1,20 @@
 <template>
   <div class="payment-result">
-    <div class="payment-result wrapper pl-14 pr-14">
+    <div class="payment-result wrapper">
       <div class="middle-align">
         <img src="@/assets/illustrations/p-failed.svg" alt="" />
         <div class="title mt-45">Payment Failed!</div>
         <div class="subtitle mt-14">Sorry! ☹️ But something went wrong!</div>
-        <h4 style="color: #13141b">Don't Worry!</h4>
+        <div style="color: #13141b">Don't Worry!</div>
         <div class="paragraph mt-16">
           Any amount deducted will be refunded in 3 - 5 business days. Would you
           like to try again with a different payment option?
         </div>
         <div class="buttons">
-          <button class="primary-button mt-60" @click="reviewPayment">
+          <button class="primary-button" @click="reviewPayment">
             Review Payment Method
           </button>
-          <button v-if="creatorInfo.creatorName" class="secondary-button mt-20" @click="goToCreatorStore">
+          <button v-if="creatorInfo.creatorName" class="secondary-button" @click="goToCreatorStore">
             Back To Home
           </button>
         </div>
@@ -94,12 +94,16 @@ function goToCreatorStore() {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  padding: 16px 0;
+  gap: 12px;
 }
 
 .wrapper {
   position: relative;
-  height: calc(100vh - 73px);
-  overflow-y: scroll;
+  height: calc(100vh - 48px);
+  height: calc(100dvh - 48px);
+  padding: 16px;
+  box-sizing: border-box;
 }
 
 .middle-align {
@@ -116,13 +120,13 @@ function goToCreatorStore() {
 }
 
 .subtitle {
-  font-size: 18px;
+  font-size: 16px;
   color: #13141b;
 }
 
 .paragraph {
   color: #a9a9a9;
-  font-size: 18px;
+  font-size: 14px;
 }
 
 .primary-button {
@@ -150,7 +154,6 @@ function goToCreatorStore() {
   background: transparent;
   width: 100%;
   cursor: pointer;
-
   max-width: 300px;
 }
 
