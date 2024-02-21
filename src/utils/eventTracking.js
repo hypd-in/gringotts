@@ -333,14 +333,14 @@ async function sendTrackingData(formData) {
 }
 
 // Create funnel Events
-export function trackingViewItems() {
+export function trackingViewItems(user) {
   const store = useStore();
   const product = useProductStore();
   const creator = useCreatorStore();
   dataLayer.push({
     event: "view_item",
-    user_id: store.user?.id,
-    user_name: store.user?.full_name,
+    user_id: user?.id,
+    user_name: user?.full_name,
     ecommerce: {
       currency: "INR",
       value: product.info?.retail_price.value,
@@ -351,7 +351,7 @@ export function trackingViewItems() {
           affiliation: creator.info?.username,
           price: product.info?.retail_price.value,
           creator_username: creator.info?.username,
-          creator_name: creator?.name,
+          creator_name: creator.info?.name,
           brand: product.info?.brand_info?.name,
         },
       ],
@@ -646,20 +646,20 @@ export function trackingRefund(orderData) {
   sendTrackingData(formData);
 }
 
-export function trackingSaleCollectionClick(
-  saleName,
-  collectionTitle,
-  collectionIndex,
-  subCollectionId,
-  collectionType
-) {
-  const creatorStore = useCreatorStore();
-  dataLayer.push({
-    "event": "sale_collection_click",
-    "sale_name": saleName,
-    "sub_collection_name": collectionTitle + " - " + (collectionIndex + 1),
-    "sub_collection_id": subCollectionId,
-    "collection_type": collectionType,
-    "creator_username": creatorStore.info?.username,
-  });
-}
+// export function trackingSaleCollectionClick(
+//   saleName,
+//   collectionTitle,
+//   collectionIndex,
+//   subCollectionId,
+//   collectionType
+// ) {
+//   const creatorStore = useCreatorStore();
+//   dataLayer.push({
+//     "event": "sale_collection_click",
+//     "sale_name": saleName,
+//     "sub_collection_name": collectionTitle + " - " + (collectionIndex + 1),
+//     "sub_collection_id": subCollectionId,
+//     "collection_type": collectionType,
+//     "creator_username": creatorStore.info?.username,
+//   });
+// }

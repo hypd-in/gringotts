@@ -81,7 +81,7 @@ function fbqPurchaseTracking() {
   trackingPurchase(
     route.query.orderID,
     cartInfo,
-    route.query.order_amount
+    route.query.order_amount,
   );
 }
 //Tracking End

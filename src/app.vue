@@ -126,6 +126,7 @@ onMounted(async () => {
   saveFirstVisit();
   saveClientRequestId();
 
+  trackingUser();
   trackingUserLanding();
   trackingUTM();
 

@@ -59,8 +59,6 @@ import {
 import Submit from "@/components/SubmitButton.vue";
 import track from "~/utils/tracking-posthog";
 
-// import { trackingRemoveFromCart } from "@/eventTracking";
-
 // Initialisation
 const props = defineProps({
   itemInfo: Object,
@@ -143,7 +141,7 @@ async function removeItemFromCart() {
         }
         removingItem.value = false;
         closePopup();
-        // trackingRemoveFromCart(props.itemInfo);
+        trackingRemoveFromCart(props.itemInfo);
       }
       track('cart:item_delete', {
         ...store.cartDataToTrack, removed_item: { ...props.itemInfo, variants : {...props.itemInfo.variants} }

@@ -690,11 +690,10 @@ async function checkout() {
       emits("transactionLoader", true);
       addCartToLocalStorage();
 
-      // uncmnt later
-      // trackingAddPaymentInfo(
-      //   store.cartInfo.paymentMethod,
-      //   store.cartInfo
-      // );
+      trackingAddPaymentInfo(
+        store.cartInfo.paymentMethod,
+        store.cartInfo
+      );
     }
   } catch (err) {
     console.log("Error while checking out", err.response);

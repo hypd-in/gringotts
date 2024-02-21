@@ -210,16 +210,16 @@ async function clearInput() {
   track('search:query_clear_click')
   searchQuery.value = "";
   store.resetExploreCurations();
-  await navigateTo({
-    name: "HypdExplore",
-    params: {
-      creatorUsername: route.params.creatorUsername,
-    },
-    query: {
-      search: "",
-    },
-    replace: true,
-  });
+  // await navigateTo({
+  //   name: "HypdExplore",
+  //   params: {
+  //     creatorUsername: route.params.creatorUsername,
+  //   },
+  //   query: {
+  //     search: "",
+  //   },
+  //   replace: true,
+  // });
 }
 
 async function goBack() {
