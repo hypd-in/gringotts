@@ -43,7 +43,7 @@
   <section style="margin-bottom: 40px">
     <div style="border-top: 2px solid #0000001a">
       <h3>All Products</h3>
-      <div class="product-listing-wrapper">
+      <div class="product-listing-wrapper" v-if="brandStore?.products?.length > 0">
         <Product
           v-for="product in brandStore.products"
           :key="product?.id"
@@ -54,21 +54,39 @@
       <div
         v-if="fetchingProducts"
         style="display: flex; justify-content: center"
-      >
-        <div class="lds-ellipsis">
+      > 
+        <div class="lds-ellipsis" >
           <div></div>
           <div></div>
           <div></div>
           <div></div>
         </div>
       </div>
-      <div id="pagiation-footer"></div>
+      <div id="pagination-footer"></div>
     </div>
   </section>
+  <FilterSortChip
+    v-if="brandStore?.brandInfo"
+    :source="true"
+    @openSorting="openSortFilter"
+    @openFilters="openSortFilter"
+  />
+  
+  <FilterSort
+    v-if="showFilter"
+    :filter_type="filter_type"
+    :brand_id="brandStore.brandInfo.id"
+    @applyFilterAndFetch="applyFilterAndFetch"
+    @closeFilter="closeFilter"
+    :filter="filters"
+  /> 
 </template>
 
 <script setup>
+import FilterSortChip from "~/components/SortFilterChip.vue";
 import track from "~/utils/tracking-posthog";
+import FilterSort from "~/components/FilterSort.vue";
+
 definePageMeta({
   name: "BrandProfile",
   layout: "public",
@@ -94,10 +112,12 @@ const { data: brandInfo, pending: loadingBrandInfo } = await useFetch(
   }
 );
 brandStore.saveBrand(brandInfo.value.payload);
+const filter_type = ref("Category");
+// const show_fliters = ref("");
 const is_following = ref(false);
 const bioLength = ref(120);
 const filters = ref({});
-const page = ref(0);
+const showFilter = ref(false)
 const receivedAllInfo = ref(false);
 const observer = ref(null);
 const fetchingProducts = ref(false);
@@ -110,7 +130,7 @@ const callback = (entries) => {
       !receivedAllInfo.value
     ) {
       if (brandStore.products?.length > 0) {
-        page.value += 1;
+        brandStore.addPage();
         await fetchProducts();
       }
     }
@@ -118,10 +138,10 @@ const callback = (entries) => {
 };
 const follow = async () => {
   is_following.value = !is_following.value;
-  track('brand:followers_click', {
+  track("brand:followers_click", {
     brand_id: brandInfo.value.payload?.id,
     creator_username: route.params?.creatorUsername,
-  })
+  });
   let data = {
     customer_id: store.user.id,
     id: brandStore.brandInfo.id,
@@ -146,14 +166,13 @@ const toggleBio = () => {
 };
 const fetchProducts = async () => {
   fetchingProducts.value = true;
-
   let body = {
     brand_ids: [brandStore.brandInfo.id],
-    page: page.value,
+    page: brandStore.page,
     ...filters.value,
   };
   let response = await getBrandPageProducts(body);
-  if (response.data.length > 0) {
+  if (response?.data?.length > 0) {
     brandStore.addProducts(response.data);
   } else {
     receivedAllInfo.value = true;
@@ -182,15 +201,30 @@ const trackClickFollowers = () => {
     creator_username: route.params?.creatorUsername,
   });
 };
+const closeFilter = () => {
+  showFilter.value = false
+}
+const openSortFilter = (type) => {
+  showFilter.value = true
+  filter_type.value = type
+};
+const applyFilterAndFetch = (filter) => {
+  brandStore.resetPage();
+  brandStore.clearProducts();
+  filters.value = filter;
+  receivedAllInfo.value = false;
+  fetchProducts();
+  showFilter.value = false
+};
 onBeforeMount(() => {
   if (
     route.params.brandUsername == brandStore.brandInfo.username &&
     brandStore.products.length == 0
   ) {
     fetchProducts();
-  } 
+  }
   nextTick(() => {
-    target.value = document.getElementById("pagiation-footer");
+    target.value = document.getElementById("pagination-footer");
     if (target.value) {
       observer.value = addingObserver(target.value, callback);
     }

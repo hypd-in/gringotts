@@ -1113,3 +1113,53 @@ export async function followBrand(formData, endpoint) {
   }
 }
 
+export async function fetchBrandInfoByIds(brandIds) {
+  try {
+    var formData = {};
+    formData["ids"] = brandIds;
+    const response = await $fetch(
+      useRuntimeConfig().public.entityURL +
+      "/api/app/brand/basic",
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: formData,
+      }
+    );
+    if (response.data.payload) {
+      return response.data.payload;
+    } else {
+      return []
+    }
+  } catch (err) {
+    console.log("Error fetching brand info by brand id", err);
+    return []
+  }
+}
+
+export async function getCategoriesByBrandId(brand_id) {
+  try {
+    const response = await $fetch(
+      useRuntimeConfig().public.catalogURL +
+      "/api/app/brand/category/lvl3?brand_id=" + brand_id,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    if (response.payload) {
+      return { ...response.payload };
+    } else {
+      return {}
+    }
+  } catch (error) {
+    console.log("error: ", error);
+    return {}
+  }
+}

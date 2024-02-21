@@ -5,9 +5,10 @@ export default function track(event, params) {
     posthog = $posthog();
   }
 
-  if (params) {
-    posthog.capture(event, params);
-  } else {
-    posthog.capture(event);
-  }
+  console.log(event, params);
+  // if (params) {
+  //   posthog.capture(event, params);
+  // } else {
+  //   posthog.capture(event);
+  // }
 }
