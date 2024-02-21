@@ -46,6 +46,7 @@ import Product from "~/components/ProductComponents/ProductCard.vue";
 
 const runtimeConfig = useRuntimeConfig();
 const brandStore = useBrandProfileStore();
+const creatorStore = useCreatorStore();
 const route = useRoute();
 const { data: brandInfo, pending: loadingBrandInfo } = await useFetch(
   runtimeConfig.public.entityURL +
@@ -138,15 +139,15 @@ onBeforeMount(() => {
 });
 
 useSeoMeta({
-  ogtitle: () => brandInfo.value?.payload?.name,
-  description: () => brandInfo.value?.payload?.bio,
-  ogImage: () => brandInfo.value?.payload?.cover_img?.src,
-  ogDescription: () => brandInfo.value?.payload?.bio,
-  ogImage: () => brandInfo.value?.payload?.cover_img?.src,
-  ogUrl: () => brandInfo.value?.payload?.website,
-  twitterTitle: () => brandInfo.value?.payload?.name,
-  twitterDescription: () => brandInfo.value?.payload?.bio,
-  twitterImage: () => brandInfo.value?.payload?.cover_img?.src,
+  title: `${brandInfo.value?.payload?.name} | ${creatorStore.info?.name} | HYPD | #getHYPD`,
+  ogtitle: `${brandInfo.value?.payload?.name} | ${creatorStore.info?.name} | HYPD | #getHYPD`,
+  description: brandInfo.value?.payload?.bio,
+  ogDescription: brandInfo.value?.payload?.bio,
+  ogImage: brandInfo.value?.payload?.cover_img?.src,
+  ogUrl: brandInfo.value?.payload?.website,
+  twitterTitle: brandInfo.value?.payload?.name,
+  twitterDescription: brandInfo.value?.payload?.bio,
+  twitterImage: brandInfo.value?.payload?.cover_img?.src,
   twitterCard: "summary",
 });
 </script>
@@ -165,7 +166,7 @@ section {
 .brand-profile {
   display: grid;
   grid-template-columns: 150px 4fr;
-  grid-template-rows: 29px 100%;
+  grid-template-rows: 29px calc(100% - 29px);
   column-gap: 30px;
   max-width: 630px;
   margin: 24px auto;
