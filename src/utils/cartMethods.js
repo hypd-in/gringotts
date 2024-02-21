@@ -15,7 +15,6 @@ let catalogURL;
 let cmsURL;
 let entityURL;
 let orderURL;
-let trackingURL;
 let routeQueries;
 if (process.browser) {
   routeQueries = new URLSearchParams(window.location.search);
@@ -27,14 +26,12 @@ if (process.env.ENVIRONMENT != "production") {
   cmsURL = "https://cms.getshitdone.in";
   entityURL = "https://entity.getshitdone.in";
   orderURL = "https://orderv2.getshitdone.in";
-  trackingURL = "https://tracking.getshitdone.in";
 } else {
   couponURL = "https://coupon.hypd.store";
   catalogURL = "https://catalog2.hypd.store";
   cmsURL = "https://cms.hypd.store";
   entityURL = "https://entity.hypd.store";
   orderURL = "https://order2.hypd.store";
-  trackingURL = "https://tracking.hypd.store";
 }
 async function fetchItemInfo(id) {
   try {
