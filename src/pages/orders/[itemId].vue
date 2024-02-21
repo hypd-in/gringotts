@@ -387,7 +387,9 @@ async function reorder(item) {
     quantity: 1,
   };
   if (item?.source) {
-    console.log("HERE", item);
+    itemInfo["source"] = {
+      ...item?.source
+    }
   } else if (creatorStore.info?.id) {
     itemInfo["source"] = {
       id: creatorStore.info?.id,
