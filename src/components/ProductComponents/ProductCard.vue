@@ -35,7 +35,7 @@
           <p class="item-name line-clamp">{{ itemName }}</p>
         </div>
 
-        <div class="pricing-info">
+        <div class="pricing-info" v-if="retailPrice">
           <span id="retail-price">{{ convertToINR(retailPrice) }}</span>
           <span
             v-if="basePrice > retailPrice && !isAffiliate"
