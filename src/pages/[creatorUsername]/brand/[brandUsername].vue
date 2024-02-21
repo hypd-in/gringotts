@@ -213,7 +213,7 @@ const openSortFilter = (type) => {
   filter_type.value = type;
 };
 const applyFilterAndFetch = (filter) => {
-  scrollTo(0,0)
+  scrollTo(0, 0);
   brandStore.resetPage();
   brandStore.clearProducts();
   filters.value = filter;
