@@ -81,14 +81,16 @@ onMounted(() => {
 useSeoMeta({
   title: `HYPD Explore | ${creatorStore.info?.name} `
 })
-onBeforeRouteLeave((to, from) => {
+onBeforeRouteLeave(async (to, from) => {
   if (
     from.query.query?.length > 0 &&
-    !["CreatorProduct", "HypdExplore", "CartItems"].includes(to.name)
+    !["CreatorProduct", "HypdExplore", "CartItems", "CartPayment"].includes(to.name)
   ) {
+    searchQuery.value = "";
+    store.resetSearchProducts();
     return {
       name: "HypdExplore",
-      params: from.params,
+      params: { ...from.params },
       query: {
         query: "",
       },
@@ -98,26 +100,16 @@ onBeforeRouteLeave((to, from) => {
   }
 });
 
-// onBeforeRouteUpdate(async (to, from) => {
-//   if (to.query.query != from.query.query) {
-//     searchQuery.value = to.query.query;
-//     if (searchQuery.value?.trim() != "") {
+
+// onUpdated(async () => {
+//   if (route.query.query != searchQuery.value) {
+//     if (route.query.query?.trim() != '') {
+//       searchQuery.value = route.query.query;
 //       store.resetSearchProducts();
 //       await searchInput();
 //     }
 //   }
-// });
-
-
-onUpdated(async () => {
-  if (route.query.query != searchQuery.value) {
-    if (route.query.query?.trim() != '') {
-      searchQuery.value = route.query.query;
-      store.resetSearchProducts();
-      await searchInput();
-    }
-  }
-})
+// })
 
 async function callback(entries) {
   entries.forEach(async (entry) => {
@@ -137,7 +129,7 @@ async function search(query) {
     searchQuery.value = query;
   }
   if (searchQuery.value.trim() != "") {
-    
+    store.resetSearchProducts();
     await navigateTo({
       name: "HypdExplore",
       params: {
@@ -156,35 +148,37 @@ async function search(query) {
 }
 
 async function searchInput() {
-  if (fetchingSearchResults.value) {
-    return;
-  }
-  fetchingSearchResults.value = true;
-  var params = {};
-  if (searchQuery.value?.length > 0) {
-    params = {
-      "query": searchQuery.value.trim(),
-    };
-  }
-  params = {
-    ...params,
-    "page": store.searchProducts.page,
-  }
-
-  if (store.searchProducts.page > 0) {
-    track('search_result:page_scroll', {
-      page: store.searchProducts.page,
-      query: searchQuery.value.trim()
-    })
-  }
-  await $fetch(`${config.public.catalogURL}/api/app/search/catalog`, {
-    method: "GET",
-    credentials: "include",
-    query: params,
-    headers: {
-      "Content-Type": "application/json"
+  try {
+    if (fetchingSearchResults.value) {
+      return;
     }
-  }).then((response) => {
+    fetchingSearchResults.value = true;
+    var params = {};
+    if (searchQuery.value?.length > 0) {
+      params = {
+        "query": searchQuery.value.trim(),
+      };
+    }
+    params = {
+      ...params,
+      "page": store.searchProducts.page,
+    }
+
+    if (store.searchProducts.page > 0) {
+      track('search_result:page_scroll', {
+        page: store.searchProducts.page,
+        query: searchQuery.value.trim()
+      })
+    }
+    var response = await $fetch(`${config.public.catalogURL}/api/app/search/catalog`, {
+      method: "GET",
+      credentials: "include",
+      query: params,
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+
     if (
       response.payload?.catalog &&
       response.payload.catalog?.length > 0
@@ -203,10 +197,13 @@ async function searchInput() {
         unobserveTarget();
       }
       fetchingSearchResults.value = false;
+      if (store.exploreCurations.curations.length == 0) {
+        await fetchExploreCurations();
+      }
     }
-  }).catch((err) => {
-    console.log("Error fetching search", err);
-  })
+  } catch (error) {
+    console.log("Error fetching search query", searchQuery.value);
+  }
 }
 
 async function clearInput() {
@@ -228,7 +225,9 @@ async function clearInput() {
 async function goBack() {
   await navigateTo({
     name: "CreatorStore",
-    params: { creatorUsername: route.params.creator_username },
+    params: {
+      creatorUsername: route.params.creatorUsername,
+    },
     replace: true,
   });
 }

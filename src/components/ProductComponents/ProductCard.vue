@@ -344,7 +344,7 @@ async function toggleWishlist() {
 .featured-image {
   width: 100%;
   min-width: 160px;
-  height: 240px;
+  height: 240px !important;
   min-height: 240px;
   border-radius: 12px;
   overflow: hidden;
