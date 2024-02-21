@@ -1092,3 +1092,24 @@ export async function getBrandPageProducts(formData) {
     return []
   }
 }
+
+export async function followBrand(formData, endpoint) {
+  try {
+    const response = await $fetch(
+      `${useRuntimeConfig().public.entityURL}/api/app/customer/brand/` + endpoint,
+      {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: formData
+      }
+    );
+    return response.payload
+  } catch (error) {
+    console.log("error: ", error);
+    return false
+  }
+}
+

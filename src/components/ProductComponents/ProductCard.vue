@@ -1,23 +1,31 @@
 <template>
   <div class="product-card-wrapper" :class="{ 'oos-card': isOutOfStock }">
     <div class="image-tag-wrapper" v-if="productImage">
-      <NuxtLink @click="trackProductNavigation" :to="goToProduct" v-if="!isAffiliate">
-        <div class="tag out-of-stock" v-if="isOutOfStock">
-          Out of Stock
-        </div>
+      <NuxtLink
+        @click="trackProductNavigation"
+        :to="goToProduct"
+        v-if="!isAffiliate"
+      >
+        <div class="tag out-of-stock" v-if="isOutOfStock">Out of Stock</div>
         <div class="tag bxgy" v-else-if="isBxGy">
           {{ isBxGy }}
         </div>
-        <div class="tag hot-selling" v-else-if="isHotSelling">
-          Hot Selling
-        </div>
+        <div class="tag hot-selling" v-else-if="isHotSelling">Hot Selling</div>
         <div class="tag low-in-stock" v-else-if="isLowInStock">
           Only Few Left
         </div>
       </NuxtLink>
-      <div @click="toggleWishlist" class="wishlist-icon" v-if="!isAffiliate" v-html="wishlistIcon"></div>
+      <div
+        @click="toggleWishlist"
+        class="wishlist-icon"
+        v-if="!isAffiliate"
+        v-html="wishlistIcon"
+      ></div>
       <NuxtLink @click="trackProductNavigation" :to="goToProduct">
-        <ImageFrame class="featured-image" :src="getReplacedSource(productImage, 450)" />
+        <ImageFrame
+          class="featured-image"
+          :src="getReplacedSource(productImage, 450)"
+        />
       </NuxtLink>
     </div>
     <NuxtLink @click="trackProductNavigation" :to="goToProduct">
@@ -29,10 +37,14 @@
 
         <div class="pricing-info">
           <span id="retail-price">{{ convertToINR(retailPrice) }}</span>
-          <span v-if="basePrice > retailPrice && !isAffiliate" id="base-price">{{
-            convertToINR(basePrice)
-          }}</span>
-          <span v-if="basePrice > retailPrice && !isAffiliate" id="discount">({{ discount }}% off)</span>
+          <span
+            v-if="basePrice > retailPrice && !isAffiliate"
+            id="base-price"
+            >{{ convertToINR(basePrice) }}</span
+          >
+          <span v-if="basePrice > retailPrice && !isAffiliate" id="discount"
+            >({{ discount }}% off)</span
+          >
         </div>
       </div>
     </NuxtLink>
@@ -42,8 +54,12 @@
         {{ noOfOffers }} offers available
       </div>
     </div>
-    <button :class="{ disabled: props.itemInfo.inventory_status == 'out_of_stock' }" @click="buttonAction"
-      v-if="showButton && !isAffiliate" class="add-to-cart">
+    <button
+      :class="{ disabled: props.itemInfo.inventory_status == 'out_of_stock' }"
+      @click="buttonAction"
+      v-if="showButton && !isAffiliate"
+      class="add-to-cart"
+    >
       <div class="flex-together" v-html="cartIcon"></div>
       Add To Cart
     </button>
@@ -52,10 +68,7 @@
 
 <script setup>
 import ImageFrame from "~/components/ImageFrame.vue";
-import {
-  convertToINR,
-  optimizeImage,
-} from "~/utils/helperMethods";
+import { convertToINR, optimizeImage } from "~/utils/helperMethods";
 
 import track from "~/utils/tracking-posthog";
 
@@ -65,7 +78,7 @@ const props = defineProps({
   showOffers: Boolean,
   isAffiliate: Boolean,
   creator: Object,
-  src: String
+  src: String,
 });
 const emit = defineEmits(["buttonAction"]);
 const route = useRoute();
@@ -115,7 +128,7 @@ const noOfOffers = computed(() => {
     availableOffers = [
       ...availableOffers,
       ...store.couponsMap[
-      props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id
+        props.itemInfo?.brand_id || props.itemInfo?.brand_info?.id
       ],
     ];
   }
@@ -167,11 +180,19 @@ const isLowInStock = computed(() => {
 });
 
 const productImage = computed(() => {
-  return getReplacedSource(props.itemInfo?.featured_image?.src, 350) || getReplacedSource(props.itemInfo?.image, 350) || null;
+  return (
+    getReplacedSource(props.itemInfo?.featured_image?.src, 350) ||
+    getReplacedSource(props.itemInfo?.image, 350) ||
+    null
+  );
 });
 
 const brandName = computed(() => {
-  return props.itemInfo?.brand_info?.name || props.itemInfo?.affiliate_program?.name || "NA";
+  return (
+    props.itemInfo?.brand_info?.name ||
+    props.itemInfo?.affiliate_program?.name ||
+    "NA"
+  );
 });
 
 const itemName = computed(() => {
@@ -187,19 +208,17 @@ const basePrice = computed(() => {
 
 const getTag = computed(() => {
   if (isOutOfStock.value) {
-    return "Out of stock"
+    return "Out of stock";
   } else if (isBxGy.value) {
-    return isBxGy.value
-  }
-  else if (isHotSelling.value) {
-    return "Hot selling"
+    return isBxGy.value;
+  } else if (isHotSelling.value) {
+    return "Hot selling";
   } else if (isLowInStock.value) {
-    return "Only few left"
+    return "Only few left";
+  } else {
+    return null;
   }
-  else {
-    return null
-  }
-})
+});
 
 const discount = computed(() => {
   if (basePrice.value > retailPrice.value) {
@@ -217,8 +236,8 @@ const goToProduct = computed(() => {
     obj = {
       name: "AfflinkRedirection",
       params: {
-        'afflinkId': link[link.length - 1],
-      }
+        afflinkId: link[link.length - 1],
+      },
     };
   } else if (creatorStore.info?.username) {
     obj = {
@@ -230,7 +249,7 @@ const goToProduct = computed(() => {
       query: {
         title: props.itemInfo?.name,
       },
-    }
+    };
   } else if (getObjectLength(props.creator) > 0) {
     obj = {
       name: "CreatorProduct",
@@ -241,65 +260,65 @@ const goToProduct = computed(() => {
       query: {
         title: props.itemInfo?.name,
       },
-    }
-  }
-  else {
+    };
+  } else {
     obj = {
       name: "CreatorProduct",
       params: {
         id: props.itemInfo?.id,
-        creatorUsername: 'hypd_store',
+        creatorUsername: "hypd_store",
       },
       query: {
         title: props.itemInfo?.name,
       },
-    }
+    };
   }
   return obj;
-})
+});
 
 function trackProductNavigation() {
-  if (props.src == 'order-detail-page') {
-    track('order_item:similar_product_click', {
+  if (props.src == "order-detail-page") {
+    track("order_item:similar_product_click", {
       order_no: store.orderDetails?.order_id,
       item_id: store.orderDetails?.item.id,
       brand_id: store.orderDetails.brand_id,
-      product_id: props.itemInfo?.id
-    })
-  }
-  else if (props.src == 'creator-store-spotlight') {
-    track('creator_store:spotlight_product_click', {
+      product_id: props.itemInfo?.id,
+    });
+  } else if (props.src == "creator-store-spotlight") {
+    track("creator_store:spotlight_product_click", {
       creator_name: creatorStore.info.name,
       creator_username: creatorStore.info.username,
       product_name: props.itemInfo.name,
       product_id: props.itemInfo.id,
-      brand_id: props.itemInfo.brand_id
-    })
-  }
-  else if (props.src == 'creator-collection-product') {
-    track('collection:product_click', {
+      brand_id: props.itemInfo.brand_id,
+    });
+  } else if (props.src == "creator-collection-product") {
+    track("collection:product_click", {
       product_id: props.itemInfo.id,
       creator_name: creatorStore.info.name,
       creator_username: creatorStore.info.username,
-      collection_id: route.params.collectionId
-    })
-  }
-  else if (props.src == 'pdp') {
-    track('pdp:similar_product_click', {
+      collection_id: route.params.collectionId,
+    });
+  } else if (props.src == "pdp") {
+    track("pdp:similar_product_click", {
       brand_id: props.itemInfo.brand_id,
       product_id: props.itemInfo.id,
-    })
-  }
-  else if (props.src == 'search') {
-    track('search_result:product_click', {
+    });
+  } else if (props.src == "search") {
+    track("search_result:product_click", {
       query: route.query.query,
       product_name: props.itemInfo.name,
       product_id: props.itemInfo.id,
       price: props.itemInfo.retail_price.value,
-      tag: getTag.value
-    })
+      tag: getTag.value,
+    });
+  } else if (props.src == "brandPage") {
+    track("brand_item:click", {
+      brand_id: props.itemInfo.brand_id,
+      item_id: props.itemInfo.id,
+      creator_username: creatorStore.info.username,
+    });
   }
-
 }
 
 function buttonAction() {
@@ -313,12 +332,33 @@ async function toggleWishlist() {
   if (!!store.wishlistedItems[props.itemInfo.id]) {
     removeItemFromWishlist(props.itemInfo);
   } else {
-    track('wishlist:add', {
-      location: 'product-listing', catalog_name: props.itemInfo.name, catalog_id: props.itemInfo.id, brand_id: props.itemInfo.brand_info.id, brand_name: props.itemInfo.brand_info.name
-    })
+    if (props.src == "brandPage") {
+      track("brand_item:wishlist", {
+        brand_id: props.itemInfo.brand_id,
+        item_id: props.itemInfo.id,
+        creator_username: creatorStore.info.username,
+      });
+    } else {
+      track("wishlist:add", {
+        location: "product-listing",
+        catalog_name: props.itemInfo.name,
+        catalog_id: props.itemInfo.id,
+        brand_id: props.itemInfo.brand_info.id,
+        brand_name: props.itemInfo.brand_info.name,
+      });
+    }
     await addItemToWishlist(props.itemInfo);
   }
 }
+onMounted(() => {
+  if (props.src == "brandPage") {
+    track("brand_item:visit", {
+      brand_id: props.itemInfo.brand_id,
+      item_id: props.itemInfo.id,
+      creator_username: creatorStore.info.username,
+    });
+  }
+});
 </script>
 
 <style scoped>
@@ -344,8 +384,7 @@ async function toggleWishlist() {
 .featured-image {
   width: 100%;
   min-width: 160px;
-  height: 240px;
-  min-height: 240px;
+  height: 240px !important;
   border-radius: 12px;
   overflow: hidden;
   object-fit: cover;
@@ -431,12 +470,16 @@ span#discount {
   top: 0;
   left: 0;
   z-index: 1;
-  background: transparent linear-gradient(52deg,
+  background: transparent
+    linear-gradient(
+      52deg,
       transparent,
       rgba(0, 0, 0, 0.1) 82%,
       rgba(0, 0, 0, 0.1) 90%,
       rgba(0, 0, 0, 0.1) 100%,
-      rgba(0, 0, 0, 0) 0) 0 0 no-repeat padding-box;
+      rgba(0, 0, 0, 0) 0
+    )
+    0 0 no-repeat padding-box;
 }
 
 .tag {
