@@ -343,7 +343,7 @@ export function trackingViewItems(user) {
     user_name: user?.full_name,
     ecommerce: {
       currency: "INR",
-      value: product.info?.retail_price.value,
+      value: product.info?.retail_price?.value,
       items: [
         {
           item_id: product.info?.id,
@@ -381,14 +381,14 @@ export function trackingAddToCart(product, creator, selected_variant_id) {
     event: "add_to_cart",
     ecommerce: {
       currency: "INR",
-      value: product.retail_price.value,
+      value: product?.retail_price?.value,
       items: [
         {
-          item_id: product.id || product?.item_id,
+          item_id: product?.id || product?.item_id,
           brand: product?.brand_info?.name,
           creator_username: creator?.username,
           creator_name: creator?.name,
-          item_name: product.name || product?.item_name,
+          item_name: product?.name || product?.item?.catalog_info?.name,
           affiliation: creator?.username,
           item_variant:
             product?.variants?.filter((variant) => {
@@ -416,16 +416,16 @@ export function trackingRemoveFromCart(product) {
     event: "remove_from_cart",
     ecommerce: {
       currency: "INR",
-      value: product.retail_price.value,
+      value: product?.retail_price?.value,
       items: [
         {
-          item_id: product.catalog_info.id,
-          item_name: product.catalog_info.name,
+          item_id: product?.catalog_info?.id,
+          item_name: product?.catalog_info?.name,
           brand: product?.brand_info?.name,
-          creator_username: getCreatorInfo(product.source?.id).username,
-          creator_name: getCreatorInfo(product.source?.id).name,
-          affiliation: getCreatorInfo(product.source?.id).username,
-          item_variant: product.variants[product.variant_id].attribute,
+          creator_username: getCreatorInfo(product?.source?.id)?.username,
+          creator_name: getCreatorInfo(product?.source?.id)?.name,
+          affiliation: getCreatorInfo(product?.source?.id)?.username,
+          item_variant: product?.variants[product?.variant_id]?.attribute,
           price: product?.retail_price?.value,
           quantity: 1,
         },
@@ -436,7 +436,7 @@ export function trackingRemoveFromCart(product) {
   var formData = {};
   formData["event"] = "remove_from_cart";
   formData["product_id"] = product.catalog_info?.id;
-  formData["creator_username"] = getCreatorInfo(product.source?.id).username;
+  formData["creator_username"] = getCreatorInfo(product?.source?.id)?.username;
   formData["variant_id"] = product?.variant_id;
   sendTrackingData(formData);
 }
@@ -475,15 +475,15 @@ export function trackingBeginCheckout(cart_details) {
   let items = [];
   cart_details?.items?.forEach((item) => {
     items.push({
-      item_id: item.catalog_info.id,
+      item_id: item?.catalog_info?.id,
       brand: item?.brand_info?.name,
-      item_name: item.catalog_info.name,
-      creator_username: getCreatorInfo(item.source?.id).username,
-      creator_name: getCreatorInfo(item.source?.id).name,
-      affiliation: getCreatorInfo(item.source?.id).username,
-      item_variant: item.variants[item.variant_id].attribute,
+      item_name: item?.catalog_info?.name,
+      creator_username: getCreatorInfo(item?.source?.id)?.username,
+      creator_name: getCreatorInfo(item?.source?.id)?.name,
+      affiliation: getCreatorInfo(item?.source?.id)?.username,
+      item_variant: item.variants[item?.variant_id]?.attribute,
       price: item?.retail_price?.value,
-      quantity: item.quantity,
+      quantity: item?.quantity,
     });
   });
   dataLayer.push({
@@ -492,7 +492,7 @@ export function trackingBeginCheckout(cart_details) {
     // user_name: store.state.user?.full_name,
     ecommerce: {
       currency: "INR",
-      value: cart_details.grand_total.value,
+      value: cart_details?.grand_total?.value,
       coupon: cart_details?.coupon?.code,
       items: items,
     },
@@ -503,7 +503,7 @@ export function trackingBeginCheckout(cart_details) {
   formData["cart_value"] = cart_details?.grand_total?.value;
   formData["coupon_applied"] = cart_details?.coupon?.code;
   formData["items"] = items.map((item) => {
-    return { "catalog_id": item.item_id, "quantity": item.quantity };
+    return { "catalog_id": item?.id, "quantity": item?.quantity };
   });
   sendTrackingData(formData);
 }
@@ -511,13 +511,13 @@ export function trackingAddShippingInfo(cart_details) {
   let items = [];
   cart_details?.items?.forEach((item) => {
     items.push({
-      item_id: item.catalog_info.id,
-      item_name: item.catalog_info.name,
+      item_id: item?.catalog_info?.id,
+      item_name: item?.catalog_info?.name,
       brand: item?.brand_info?.name,
-      creator_username: getCreatorInfo(item.source?.id).username,
-      creator_name: getCreatorInfo(item.source?.id).name,
-      affiliation: getCreatorInfo(item.source?.id).username,
-      item_variant: item.variants[item.variant_id].attribute,
+      creator_username: getCreatorInfo(item?.source?.id)?.username,
+      creator_name: getCreatorInfo(item?.source?.id)?.name,
+      affiliation: getCreatorInfo(item?.source?.id)?.username,
+      item_variant: item.variants[item?.variant_id]?.attribute,
       price: item?.retail_price?.value,
     });
   });
@@ -527,7 +527,7 @@ export function trackingAddShippingInfo(cart_details) {
     // user_name: store.state.user?.full_name,
     ecommerce: {
       currency: "INR",
-      value: cart_details.grand_total.value,
+      value: cart_details?.grand_total?.value,
       coupon: cart_details?.coupon?.code,
       items: items,
     },
@@ -538,15 +538,15 @@ export function trackingAddPaymentInfo(payment_method, cart_details) {
   let items = [];
   cart_details?.items?.forEach((item) => {
     items.push({
-      item_id: item.catalog_info.id,
-      item_name: item.catalog_info.name,
+      item_id: item?.catalog_info?.id,
+      item_name: item?.catalog_info?.name,
       brand: item?.brand_info?.name,
-      creator_username: getCreatorInfo(item.source?.id).username,
-      creator_name: getCreatorInfo(item.source?.id).name,
-      affiliation: getCreatorInfo(item.source?.id).username,
-      item_variant: item.variants[item.variant_id].attribute,
-      price: item?.retail_price.value,
-      quantity: item.quantity,
+      creator_username: getCreatorInfo(item?.source?.id)?.username,
+      creator_name: getCreatorInfo(item?.source?.id)?.name,
+      affiliation: getCreatorInfo(item?.source?.id)?.username,
+      item_variant: item.variants[item?.variant_id]?.attribute,
+      price: item?.retail_price?.value,
+      quantity: item?.quantity,
     });
   });
   dataLayer.push({
@@ -555,7 +555,7 @@ export function trackingAddPaymentInfo(payment_method, cart_details) {
     // user_name: store.state.user?.full_name,
     ecommerce: {
       currency: "INR",
-      value: cart_details.grand_total.value,
+      value: cart_details?.grand_total?.value,
       coupon: cart_details?.coupon?.code,
       items: items,
       payment_type: payment_method,
@@ -575,17 +575,17 @@ export function trackingPurchase(order_id, cartInfo, value) {
   if (cartInfo?.items) {
     cartInfo.items.forEach((item) => {
       items.push({
-        item_id: item.id,
-        item_name: item.catalog_info.name,
+        item_id: item?.id,
+        item_name: item?.catalog_info?.name,
         brand: item?.brand_info?.name,
-        creator_username: getCreatorInfo(item.source?.id).username,
-        creator_name: getCreatorInfo(item.source?.id).name,
-        affiliation: getCreatorInfo(item.source?.id).username,
-        item_variant: item.variants[item.variant_id].attribute,
-        price: item?.retail_price.value,
+        creator_username: getCreatorInfo(item?.source?.id)?.username,
+        creator_name: getCreatorInfo(item?.source?.id)?.name,
+        affiliation: getCreatorInfo(item?.source?.id)?.username,
+        item_variant: item.variants[item?.variant_id]?.attribute,
+        price: item?.retail_price?.value,
         tax: 0,
         shipping: 0,
-        quantity: item.quantity,
+        quantity: item?.quantity,
       });
     });
   }
@@ -616,7 +616,7 @@ export function trackingRefund(orderData) {
   let items = [
     {
       item_id: orderData?.item?.catalog_info.id,
-      item_name: orderData?.catalog_name,
+      item_name: orderData?.item?.catalog_info?.name,
       brand: orderData?.brand_info?.name,
       creator_username: orderData?.item?.source?.username,
       affiliation: orderData?.item?.source?.username,
@@ -627,9 +627,9 @@ export function trackingRefund(orderData) {
   dataLayer.push({
     event: "refund",
     ecommerce: {
-      transaction_id: orderData.order_id,
+      transaction_id: orderData?.order_id,
       currency: "INR",
-      value: orderData.grand_total.value,
+      value: orderData?.grand_total?.value,
       tax: 0,
       shipping: 0,
       items: items,
@@ -641,7 +641,7 @@ export function trackingRefund(orderData) {
   formData["order_id"] = orderData?.order_id;
   formData["order_value"] = orderData?.grand_total?.value;
   formData["items"] = items.map((item) => {
-    return { "catalog_id": item.item_id, "quantity": item.quantity };
+    return { "catalog_id": item?.item_id, "quantity": item?.quantity };
   });
   sendTrackingData(formData);
 }
