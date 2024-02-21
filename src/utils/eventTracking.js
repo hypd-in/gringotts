@@ -592,8 +592,8 @@ export function trackingPurchase(order_id, cartInfo, value) {
   }
   dataLayer.push({
     event: "purchase",
-    user_id: store.state.user?.id,
-    user_name: store.state.user?.full_name,
+    user_id: store.user?.id,
+    user_name: store.user?.full_name,
     ecommerce: {
       transaction_id: order_id,
       currency: "INR",
