@@ -428,15 +428,15 @@ function openTracking() {
 }
 
 function navigateToContactUs() {
+
   track('order_item:item_need_help', {
-    order_no: store.orderDetails.order_id,
-    item_id: store.orderDetails.item.id,
-    brand_id: store.orderDetails.brand_id,
-    current_status: store.orderDetails.order_status.code
+    order_no: store.orderDetails?.order_id,
+    item_id: store.orderDetails?.item.id,
+    brand_id: store.orderDetails?.brand_id,
+    current_status: store.orderDetails?.order_status?.code
   })
-  navigateTo({
-    name: "ContactUs",
-  })
+
+  window.FreshworksWidget("open");
 }
 
 function formatDate(orderDate) {
@@ -585,11 +585,11 @@ async function fetchSimilarProducts(id) {
   }
 }
 
-onBeforeUnmount(()=>{
+onBeforeUnmount(() => {
   window.FreshworksWidget("destroy");
 })
 
-onMounted(()=>{
+onMounted(() => {
   window.FreshworksWidget("boot");
 
   setTimeout(() => {
