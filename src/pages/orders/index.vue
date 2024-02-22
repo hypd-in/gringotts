@@ -15,8 +15,11 @@
 
     <div class="pagination-element" ref="target"></div>
 
-    <!-- <div v-if="store.orders.userOrders.length == 0 && !fetchingOrders">
-    </div> -->
+    <div class="no-orders" v-if="store.orders.userOrders.length == 0 && !fetchingOrders">
+      <img src="@/assets/illustrations/no-orders.png" alt="no orders found">
+      <h3>Looks like you haven't placed any order</h3>
+      <SubmitButton defaultText="Shop Now" @submit="goToCreatorStore" />
+    </div>
   </div>
 </template>
 
@@ -24,6 +27,7 @@
 import OrderCard from "@/components/OrderListing/OrderCard.vue";
 
 import track from "../../utils/tracking-posthog"
+import SubmitButton from "~/components/SubmitButton.vue";
 
 const route = useRoute();
 
@@ -67,6 +71,15 @@ async function fetchUserOrders() {
       console.log("Error fetching User Orders", error);
     })
   }
+}
+
+async function goToCreatorStore() {
+  navigateTo({
+    name: "CreatorStore",
+    params: {
+      creatorUsername: await getCreatorUserName(),
+    }
+  });
 }
 
 async function callback(entries) {
@@ -125,6 +138,7 @@ useSeoMeta({
   max-width: 1024px;
   margin: 0 auto;
   padding: 16px;
+  position: relative;
 }
 
 h2,
@@ -140,6 +154,18 @@ h2.heading {
   padding: 0 16px 16px;
 }
 
+.no-orders {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 12;
+}
+
+h3{
+  text-align: center;
+  font-size: 16px;
+}
 
 /* Loader Start*/
 .lds-ellipsis {

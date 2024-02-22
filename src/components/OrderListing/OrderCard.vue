@@ -358,7 +358,8 @@ button {
 }
 
 .order-item .item-info-wrapper {
-  display: flex;
+  display: grid;
+  grid-template-columns: 78px auto;
   align-items: flex-start;
   gap: 16px;
   padding: 16px 24px;
