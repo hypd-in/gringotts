@@ -7,32 +7,13 @@ import {
   calculatingShippingChargesForLocalItems,
 } from "@/utils/globalAPIs";
 
-import { getUTMParams } from "./helperMethods";
 import track from "./tracking-posthog";
 
-let couponURL;
-let catalogURL;
-let cmsURL;
-let entityURL;
-let orderURL;
 let routeQueries;
 if (process.browser) {
   routeQueries = new URLSearchParams(window.location.search);
 }
 
-if (process.env.ENVIRONMENT != "production") {
-  couponURL = "https://coupon.getshitdone.in";
-  catalogURL = "https://catalogv2.getshitdone.in";
-  cmsURL = "https://cms.getshitdone.in";
-  entityURL = "https://entity.getshitdone.in";
-  orderURL = "https://orderv2.getshitdone.in";
-} else {
-  couponURL = "https://coupon.hypd.store";
-  catalogURL = "https://catalog2.hypd.store";
-  cmsURL = "https://cms.hypd.store";
-  entityURL = "https://entity.hypd.store";
-  orderURL = "https://order2.hypd.store";
-}
 async function fetchItemInfo(id) {
   try {
     var response = await $fetch(
@@ -92,14 +73,17 @@ export async function updateVariant(key, variantInfo) {
         old_variant_id: store.cartItems[key]?.variant_id,
         new_variant_id: variantInfo?.id,
       };
-      var response = await $fetch(entityURL + "/api/app/cart/item/variant", {
-        method: "PUT",
-        body: formData,
-        credentials: "include",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
+      var response = await $fetch(
+        useRuntimeConfig().public.entityURL + "/api/app/cart/item/variant",
+        {
+          method: "PUT",
+          body: formData,
+          credentials: "include",
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       if (response.payload) {
         fetchCartInfo();
       }
@@ -205,9 +189,11 @@ export async function addItemToCart(itemInfo) {
 
   //itemInfo must contain a field "id" which is user's id, along with the product info
   try {
-    // var params = getUTMParams();
+    var utmParams = useCookie("utmParams");
     var response = await $fetch(
-      useRuntimeConfig().public.entityURL + "/api/app/cart",
+      `${useRuntimeConfig().public.entityURL}/api/app/cart${
+        utmParams.value.length > 0 ? "?" + utmParams.value : ""
+      }`,
       {
         method: "POST",
         // params: params,
