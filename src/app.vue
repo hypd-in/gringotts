@@ -82,7 +82,7 @@ onBeforeMount(async () => {
 
     // tracking.trackingUser();
   } else {
-    if (route.query.isExpress) {
+    if (!route.query.isExpress) {
       await getCartItemsFromLocalStorage();
     }
   }

@@ -166,7 +166,7 @@ const hideHeaderContent = computed(() => {
 })
 
 const noOfCartItems = computed(() => {
-  return store.cartInfo.items?.length || 0;
+  return Object.keys(store.cartItems)?.length || 0;
 });
 
 const pageTitle = computed(() => {

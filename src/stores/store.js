@@ -59,6 +59,10 @@ export const useStore = defineStore("store", () => {
     }
   }
 
+  function addItemToCart(item) {
+    cartItems.value[item?.variant_id] = item;
+  }
+
   function removeItemFromCart(item) {
     delete cartItems.value[item.variant_id];
   }
@@ -221,6 +225,7 @@ export const useStore = defineStore("store", () => {
     saveCartDataToTrack,
     saveCartItemsFailSuccess,
     removeUserAddress,
+    addItemToCart,
     removeItemFromCart,
     setGiftsEligibleForCart,
     saveBrandTotalCartValue,
