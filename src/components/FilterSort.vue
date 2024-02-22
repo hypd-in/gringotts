@@ -5,7 +5,7 @@
       <!-- Filter Nav bar-->
       <div class="filter-nav-bar">
         <div @click="close()">
-            <BackArrow />
+          <BackArrow />
         </div>
         <div class="filter-nav-bar-title">Filter</div>
       </div>
@@ -83,16 +83,13 @@
   </div>
 </template>
 <script setup>
-import TickIcon from '~/components/SVG/TickIcon.vue'
-import BackArrow from '~/components/SVG/BackArrow.vue'
+import TickIcon from "~/components/SVG/TickIcon.vue";
+import BackArrow from "~/components/SVG/BackArrow.vue";
+import track from "~/utils/tracking-posthog";
 import {
   fetchBrandInfoByIds,
   getCategoriesByBrandId,
 } from "~/utils/globalAPIs";
-// import * as API from "../API/APIs.js";
-// import { getReplacedSource } from "~/utils/helperMethods";
-
-// import { getReplacedSource } from "@/customMethods/globalMethods";
 const props = defineProps({
   brand_id: {
     type: String,
@@ -111,7 +108,7 @@ const props = defineProps({
   },
 });
 
-const emits = defineEmits(["applyFilterAndFetch","closeFilter"]);
+const emits = defineEmits(["applyFilterAndFetch", "closeFilter"]);
 const router = useRouter();
 const route = useRoute();
 const checkbox_key = ref(0);
@@ -144,9 +141,25 @@ const changeSelectedFilterOption = async (option, index) => {
   }
   if (option == "Category") {
     filter_values.value = await getCategoriesByBrandId(props.brand_id);
+    track("brand_filter:click", {
+      brand_id: props.brand_id,
+      creator_username: route.params.creatorUsername,
+    });
+    track("brand_filter:visit", {
+      brand_id: props.brand_id,
+      creator_username: route.params.creatorUsername,
+    });
   }
   if (option == "Sort") {
     filter_values.value = sort_values.value;
+    track("brand_sort_by:click", {
+      brand_id: props.brand_id,
+      creator_username: route.params.creatorUsername,
+    });
+    track("brand_sort_by:visit", {
+      brand_id: props.brand_id,
+      creator_username: route.params.creatorUsername,
+    });
   }
   nextTick(() => {
     selected_filter_option_index.value = index;
@@ -177,7 +190,7 @@ onMounted(() => {
   changeSelectedFilterOption(props.filter_type, i);
 });
 const close = () => {
-  emits('closeFilter')
+  emits("closeFilter");
 };
 const resetFilters = () => {
   filter_options.value.forEach((item, i) => {
@@ -234,6 +247,11 @@ const selectFilterValue = (filter_value) => {
       filter_options.value[selected_filter_option_index.value].selected_options[
         filter_value.id
       ] = filter_value;
+      track("brand_filter:click", {
+        brand_id: props.brand_id,
+        creator_username: route.params.creatorUsername,
+        filter: filter_value.name,
+      });
     } else {
       delete filter_options.value[selected_filter_option_index.value]
         .selected_options[filter_value.id];
@@ -245,6 +263,11 @@ const selectFilterValue = (filter_value) => {
 
     filter_options.value[selected_filter_option_index.value].selected_options =
       selected_sort;
+    track("brand_sort_by:click", {
+      brand_id: props.brand_id,
+      creator_username: route.params.creatorUsername,
+      sort_by: filter_value.name,
+    });
   }
 };
 const categoryImage = (category) => {
@@ -293,6 +316,7 @@ const brandImage = (brand) => {
   display: flex;
   gap: 16px;
   align-items: center;
+  cursor: pointer;
 }
 
 .fliter-options-value-container {

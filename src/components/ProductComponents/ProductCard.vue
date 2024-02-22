@@ -353,15 +353,6 @@ async function toggleWishlist() {
     await addItemToWishlist(props.itemInfo);
   }
 }
-onMounted(() => {
-  if (props.src == "brandPage") {
-    track("brand_item:visit", {
-      brand_id: props.itemInfo.brand_id,
-      item_id: props.itemInfo.id,
-      creator_username: creatorStore.info.username,
-    });
-  }
-});
 </script>
 
 <style scoped>

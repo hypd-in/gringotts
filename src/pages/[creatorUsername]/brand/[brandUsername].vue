@@ -14,8 +14,8 @@
         <span @click="trackClickFollowers()">
           <b style="font-family: Urbanist-Bold">{{
             !is_following
-              ? brandStore.brandInfo.followers_count
-              : brandStore.brandInfo.followers_count + 1
+              ? brandStore.brandInfo.followers_count || 0
+              : brandStore.brandInfo.followers_count || 0 + 1
           }}</b>
           Followers</span
         >
@@ -71,6 +71,7 @@
   <FilterSortChip
     v-if="brandStore?.brandInfo"
     :source="true"
+    :brand_id="brandStore.brandInfo.id"
     @openSorting="openSortFilter"
     @openFilters="openSortFilter"
   />
@@ -142,7 +143,7 @@ const callback = (entries) => {
 };
 const follow = async () => {
   is_following.value = !is_following.value;
-  track("brand:followers_click", {
+  track("brand:follow_button_click", {
     brand_id: brandInfo.value.payload?.id,
     creator_username: route.params?.creatorUsername,
   });
