@@ -7,7 +7,7 @@
     <div class="header" :class="{ 'cart-header': hideHeaderContent }">
       <section class="desktop-header">
         <div @click="navigate" class="logo">
-          HYPD
+          HYPD.
         </div>
         <div class="search-input-bar">
           <svg class="search-icon" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -101,7 +101,7 @@
         </div>
         <div class="header-items">
           <button @click="goToExplore('mobile')"
-            v-if="route.params.creatorUsername || creatorStore?.info?.username || getCreatorUserName()" class="search">
+            v-if="route.params.creatorUsername || creatorStore?.info?.username" class="search">
             <ExploreButton :class="{ dark: darkMode }" />
           </button>
           <button @click="toggleWishlist" class="wishlist">

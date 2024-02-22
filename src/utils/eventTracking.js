@@ -229,15 +229,17 @@ export function trackingJuspayRedirection(payment_method, order_id, value) {
 }
 
 //Event Listner for page_visibility_change
-// document.addEventListener("visibilitychange", async () => {
-//   if (
-//     document.visibilityState === "hidden" &&
-//     tracking_data_array.length !== 0
-//   ) {
-//     //Sending Analytics Data
-//     await sendingAnalytics();
-//   }
-// });
+export function initInternalTracking() {
+  document.addEventListener("visibilitychange", async () => {
+    if (
+      document.visibilityState === "hidden" &&
+      tracking_data_array.length !== 0
+    ) {
+      //Sending Analytics Data
+      await sendingAnalytics();
+    }
+  });
+}
 
 // Sending Analytics for tracking
 async function sendingAnalytics() {
