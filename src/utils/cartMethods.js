@@ -327,7 +327,7 @@ export async function fetchBrandShippingCharges(brandIds) {
 
     for (let brandId in shipping_charges) {
       try {
-        var brandInfo = await $fetch(entityURL + "/api/app/brand/" + brandId, {
+        var brandInfo = await $fetch(useRuntimeConfig().public.entityURL + "/api/app/brand/" + brandId, {
           method: "GET",
           credentials: "include",
           headers: {
