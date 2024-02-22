@@ -101,7 +101,7 @@ onBeforeMount(async () => {
       await fetchCartInfo();
     }
   });
-
+  initInternalTracking();
 })
 
 

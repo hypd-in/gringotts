@@ -164,9 +164,13 @@ export async function getCreatorUserName(id) {
   if (router.currentRoute.value.params.creator_username) {
     return router.currentRoute.value.params.creator_username;
   }
-  if (localStorage && localStorage.getItem("creatorInfo") != null) {
-    var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
-    return creatorInfo?.creatorName;
+  try {
+    if (localStorage && localStorage.getItem("creatorInfo") != null) {
+      var creatorInfo = { ...JSON.parse(localStorage.getItem("creatorInfo")) };
+      return creatorInfo?.creatorName;
+    }
+  } catch (error) {
+    console.log(error);
   }
   if (creatorCookie.value) {
     return Object.values(creatorCookie.value)[

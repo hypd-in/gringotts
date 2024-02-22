@@ -32,7 +32,7 @@ if (route.params.id) {
   }
 }
 
-if (route.params.creatorUsername && !creatorStore.info?.id) {
+if (route.params.creatorUsername) {
   const { data, pending: loadingCreatorInfo } = await useFetch(
     config.public.entityURL +
     "/api/app/influencer/username/" +
