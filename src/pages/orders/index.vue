@@ -160,6 +160,7 @@ h2.heading {
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 12;
+  text-align: center;
 }
 
 h3{
