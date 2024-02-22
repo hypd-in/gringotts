@@ -7,7 +7,7 @@ export default defineNuxtPlugin((nuxtApp) => {
     api_host:
     runtimeConfig.public.env != "production"
         ? "https://hypdstore.getshitdone.in/ingest"
-        : "https://beta.hypd.store/ingest",
+        : "https://www.hypd.store/ingest",
     ui_host: "https://app.posthog.com", // or https://eu.posthog.com if your PostHog is hosted in Europe
     autocapture: false,
     capture_pageview: false, // we add manual pageview capturing below
