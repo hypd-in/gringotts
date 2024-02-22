@@ -71,11 +71,6 @@ async function toggleWishlist() {
   }
 }
 async function addToCart() {
-  track("pdp:add_to_cart_click", {
-    item_id: productStore.info?.id,
-    brand_id: productStore.info?.brand_id,
-    variant_id: productStore.info?.selected_variant?.id,
-  });
   if (!productStore.info.selected_variant?.id) {
     emit("getVariant");
     return;
@@ -113,11 +108,13 @@ async function addToCart() {
       cartItems.push(itemInfo);
       localStorage.setItem("cart_items", JSON.stringify(cartItems));
     }
-    // store.dispatch("addItemToCart", {
-    //   ...itemInfo,
-    //   ...productStore?.info,
-    // });
+    store.addItemToCart(itemInfo);
   }
+  track("pdp:add_to_cart_click", {
+    item_id: productStore.info?.id,
+    brand_id: productStore.info?.brand_id,
+    variant_id: productStore.info?.selected_variant?.id,
+  });
   trackingAddToCart(
     productStore.info,
     creatorStore.info,

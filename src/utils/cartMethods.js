@@ -192,7 +192,7 @@ export async function addItemToCart(itemInfo) {
     var utmParams = useCookie("utmParams");
     var response = await $fetch(
       `${useRuntimeConfig().public.entityURL}/api/app/cart${
-      utmParams?.value?.length > 0 ? "?" + utmParams.value : ""
+        utmParams?.value?.length > 0 ? "?" + utmParams.value : ""
       }`,
       {
         method: "POST",
@@ -327,13 +327,16 @@ export async function fetchBrandShippingCharges(brandIds) {
 
     for (let brandId in shipping_charges) {
       try {
-        var brandInfo = await $fetch(useRuntimeConfig().public.entityURL + "/api/app/brand/" + brandId, {
-          method: "GET",
-          credentials: "include",
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        var brandInfo = await $fetch(
+          useRuntimeConfig().public.entityURL + "/api/app/brand/" + brandId,
+          {
+            method: "GET",
+            credentials: "include",
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         if (brandInfo.data.payload) {
           shipping_charges[brandId] = {
             ...brandInfo.payload?.shipping_charges,
