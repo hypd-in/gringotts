@@ -108,7 +108,8 @@ async function addToCart() {
       cartItems.push(itemInfo);
       localStorage.setItem("cart_items", JSON.stringify(cartItems));
     }
-    store.addItemToCart(itemInfo);
+    await getCartItemsFromLocalStorage();
+    // store.addItemToCart(itemInfo);
   }
   track("pdp:add_to_cart_click", {
     item_id: productStore.info?.id,
