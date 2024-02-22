@@ -192,7 +192,7 @@ export async function addItemToCart(itemInfo) {
     var utmParams = useCookie("utmParams");
     var response = await $fetch(
       `${useRuntimeConfig().public.entityURL}/api/app/cart${
-        utmParams.value.length > 0 ? "?" + utmParams.value : ""
+      utmParams?.value?.length > 0 ? "?" + utmParams.value : ""
       }`,
       {
         method: "POST",
