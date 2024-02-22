@@ -999,7 +999,7 @@ function sendDetailsToGoKwik(dataArray, orderType) {
           "/payment-success?orderID=" +
           orderId.value +
           "&order_amount=" +
-          `${store.cartInfo.grand_total.value}` + + "&influencer_id=" + influencerId.value
+          `${store.cartInfo.grand_total.value}` + "&influencer_id=" + influencerId.value
         );
       }
     };
