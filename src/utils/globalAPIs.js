@@ -778,8 +778,8 @@ export async function removeCouponFromCart(bypassCart) {
     track("cart_coupon:code_remove", {
       ...store.cartDataToTrack,
       coupon: {
-        ...store.cartDataToTrack.coupon,
-        discount_removed: store.cartDataToTrack.coupon.discount,
+        ...store.cartDataToTrack?.coupon,
+        discount_removed: store.cartDataToTrack?.coupon?.discount,
         discount_added: 0,
         discount: 0,
       },
@@ -814,7 +814,7 @@ export async function removeCouponFromCart(bypassCart) {
         await fetchCartInfo();
       }
       track("cart_coupon:code_remove", {
-        ...store.cartDataToTrack,
+        ...store?.cartDataToTrack,
         coupon: { ...coupon },
       });
     }
