@@ -47,7 +47,7 @@ export default defineNuxtConfig({
             env: process.env.ENVIRONMENT,
 
             // posthog
-            posthogPublicKey: "phc_Bhp0EO8PIx162Q13YzxHhmBhbB9OQdcgzydkWnOwPL1",
+          posthogPublicKey: "phc_8lUC5VBFcaw8CNSF0IAmsnpaFT2Aw8T5jQcVMdBd8AK",
             posthogHost: "https://app.posthog.com",
 
             catalogURL: "https://catalog2.hypd.store",
