@@ -300,8 +300,8 @@ export async function applyExpressCoupon(coupon_code) {
       // trackingApplyCouponCode(coupon_code);
 
       store.updateCartInfo({
-        coupon: response.data.payload.coupon,
-        coupon_value: response.data.payload.coupon_value,
+        coupon: response?.payload?.coupon,
+        coupon_value: response?.payload?.coupon_value,
       });
       let itemsArray = store.cartInfo.items;
 
