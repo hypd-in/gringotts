@@ -80,9 +80,6 @@ async function selectVariant(variantInfo) {
     errorTimeout.value = setTimeout(() => {
       showError.value = "";
     }, 1250);
-    if (navigator) {
-      navigator.vibrate(800);
-    }
     return;
   }
   if (store.cartItems[variantInfo.id]) {
@@ -90,9 +87,6 @@ async function selectVariant(variantInfo) {
     errorTimeout.value = setTimeout(() => {
       showError.value = "";
     }, 1400);
-    if (navigator) {
-      navigator.vibrate(800);
-    }
     return;
   }
   await updateVariant(props.itemInfo?.variant_id, variantInfo);
