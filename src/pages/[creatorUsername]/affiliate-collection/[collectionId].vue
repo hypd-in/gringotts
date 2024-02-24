@@ -79,8 +79,8 @@ useSeoMeta({
   description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
-  ogImage: collectionInfo.value?.img?.src,
-  twitterImage: collectionInfo.value?.img?.src,
+  ogImage: collectionInfo.value?.image?.src,
+  twitterImage: collectionInfo.value?.image?.src,
   twitterCard: "summary",
   lang: "en-IN"
 })
