@@ -8,7 +8,7 @@
             :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
           {{ creatorStore.info.name }} / Explore / &nbsp;
         </span>
-       <span v-if="route.query.title" style="color: #000">{{
+        <span v-if="route.query.title" style="color: #000">{{
           route.query.title }}</span>
       </div>
     </div>
@@ -48,7 +48,7 @@ if (route.params.categoryId) {
   const { data: response, error } = await useFetch(`${config.public.catalogURL}/api/categories`, {
     method: "POST",
     body: {
-      id: [route.params.categoryId], 
+      id: [route.params.categoryId],
     },
     credentials: "include",
     headers: {
@@ -56,7 +56,8 @@ if (route.params.categoryId) {
     }
   })
   if (response) {
-    categoryInfo.value = {...response.value.payload[0]}
+    categoryInfo.value = { ...response.value.payload[0] }
+    console.log(categoryInfo.value);
   } else if (error) {
     console.log("Error fetching category info", err);
   }
@@ -76,7 +77,7 @@ async function fetchCollectionInfo() {
     })
     pageCount.value++;
     if (response.payload?.data) {
-      categoryInfo.value = { ...response.payload };
+      // categoryInfo.value = { ...response.payload };
       products.value = [...products.value, ...response.payload.data];
     } else {
       observer.value.unobserve(target.value);
@@ -87,16 +88,18 @@ async function fetchCollectionInfo() {
 }
 
 useSeoMeta({
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}`,
   title: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
   ogTitle: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
   twitterTitle: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
   description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
-  ogImage: categoryInfo.value?.img?.src,
-  twitterImage: categoryInfo.value?.img?.src,
+  ogImage: categoryInfo.value?.thumbnail?.src,
+  twitterImage: categoryInfo.value?.thumbnail?.src,
   twitterCard: "summary",
-  lang: "en-IN"
+  lang: "en-IN",
+  icon: "/public/favicon.ico",
 })
 
 function callback(entries) {
@@ -144,7 +147,7 @@ onMounted(() => {
   box-sizing: border-box;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }
