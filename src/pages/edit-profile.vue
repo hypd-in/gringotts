@@ -210,9 +210,9 @@ watch(() => store.user, (newV) => {
 })
 
 useSeoMeta({
-  title: "Edit Profile | HYPD",
-  ogTitle: "Edit Profile | HYPD",
-  twitterTitle: "Edit Profile | HYPD",
+  title: "Edit Profile | HYPD | #getHYPD",
+  ogTitle: "Edit Profile | HYPD | #getHYPD",
+  twitterTitle: "Edit Profile | HYPD | #getHYPD",
   description: "Edit your profile details on HYPD",
   ogDescription: "Edit your profile details on HYPD",
   twitterDescription: "Edit your profile details on HYPD",
