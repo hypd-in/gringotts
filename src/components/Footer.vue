@@ -23,7 +23,7 @@
           <!-- <p>About Us</p> -->
           <p @click="goToPrivacyPolicy">Privacy Policy</p>
           <p @click="goToTerms">Terms and Conditions</p>
-          <p>Careers</p>
+          <p @click="goToCareers">Careers</p>
         </div>
       </section>
     </div>
@@ -70,6 +70,12 @@ function goToTerms() {
     name: "TermsAndConditions",
   });
 }
+
+function goToCareers() {
+  navigateTo(`https://careers.hypd.store/`, {
+    external: true,
+  })
+}
 </script>
 
 <style scoped>
@@ -83,6 +89,7 @@ function goToTerms() {
     padding: 16px 0 0;
   }
 }
+
 .footer {
   width: 100%;
   color: var(--inactive-text);
@@ -133,6 +140,7 @@ h3.heading {
   font-family: Urbanist-SemiBold;
   font-size: 14px;
 }
+
 div.links p {
   margin: 0 0 6px;
   cursor: pointer;

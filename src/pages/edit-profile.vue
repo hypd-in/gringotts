@@ -167,7 +167,7 @@ async function updateUserInfo() {
       dob: userInfo.value.dob,
       user_id: userInfo.value.id,
     }
-    if (userInfo.value.profileImage) {
+    if (userInfo.value.profile_image) {
       requestBody = {
         ...requestBody,
         profile_image: { ...userInfo.value.profile_image },
@@ -186,7 +186,6 @@ async function updateUserInfo() {
     })
 
     if (response.payload) {
-      console.log(response.payload);
       await fetchUserInfo();
       updatingUserInfo.value = false;
     }
