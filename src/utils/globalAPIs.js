@@ -22,7 +22,7 @@ export async function fetchUserInfo() {
       return response.payload;
     }
   } catch (err) {
-    console.log("Error fetching user info", err);
+    console.error("Error fetching user info: ", err.response._data.error[0]?.message);
     return null;
   }
 }

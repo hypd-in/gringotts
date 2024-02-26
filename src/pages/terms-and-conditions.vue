@@ -865,9 +865,9 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Terms & Conditions | HYPD | #getHYPD",
-  ogTitle: "Terms & Conditions | HYPD | #getHYPD",
-  twitterTitle: "Terms & Conditions | HYPD | #getHYPD",
+  title: "Terms & Conditions • HYPD • #getHYPD",
+  ogTitle: "Terms & Conditions • HYPD • #getHYPD",
+  twitterTitle: "Terms & Conditions • HYPD • #getHYPD",
   twitterCard: "summary",
 })
 </script>

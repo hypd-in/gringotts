@@ -55,9 +55,9 @@ if (route.params.afflinkId) {
 }
 
 useSeoMeta({
-  title: `${creatorStore.info?.name} | HYPD`,
-  ogTitle: `${creatorStore.info?.name} | HYPD`,
-  twitterTitle: `${creatorStore.info?.name} | HYPD`,
+  title: `${creatorStore.info?.name} • HYPD • #getHYPD`,
+  ogTitle: `${creatorStore.info?.name} • HYPD • #getHYPD`,
+  twitterTitle: `${creatorStore.info?.name} • HYPD • #getHYPD`,
   description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,

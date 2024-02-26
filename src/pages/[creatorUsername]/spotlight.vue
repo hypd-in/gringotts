@@ -118,9 +118,9 @@ async function getCatalog() {
 }
 
 useSeoMeta({
-    title: `${creatorStore.info.name}'s favorite products' | HYPD`,
-    ogTitle: `${creatorStore.info.name}'s favorite products' | HYPD`,
-    twitterTitle: `${creatorStore.info.name}'s favorite products' | HYPD`,
+    title: `${creatorStore.info.name}'s favorite products' • HYPD • #getHYPD`,
+    ogTitle: `${creatorStore.info.name}'s favorite products' • HYPD • #getHYPD`,
+    twitterTitle: `${creatorStore.info.name}'s favorite products' • HYPD • #getHYPD`,
     description: `Shop from ${creatorStore.info.name}'s favorite products from their store on HYPD`,
     ogDescription: `Shop from ${creatorStore.info.name}'s favorite products from their store on HYPD`,
     twitterDescription: `Shop from ${creatorStore.info.name}'s favorite products from their store on HYPD`,

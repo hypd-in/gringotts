@@ -110,9 +110,9 @@ onMounted(async () => {
 })
 
 useSeoMeta({
-  title: `My Orders | HYPD | #getHYPD`,
-  ogTitle: `My Orders | HYPD | #getHYPD`,
-  twitterTitle: `My Orders | HYPD | #getHYPD`,
+  title: `My Orders • HYPD • #getHYPD`,
+  ogTitle: `My Orders • HYPD • #getHYPD`,
+  twitterTitle: `My Orders • HYPD • #getHYPD`,
   description: `Get a list of your orders ordered from your favorite creatorpreneurs' store on HYPD`,
   ogDescription: `Get a list of your orders ordered from your favorite creatorpreneurs' store on HYPD`,
   twitterDescription: `Get a list of your orders ordered from your favorite creatorpreneurs' store on HYPD`,

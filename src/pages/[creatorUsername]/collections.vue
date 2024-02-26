@@ -111,9 +111,9 @@ onMounted(() => {
 })
 
 useSeoMeta({
-  title: `Collections by ${creatorStore.info.name} | HYPD`,
-  ogTitle: `Collections by ${creatorStore.info.name} | HYPD`,
-  twitterTitle: `Collections by ${creatorStore.info.name} | HYPD`,
+  title: `Collections by ${creatorStore.info.name} • HYPD • #getHYPD`,
+  ogTitle: `Collections by ${creatorStore.info.name} • HYPD • #getHYPD`,
+  twitterTitle: `Collections by ${creatorStore.info.name} • HYPD • #getHYPD`,
   description: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,
   ogDescription: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,
   twitterDescription: `Shop from ${creatorStore.info.name}'s collections from their store on HYPD`,

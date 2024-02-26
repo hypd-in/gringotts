@@ -79,7 +79,11 @@ onMounted(() => {
 });
 
 useSeoMeta({
-  title: `HYPD Explore | ${creatorStore.info?.name} `
+  title: `HYPD Explore • ${creatorStore.info?.name} `,
+  ogTitle: `HYPD Explore • ${creatorStore.info?.name} `,
+  twitterTitle: `HYPD Explore • ${creatorStore.info?.name} `,
+  ogImage: `${creatorStore.info?.profile_image?.src || defaultProfileImage()}`,
+  twitterImage: `${creatorStore.info?.profile_image?.src || defaultProfileImage()}`
 })
 onBeforeRouteLeave(async (to, from) => {
   if (

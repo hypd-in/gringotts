@@ -73,14 +73,14 @@ if (route.params.collectionId) {
 }
 
 useSeoMeta({
-  title: `${collectionInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
-  ogTitle: `${collectionInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
-  twitterTitle: `${collectionInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
+  title: `${collectionInfo.value?.name} • ${creatorStore.info?.name} • HYPD`,
+  ogTitle: `${collectionInfo.value?.name} • ${creatorStore.info?.name} • HYPD`,
+  twitterTitle: `${collectionInfo.value?.name} • ${creatorStore.info?.name} • HYPD`,
   description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
-  ogImage: collectionInfo.value?.image?.src,
-  twitterImage: collectionInfo.value?.image?.src,
+  ogImage: collectionInfo.value?.image?.src || creatorStore.info?.profile_image?.src || defaultProfileImage(),
+  twitterImage: collectionInfo.value?.image?.src || creatorStore.info?.profile_image?.src || defaultProfileImage(),
   twitterCard: "summary",
   lang: "en-IN"
 })
@@ -122,7 +122,7 @@ async function fetchCatalogInfo() {
       }
     })
     if (response.payload) {
-      collectionProducts.value = [...response.payload];
+      collectionProducts.value = [...collectionProducts.value, ...response.payload];
       catalogsSent.value += maxLimit;
     }
     if (totalNoOfLinks.value < 1) {
