@@ -679,6 +679,7 @@ async function checkout() {
     if (response.payload) {
       track('checkout:start', {
         order_id: response.payload.order_id,
+        payment_method: activePaymentMethod.value,
         ...orderDataToTrack,
       })
       orderId.value = response.payload.order_id;
@@ -714,6 +715,7 @@ async function checkout() {
 
     track('checkout:end', {
       order_id: orderId.value,
+      payment_method: activePaymentMethod.value,
       ...orderDataToTrack,
     })
   } else if (orderId.value && activePaymentMethod.value != "Cash on Delivery") {
@@ -786,6 +788,7 @@ async function checkoutWithJuspay() {
 
         track("checkout:failed", {
           order_id: orderId.value,
+          payment_method: activePaymentMethod.value,
           ...orderDataToTrack,
           error: error_message
         })
@@ -918,6 +921,7 @@ async function orderConfirmation() {
 
       track("checkout:failed", {
         order_id: orderId.value,
+        payment_method: activePaymentMethod.value,
         ...orderDataToTrack,
         error: 'status : failed in /status'
       })
@@ -948,6 +952,7 @@ async function orderConfirmation() {
 
       track('checkout:end', {
         order_id: orderId.value,
+        payment_method: activePaymentMethod.value,
         ...orderDataToTrack,
       })
 
@@ -999,7 +1004,7 @@ function sendDetailsToGoKwik(dataArray, orderType) {
           "/payment-success?orderID=" +
           orderId.value +
           "&order_amount=" +
-          `${store.cartInfo.grand_total.value}` + + "&influencer_id=" + influencerId.value
+          `${store.cartInfo.grand_total.value}` + "&influencer_id=" + influencerId.value
         );
       }
     };

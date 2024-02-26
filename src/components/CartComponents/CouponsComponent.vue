@@ -65,7 +65,7 @@ const applyCoupon = async () => {
     payload = await applyCartCoupon(coupon_code.value);
   }
   if (payload) {
-    track('cart_coupon:code_add', { ...store.cartDataToTrack, coupon: { ...store.cartDataToTrack.coupon, discount_added: payload.coupon_value.value, discount_removed: 0 } })
+    track('cart_coupon:code_add', { ...store.cartDataToTrack, coupon: { ...store.cartDataToTrack?.coupon, discount_added: payload?.coupon_value?.value, discount_removed: 0 } })
   }
 
   emit("close");

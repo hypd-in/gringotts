@@ -300,8 +300,8 @@ export async function applyExpressCoupon(coupon_code) {
       // trackingApplyCouponCode(coupon_code);
 
       store.updateCartInfo({
-        coupon: response.data.payload.coupon,
-        coupon_value: response.data.payload.coupon_value,
+        coupon: response?.payload?.coupon,
+        coupon_value: response?.payload?.coupon_value,
       });
       let itemsArray = store.cartInfo.items;
 
@@ -398,7 +398,6 @@ export async function applyCartCoupon(coupon_code) {
       }
     );
     if (response.payload) {
-      console.log(response, "RESP")
       // uncmnt later
       // trackingApplyCouponCode(coupon_code);
 
@@ -779,8 +778,8 @@ export async function removeCouponFromCart(bypassCart) {
     track("cart_coupon:code_remove", {
       ...store.cartDataToTrack,
       coupon: {
-        ...store.cartDataToTrack.coupon,
-        discount_removed: store.cartDataToTrack.coupon.discount,
+        ...store.cartDataToTrack?.coupon,
+        discount_removed: store.cartDataToTrack?.coupon?.discount,
         discount_added: 0,
         discount: 0,
       },
@@ -815,7 +814,7 @@ export async function removeCouponFromCart(bypassCart) {
         await fetchCartInfo();
       }
       track("cart_coupon:code_remove", {
-        ...store.cartDataToTrack,
+        ...store?.cartDataToTrack,
         coupon: { ...coupon },
       });
     }

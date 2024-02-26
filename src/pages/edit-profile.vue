@@ -167,7 +167,7 @@ async function updateUserInfo() {
       dob: userInfo.value.dob,
       user_id: userInfo.value.id,
     }
-    if (userInfo.value.profileImage) {
+    if (userInfo.value.profile_image) {
       requestBody = {
         ...requestBody,
         profile_image: { ...userInfo.value.profile_image },
@@ -186,7 +186,6 @@ async function updateUserInfo() {
     })
 
     if (response.payload) {
-      console.log(response.payload);
       await fetchUserInfo();
       updatingUserInfo.value = false;
     }
@@ -211,9 +210,9 @@ watch(() => store.user, (newV) => {
 })
 
 useSeoMeta({
-  title: "Edit Profile | HYPD",
-  ogTitle: "Edit Profile | HYPD",
-  twitterTitle: "Edit Profile | HYPD",
+  title: "Edit Profile | HYPD | #getHYPD",
+  ogTitle: "Edit Profile | HYPD | #getHYPD",
+  twitterTitle: "Edit Profile | HYPD | #getHYPD",
   description: "Edit your profile details on HYPD",
   ogDescription: "Edit your profile details on HYPD",
   twitterDescription: "Edit your profile details on HYPD",
