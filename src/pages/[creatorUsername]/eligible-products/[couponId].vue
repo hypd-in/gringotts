@@ -69,6 +69,11 @@ function toggleVariantSelector(itemInfo) {
         ...itemInfo,
         selected_variant: itemInfo.Variants[0],
       })
+    } else if (itemInfo?.variants?.length == 1) {
+      productStore.updateProductInfo({
+        ...itemInfo,
+        selected_variant: itemInfo.variants[0],
+      })
     }
   }
   showVariantSelector.value = !showVariantSelector.value;
