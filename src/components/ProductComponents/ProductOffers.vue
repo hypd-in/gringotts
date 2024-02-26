@@ -116,9 +116,9 @@ async function copyCode(offer) {
 
 async function goToBundleProducts(offer) {
   await navigateTo({
-    name: "CouponEligibleProducts",
+    name: "EligibleProducts",
     params: {
-      creator_username: creatorStore.info?.username,
+      creatorUsername: creatorStore.info?.username,
       id: offer.id,
     },
   });

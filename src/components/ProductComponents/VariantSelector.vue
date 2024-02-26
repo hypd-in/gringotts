@@ -31,7 +31,7 @@ import track from '~/utils/tracking-posthog';
 
 const product = useProductStore();
 const productVariants = computed(() => {
-  return product.info?.variants;
+  return product.info?.variants || product.info?.Variants;
 });
 const variantType = computed(() => {
   return product.info?.variant_type;

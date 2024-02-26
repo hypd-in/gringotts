@@ -48,6 +48,7 @@ const emit = defineEmits(["close"]);
 const router = useRouter();
 const route = useRoute();
 const store = useStore();
+const creatorStore = useCreatorStore();
 
 const expandDescriptionFlag = ref(false);
 const loading = ref(false);
@@ -126,11 +127,11 @@ const goToEligibleProducts = async () => {
 };
 
 async function goToBundleProducts(offer) {
-    router.push({
-        name: "CouponEligibleProducts",
+    navigateTo({
+        name: "EligibleProducts",
         params: {
-            creator_username: store.state.creator.info?.username,
-            id: offer.id,
+            creatorUsername: await getCreatorUserName(),
+            couponId: offer.id,
         },
     });
 }
