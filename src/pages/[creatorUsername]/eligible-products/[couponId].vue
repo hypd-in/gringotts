@@ -1,6 +1,6 @@
 <template>
   <div class="eligible-products">
-    <h2 class="heading">Eligible Products</h2>
+    <h2 class="heading">Eligible {{ isGift ? 'Gift' : '' }} Products</h2>
     <div class="variant-selector-wrapper" v-if="showVariantSelector">
       <div class="backdrop" @click="toggleVariantSelector"></div>
       <div class="variant-selector">
@@ -12,6 +12,15 @@
     <div class="product-listing-wrapper" v-if="products.length > 0">
       <ProductCard :showButton="true" :itemInfo="product" v-for="product in products" :key="product.id"
         @buttonAction="toggleVariantSelector" />
+    </div>
+
+    <div v-if="fetchingProducts" style="display: flex; justify-content: center">
+      <div class="lds-ellipsis">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </div>
     </div>
 
     <div class="pagination-target" ref="target"></div>
@@ -33,6 +42,7 @@ const config = useRuntimeConfig();
 
 const observer = ref(null);
 const target = ref(null);
+const fetchingProducts = ref(false);
 
 const store = useStore();
 const productStore = useProductStore();
@@ -54,6 +64,12 @@ const giftType = computed(() => giftInfo.value?.type);
 function toggleVariantSelector(itemInfo) {
   if (itemInfo?.id) {
     productStore.saveProductInfo(itemInfo);
+    if (itemInfo?.Variants?.length == 1) {
+      productStore.updateProductInfo({
+        ...itemInfo,
+        selected_variant: itemInfo.Variants[0],
+      })
+    }
   }
   showVariantSelector.value = !showVariantSelector.value;
 }
@@ -141,6 +157,7 @@ async function fetchCatalogInfoByIds() {
     maxLimit = totalCatalogs.value;
   }
   try {
+    fetchingProducts.value = true;
     var params = new URLSearchParams();
     for (var i = catalogsSent.value; i < catalogsSent.value + maxLimit; i++) {
       params.append("id", eligibleProductsIds.value[i]);
@@ -163,15 +180,43 @@ async function fetchCatalogInfoByIds() {
   } catch (error) {
     console.log("Error fetching catalog info");
   }
+  fetchingProducts.value = false;
 }
 
-function fetchBrandCatalogs() {
-  console.log("Fetching Brands", products.value);
+async function fetchBrandCatalogs() {
+  try {
+    fetchingProducts.value = true;
+    var requestBody = {
+      brand_ids: [giftInfo.value?.brand_id],
+      page: page.value,
+    };
+    var response = await $fetch(`${config.public.catalogURL}/api/catalog/category`, {
+      method: "POST",
+      // url: proxy.$catalogURL + "/api/catalog/category",
+      credentials: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: requestBody,
+    });
+    if (response.payload?.data) {
+      products.value = [...products.value, ...response.payload.data];
+      page.value++;
+      fetchingProducts.value = false;
+    } else {
+      if (observer.value && target.value) {
+        await observer.value?.unobserve(target.value);
+      }
+    }
+  } catch (err) {
+    console.log("Error fetching brand Products", err);
+  }
+  fetchingProducts.value = false;
 }
 
 function callback(entries) {
   entries.forEach(async (entry) => {
-    if (entry.isIntersecting) {
+    if (entry.isIntersecting && !fetchingProducts.value) {
       if (isGift.value) {
         if (giftType.value == 'catalog') {
           fetchCatalogInfoByIds();
@@ -194,6 +239,20 @@ onMounted(async () => {
 </script>
 
 <style scoped>
+@media only screen and (max-width: 520px) {
+  .variant-selector {
+    transform: translate(-50%, 0) !important;
+    top: auto !important;
+    bottom: 0;
+    left: 0;
+  }
+}
+
+.eligible-products {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
 h2.heading {
   margin: 0;
   padding: 16px 16px 0;
