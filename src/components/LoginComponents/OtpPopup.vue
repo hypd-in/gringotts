@@ -34,6 +34,8 @@ import OTP from "../OtpInput.vue";
 import Submit from "@/components/SubmitButton.vue";
 import { addLocalStorageItemsToCart } from "@/utils/cartMethods";
 import { onMounted, ref } from "vue";
+const { $posthog } = useNuxtApp()
+const store = useStore()
 
 const router = useRouter();
 const route = useRoute();
@@ -141,6 +143,9 @@ async function confirmOTP() {
       submittingOTP.value = false;
       emit("verifyOTP");
       await fetchUserInfo();
+      $posthog().identify(
+        store.user.id,
+      );
       if (!route.query.isExpress) {
         await fetchCartInfo();
       }
