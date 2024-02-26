@@ -4,6 +4,7 @@ export default defineNuxtPlugin((nuxtApp) => {
   const runtimeConfig = useRuntimeConfig();
   const posthogClient = posthog.init(runtimeConfig.public.posthogPublicKey, {
     // api_host: runtimeConfig.public.posthogHost || "https://app.posthog.com",
+    custom_campaign_params: ["dm_id", "dm_source"],
     api_host:
     runtimeConfig.public.env != "production"
         ? "https://hypdstore.getshitdone.in/ingest"
