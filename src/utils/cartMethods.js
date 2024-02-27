@@ -250,6 +250,7 @@ export async function getCartItemsFromLocalStorage() {
   imitateCartInfo(items);
   saveBrandWiseCart(items);
   calculatingShippingChargesForLocalItems();
+  store.setCartloader(false)
   store.saveCartItems(cartItemsObject);
 }
 

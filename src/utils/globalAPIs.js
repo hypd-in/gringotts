@@ -462,6 +462,7 @@ export async function fetchCartInfo(bypass) {
     (router.currentRoute.value.query.isExpress || !store.user?.id) &&
     !bypass
   ) {
+    store.setCartloader(false)
     return null;
   }
   try {
