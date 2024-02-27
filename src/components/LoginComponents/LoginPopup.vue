@@ -49,9 +49,9 @@ onMounted(() => {
   }
 });
 function updatePhoneNumber(event) {
-  phoneNumber.value = phoneNumber.value.replace(/\s/g, "")
   phoneNumber.value = returnMaxLength(event, 10);
   phoneNumber.value = returnNumber(event);
+  phoneNumber.value = phoneNumber.value.replace(/\s/g, "")
 }
 
 function validatePhoneNumber() {
