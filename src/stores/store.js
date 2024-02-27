@@ -43,7 +43,13 @@ export const useStore = defineStore("store", () => {
 
   const cartDataToTrack = ref({});
 
+  const cartLoader = ref(true)
+
   // functions
+
+  function setCartloader(value){
+    cartLoader.value = value
+  }
 
   function saveCartDataToTrack(obj) {
     cartDataToTrack.value = { ...obj };
@@ -221,7 +227,9 @@ export const useStore = defineStore("store", () => {
     giftsEligibleForCart,
     cartItemsFailSuccess,
     cartDataToTrack,
+    cartLoader,
 
+    setCartloader,
     saveCartDataToTrack,
     saveCartItemsFailSuccess,
     removeUserAddress,
