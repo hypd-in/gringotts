@@ -49,13 +49,13 @@ if (route.params.creatorUsername) {
 }
 
 useSeoMeta({
-  title: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
-  ogTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
+  title: `${product.info?.name} • ${creatorStore.info.name} • HYPD`,
+  ogTitle: `${product.info?.name} • ${creatorStore.info.name} • HYPD`,
   description: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   ogDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   ogImage: `${product.info?.featured_image?.src}`,
   ogUrl: `www.hypd.store/${creatorStore.info.name}`,
-  twitterTitle: `${product.info?.name} | ${creatorStore.info.name} | HYPD`,
+  twitterTitle: `${product.info?.name} • ${creatorStore.info.name} • HYPD`,
   twitterDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   twitterImage: `${product.info?.featured_image?.src}`,
   twitterCard: "summary_large_image",

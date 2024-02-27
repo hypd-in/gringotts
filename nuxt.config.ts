@@ -47,7 +47,7 @@ export default defineNuxtConfig({
             env: process.env.ENVIRONMENT,
 
             // posthog
-          posthogPublicKey: "phc_8lUC5VBFcaw8CNSF0IAmsnpaFT2Aw8T5jQcVMdBd8AK",
+            posthogPublicKey: "phc_8lUC5VBFcaw8CNSF0IAmsnpaFT2Aw8T5jQcVMdBd8AK",
             posthogHost: "https://app.posthog.com",
 
             catalogURL: "https://catalog2.hypd.store",
@@ -74,7 +74,7 @@ export default defineNuxtConfig({
   },
   app: {
     head: {
-      title: "HYPD Store | #getHYPD",
+      title: "HYPD • #getHYPD",
       meta: [
         // Essentials
         {

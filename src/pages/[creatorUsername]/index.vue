@@ -147,6 +147,7 @@ import { Carousel, Slide } from "vue3-carousel";
 import collections from "./collections.vue";
 import spotlight from "./spotlight.vue";
 import track from "~/utils/tracking-posthog";
+import errorHandler from "~/plugins/error-handler";
 
 const route = useRoute();
 const router = useRouter();
@@ -159,23 +160,23 @@ const store = useStore()
 
 
 if (route.params.creatorUsername) {
-    try {
-        const { data, pending: loadingCreatorInfo, error } = await useFetch(
-            runtimeConfig.public.entityURL +
-            "/api/app/influencer/username/" +
-            route.params.creatorUsername,
-            {
-                key: "influencer_info_store",
-                methods: "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-            }
-        );
+    const { data, pending: loadingCreatorInfo, error } = await useFetch(
+        runtimeConfig.public.entityURL +
+        "/api/app/influencer/username/" +
+        route.params.creatorUsername,
+        {
+            key: "influencer_info_store",
+            methods: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        }
+    );
+    if (data.value.payload) {
         creatorStore.saveCreatorInfo(data?.value?.payload);
     }
-    catch (err) {
-        console.log(err)
+    else if (error) {
+        errorHandler(error);
     }
 }
 
@@ -188,12 +189,12 @@ const props = defineProps([
 const emits = defineEmits(["loadingPage"]);
 
 useSeoMeta({
-    title: `${creatorStore.info.name} | HYPD`,
-    ogTitle: `${creatorStore.info.name} | HYPD`,
+    title: `${creatorStore.info.name} • HYPD • #getHYPD`,
+    ogTitle: `${creatorStore.info.name} • HYPD • #getHYPD`,
     description: `Shop from ${creatorStore.info.name}'s store on HYPD`,
     ogDescription: `Shop from ${creatorStore.info.name}'s store on HYPD`,
-    ogImage: `${creatorStore.info?.profile_image?.src}`,
-    twitterImage: `${creatorStore.info?.profile_image?.src}`,
+    ogImage: `${creatorStore.info?.profile_image?.src || defaultProfileImage()}`,
+    twitterImage: `${creatorStore.info?.profile_image?.src || defaultProfileImage()}`,
     twitterCard: "summary",
 });
 

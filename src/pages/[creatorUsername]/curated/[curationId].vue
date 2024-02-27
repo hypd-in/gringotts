@@ -111,13 +111,13 @@ function callback(entries) {
 }
 
 useSeoMeta({
-  title: `${curationInfo.value.title} | ${creatorStore.info?.name}`,
+  title: `${curationInfo.value.title} • ${creatorStore.info?.name} • HYPD`,
   description: `Shop from ${creatorStore.info?.name}'s collection, curated by HYPD`,
-  ogTitle: `${curationInfo.value.title} | ${creatorStore.info?.name}`,
+  ogTitle: `${curationInfo.value.title} • ${creatorStore.info?.name} • HYPD`,
   ogDescription: `Shop from ${creatorStore.info?.name}'s collection, curated by HYPD`,
   ogImage: `${creatorStore.info?.profile_image?.src}`,
   ogUrl: `https://www.hypd.store/${creatorStore.info?.username}`,
-  twitterTitle: `${curationInfo.value.title} | ${creatorStore.info?.name}`,
+  twitterTitle: `${curationInfo.value.title} • ${creatorStore.info?.name} • HYPD`,
   twitterDescription: `Shop from ${creatorStore.info?.name}'s collection, curated by HYPD`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
   twitterCard: 'summary'

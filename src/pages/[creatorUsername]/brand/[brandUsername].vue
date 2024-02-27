@@ -245,13 +245,13 @@ onMounted(() => {
 });
 
 useSeoMeta({
-  title: `${brandInfo.value?.payload?.name} | ${creatorStore.info?.name} | HYPD | #getHYPD`,
-  ogtitle: `${brandInfo.value?.payload?.name} | ${creatorStore.info?.name} | HYPD | #getHYPD`,
+  title: `${brandInfo.value?.payload?.name} • ${creatorStore.info?.name} • HYPD`,
+  ogtitle: `${brandInfo.value?.payload?.name} • ${creatorStore.info?.name} • HYPD`,
   description: brandInfo.value?.payload?.bio,
   ogDescription: brandInfo.value?.payload?.bio,
   ogImage: brandInfo.value?.payload?.cover_img?.src,
   ogUrl: brandInfo.value?.payload?.website,
-  twitterTitle: brandInfo.value?.payload?.name,
+  twitterTitle: `${brandInfo.value?.payload?.name} • ${creatorStore.info?.name} • HYPD`,
   twitterDescription: brandInfo.value?.payload?.bio,
   twitterImage: brandInfo.value?.payload?.cover_img?.src,
   twitterCard: "summary",

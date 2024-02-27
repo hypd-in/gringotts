@@ -89,9 +89,9 @@ async function fetchCollectionInfo() {
 
 useSeoMeta({
   ogUrl: `https://www.hypd.store/${creatorStore.info?.username}`,
-  title: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
-  ogTitle: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
-  twitterTitle: `${categoryInfo.value?.name} | ${creatorStore.info?.name} | HYPD`,
+  title: `${categoryInfo.value?.name} • ${creatorStore.info?.name} • HYPD`,
+  ogTitle: `${categoryInfo.value?.name} • ${creatorStore.info?.name} • HYPD`,
+  twitterTitle: `${categoryInfo.value?.name} • ${creatorStore.info?.name} • HYPD`,
   description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
