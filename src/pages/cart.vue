@@ -111,6 +111,12 @@ const store = useStore()
 
 const creatorStore = useCreatorStore();
 
+
+useSeoMeta({
+    title: "Cart • HYPD • #getHYPD",
+    ogTitle: "Cart • HYPD • #getHYPD",
+    twitterTitle: "Cart • HYPD • #getHYPD",
+})
 // Navigation Guard
 onBeforeRouteLeave(async (to, from) => {
     if (

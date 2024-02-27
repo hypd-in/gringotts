@@ -119,25 +119,29 @@ async function goToBundleProducts(offer) {
     name: "EligibleProducts",
     params: {
       creatorUsername: creatorStore.info?.username,
-      id: offer.id,
+      couponId: offer.id,
     },
+    query: {
+      isBundle: true,
+    }
   });
 }
 
 async function goToBxgyProducts(offer) {
-  if (offer.applicable_on.bxgy.sub_type == "brand") {
-    await goToBrandProfile();
-  } else if (offer.applicable_on.bxgy.sub_type == "catalog") {
-    // await store.dispatch("saveBxGyGetIds", [
-    //   ...offer.applicable_on.bxgy.get_ids,
-    // ]);
+  // if (offer.applicable_on.bxgy.sub_type == "brand") {
+  //   await goToBrandProfile();
+  // } else if (offer.applicable_on.bxgy.sub_type == "catalog") {
     await navigateTo({
-      name: "BxGy",
+      name: "EligibleProducts",
       params: {
         creatorUsername: creatorStore?.info?.username,
+        couponId: offer?.id
       },
+      query: {
+        isBxgy: true,
+      }
     });
-  }
+  // }
 }
 async function goToBrandProfile() {
   await navigateTo({

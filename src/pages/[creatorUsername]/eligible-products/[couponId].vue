@@ -1,6 +1,6 @@
 <template>
   <div class="eligible-products">
-    <h2 class="heading">Eligible {{ isGift ? 'Gift' : '' }} Products</h2>
+    <h2 class="heading">Eligible {{ isGift ? 'Gift' : isBundle ? 'Bundle' : isBxgy ? 'Bxgy' : '' }} Products</h2>
     <div class="variant-selector-wrapper" v-if="showVariantSelector">
       <div class="backdrop" @click="toggleVariantSelector"></div>
       <div class="variant-selector">
@@ -48,28 +48,55 @@ const store = useStore();
 const productStore = useProductStore();
 const creatorStore = useCreatorStore();
 const giftInfo = ref({});
+const couponInfo = ref({});
 const eligibleProductsIds = ref([]);
 
 const products = ref([]);
 const totalCatalogs = ref(0);
 const catalogsSent = ref(0);
 const page = ref(0);
+
 const showVariantSelector = ref(false);
 const defaultText = computed(() => !!store.cartItems[productStore?.info?.selected_variant?.id] ? 'Go To Cart' : 'Add To Cart');
 const addingToCart = ref(false);
 
 const isGift = computed(() => route.query.isGift);
+const isBundle = computed(() => route.query.isBundle);
+const isBxgy = computed(() => route.query.isBxgy);
 const giftType = computed(() => giftInfo.value?.type);
+
+const allCoupons = computed(() => store.allCoupons);
+
+// Fetch Gift Info
+if (route.query.isGift && route.params.couponId) {
+  var { data, error } = await useFetch(`${config.public.couponURL}/api/app/gift?gift_id=${route.params.couponId}`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+    }
+  })
+  if (data.value.payload) {
+    giftInfo.value = { ...data.value.payload };
+    if (giftType.value == 'catalog') {
+      eligibleProductsIds.value = [...giftInfo.value.buy_catalog_ids];
+    }
+    totalCatalogs.value = eligibleProductsIds.value.length;
+  }
+  else if (error) {
+    console.error(error);
+  }
+}
 
 function toggleVariantSelector(itemInfo) {
   if (itemInfo?.id) {
     productStore.saveProductInfo(itemInfo);
-    if (itemInfo?.Variants?.length == 1) {
+    if (itemInfo?.Variants?.length == 1 && itemInfo?.Variants[0]?.inventory_info?.status?.value !== "out_of_stock") {
       productStore.updateProductInfo({
         ...itemInfo,
         selected_variant: itemInfo.Variants[0],
       })
-    } else if (itemInfo?.variants?.length == 1) {
+    } else if (itemInfo?.variants?.length == 1 && itemInfo?.variants[0]?.inventory_info?.status?.value !== "out_of_stock") {
       productStore.updateProductInfo({
         ...itemInfo,
         selected_variant: itemInfo.variants[0],
@@ -83,6 +110,7 @@ function addItemToLocalStorage(itemInfo) {
   if (localStorage.getItem("cart_items") != null) {
     var cartItems = JSON.parse(localStorage.getItem("cart_items"));
     cartItems.push(itemInfo);
+
     localStorage.removeItem("cart_items");
     localStorage.setItem("cart_items", JSON.stringify(cartItems));
   } else {
@@ -136,26 +164,7 @@ async function addToCart() {
     toggleVariantSelector();
   }
 }
-async function getGiftInfo() {
-  try {
-    var response = await $fetch(`${config.public.couponURL}/api/app/gift?gift_id=${route.params.couponId}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      }
-    })
-    if (response.payload) {
-      giftInfo.value = { ...response.payload };
-      if (giftType.value == 'catalog') {
-        eligibleProductsIds.value = [...giftInfo.value.buy_catalog_ids];
-      }
-      totalCatalogs.value = eligibleProductsIds.value.length;
-    }
-  } catch (error) {
-    alert("Error fetching Gift Eligible Products");
-  }
-}
+
 async function fetchCatalogInfoByIds() {
   var maxLimit = 20;
   if (totalCatalogs.value < 20) {
@@ -188,11 +197,11 @@ async function fetchCatalogInfoByIds() {
   fetchingProducts.value = false;
 }
 
-async function fetchBrandCatalogs() {
+async function fetchBrandCatalogs(id) {
   try {
     fetchingProducts.value = true;
     var requestBody = {
-      brand_ids: [giftInfo.value?.brand_id],
+      brand_ids: [id],
       page: page.value,
     };
     var response = await $fetch(`${config.public.catalogURL}/api/catalog/category`, {
@@ -219,23 +228,77 @@ async function fetchBrandCatalogs() {
   fetchingProducts.value = false;
 }
 
+watch(allCoupons, (newV) => {
+  if (newV?.length > 0 && couponInfo.value?.id != route.params.couponId) {
+    var coupon = newV.filter((coupon) => {
+      return coupon.id == route.params.couponId;
+    });
+    if (coupon.length > 0) {
+      couponInfo.value = { ...coupon[0] };
+      observer.value = addingObserver(target.value, callback);
+    }
+  }
+})
 function callback(entries) {
   entries.forEach(async (entry) => {
     if (entry.isIntersecting && !fetchingProducts.value) {
       if (isGift.value) {
         if (giftType.value == 'catalog') {
-          fetchCatalogInfoByIds();
-        } else {
-          fetchBrandCatalogs();
+          await fetchCatalogInfoByIds();
+        } else if (giftInfo.value?.brand_id) {
+          await fetchBrandCatalogs(giftInfo.value?.brand_id);
+        }
+      }
+
+      else if (
+        isBundle.value &&
+        couponInfo.value?.applicable_on?.name === "bundle" &&
+        couponInfo.value?.applicable_on?.bundle
+      ) {
+        if (
+          couponInfo.value?.applicable_on?.bundle?.catalog_ids &&
+          couponInfo.value?.applicable_on?.bundle?.catalog_ids?.length > 0
+        ) {
+          if (
+            totalCatalogs.value == 0 &&
+            catalogsSent.value !=
+            couponInfo.value?.applicable_on?.bundle?.catalog_ids?.length
+          ) {
+            totalCatalogs.value =
+              couponInfo.value?.applicable_on?.bundle?.catalog_ids?.length;
+          }
+          eligibleProductsIds.value = [...couponInfo.value?.applicable_on?.bundle?.catalog_ids];
+          totalCatalogs.value = eligibleProductsIds.value?.length;
+          await fetchCatalogInfoByIds();
+        } else if (
+          couponInfo.value?.applicable_on?.bundle?.brand_id &&
+          !couponInfo.value?.applicable_on?.bundle?.catalog_ids
+        ) {
+          await fetchBrandCatalogs(couponInfo.value.applicable_on?.bundle?.brand_id);
+        }
+      }
+      else if (isBxgy.value) {
+        if (couponInfo.value?.applicable_on?.bxgy?.sub_type == 'brand') {
+          await fetchBrandCatalogs(couponInfo.value?.applicable_on?.bxgy?.get_ids[0]);
+        } else if (couponInfo.value?.applicable_on?.bxgy?.sub_type == 'catalog') {
+          eligibleProductsIds.value = [...couponInfo.value?.applicable_on?.bxgy?.get_ids];
+          totalCatalogs.value = eligibleProductsIds.value?.length;
+          await fetchCatalogInfoByIds();
         }
       }
     }
   });
 }
 
+
 onMounted(async () => {
-  if (route.query.isGift) {
-    await getGiftInfo();
+  if (allCoupons.value?.length > 0 && couponInfo.value?.id != route.params.couponId) {
+    var coupon = allCoupons.value.filter((coupon) => {
+      return coupon.id == route.params.couponId;
+    });
+    if (coupon.length > 0) {
+      couponInfo.value = { ...coupon[0] }
+    }
   }
   if (target.value) {
     observer.value = addingObserver(target.value, callback);

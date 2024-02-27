@@ -37,16 +37,25 @@ const variantType = computed(() => {
   return product.info?.variant_type;
 });
 
-// watch(productVariants, (newValue) => {
-//   if (
-//     newValue?.length == 1 &&
-//     newValue[0]?.inventory_info?.status?.value !== "out_of_stock"
-//   ) {
-//     store.dispatch("product/updateProductInfo", {
-//       selected_variant: newValue[0],
-//     });
-//   } 
-// });
+onMounted(() => {
+  if (productVariants.value?.length == 1 && productVariants.value[0]?.inventory_info?.status?.value !== 'out_of_stock') {
+    product.updateProductInfo({
+      ...product.info,
+      selected_variant: productVariants.value[0]
+    });
+  }
+})
+watch(productVariants, (newValue) => {
+  if (
+    newValue?.length == 1 &&
+    newValue[0]?.inventory_info?.status?.value !== "out_of_stock"
+  ) {
+    product.updateProductInfo({
+      ...product.info,
+      selected_variant: newValue[0]
+    });
+  }
+});
 
 function selectVariant(variant) {
 

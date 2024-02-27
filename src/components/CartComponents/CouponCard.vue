@@ -133,6 +133,9 @@ async function goToBundleProducts(offer) {
             creatorUsername: await getCreatorUserName(),
             couponId: offer.id,
         },
+        query: {
+            isBundle: true,
+        }
     });
 }
 </script>
