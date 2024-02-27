@@ -111,6 +111,12 @@ const store = useStore()
 
 const creatorStore = useCreatorStore();
 
+
+useSeoMeta({
+    title: "Cart • HYPD • #getHYPD",
+    ogTitle: "Cart • HYPD • #getHYPD",
+    twitterTitle: "Cart • HYPD • #getHYPD",
+})
 // Navigation Guard
 onBeforeRouteLeave(async (to, from) => {
     if (
@@ -234,18 +240,20 @@ const noOfCartItems = computed(() => {
     return Object.keys(store.cartItems)?.length;
 });
 
-function showGiftEligibleProducts(gift) {
-    router.push({
-        name: "GiftEligibleProducts",
+async function showGiftEligibleProducts(gift) {
+    navigateTo({
+        name: "EligibleProducts",
         params: {
-            creator_username: creatorStore?.info?.username,
-            id: gift.id,
-            giftData: JSON.stringify({
-                products: gift.type == "catalog" ? [...gift.buy_catalog_ids] : null,
-                type: gift.type,
-            }),
-            isGift: true,
+            creatorUsername: await getCreatorUserName(),
+            couponId: gift.id,
+            // giftData: JSON.stringify({
+            //     products: gift.type == "catalog" ? [...gift.buy_catalog_ids] : null,
+            //     type: gift.type,
+            // }),
         },
+        query: {
+            'isGift': true,
+        }
     });
 }
 

@@ -35,9 +35,9 @@ definePageMeta({
 });
 
 useSeoMeta({
-  title: "Contact Us | HYPD | #getHYPD",
-  ogTitle: "Contact Us | HYPD | #getHYPD",
-  twitterTitle: "Contact Us | HYPD | #getHYPD",
+  title: "Contact Us • HYPD • #getHYPD",
+  ogTitle: "Contact Us • HYPD • #getHYPD",
+  twitterTitle: "Contact Us • HYPD • #getHYPD",
   twitterCard: "summary",
 })
 

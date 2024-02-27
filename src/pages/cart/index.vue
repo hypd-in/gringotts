@@ -174,12 +174,12 @@ function buttonAction(coupon, buttonText) {
     goToEligibleProducts(coupon);
   }
 }
-function goToEligibleProducts(coupon) {
-  router.push({
-    name: "CouponEligibleProducts",
+async function goToEligibleProducts(coupon) {
+  navigateTo({
+    name: "EligibleProducts",
     params: {
-      creator_username: creatorStore?.info?.username,
-      id: coupon.id,
+      creatorUsername: await getCreatorUserName(),
+      couponId: coupon.id,
     },
   });
 }
