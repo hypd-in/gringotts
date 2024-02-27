@@ -16,9 +16,25 @@
     <div class="curation-container">
       <div class="curation-products">
         <h2 class="heading">{{ route.query.title }}</h2>
+
         <div class="product-listing-wrapper" v-if="products?.length > 0">
           <ProductCard v-for="product in products" :key="product?.id" :itemInfo="product" />
         </div>
+
+        <div v-else-if="loading" style="display: flex; justify-content: center">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div class="no-products" v-else-if="!loading && products?.length == 0">
+          <img src="@/assets/illustrations/no-orders.png" alt="">
+          No products found.
+        </div>
+
       </div>
       <div class="pagination-target" ref="target"></div>
     </div>
@@ -44,6 +60,8 @@ const observer = ref(null);
 const pageCount = ref(0);
 const products = ref([]);
 
+const loading = ref(true)
+
 if (route.params.categoryId) {
   const { data: response, error } = await useFetch(`${config.public.catalogURL}/api/categories`, {
     method: "POST",
@@ -64,6 +82,7 @@ if (route.params.categoryId) {
 }
 
 async function fetchCollectionInfo() {
+  loading.value = true
   try {
     var response = await $fetch(`${config.public.catalogURL}/api/catalog/category`, {
       method: "POST",
@@ -82,7 +101,9 @@ async function fetchCollectionInfo() {
     } else {
       observer.value.unobserve(target.value);
     }
+    loading.value = false
   } catch (error) {
+    loading.value = false
     console.log("Error fetching catalog info", error);
   }
 }

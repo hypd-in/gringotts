@@ -842,6 +842,20 @@ input {
   background: #f2f4f5;
   overflow: hidden;
 }
+
+
+/* center no products */
+.no-products {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  font-family: Urbanist-Medium;
+  font-size: 18px;
+  height: 50vh;
+}
+
 /* Loader Start*/
 .lds-ellipsis {
   display: inline-block;

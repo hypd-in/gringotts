@@ -3,8 +3,8 @@
     <div class="sub-header">
       <div class="journey-path">
         <span @click="gotoStore">
-          <ImageFrame  style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px" :alt="creatorStore.info.name"
-           :src="creatorStore.info?.profile_image?.src" />
+          <ImageFrame style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
+            :alt="creatorStore.info.name" :src="creatorStore.info?.profile_image?.src" />
           {{ creatorStore.info.name }} / Collections / &nbsp;
         </span>
 
@@ -17,9 +17,27 @@
     <div class="curation-container">
       <div class="curation-products">
         <h2 class="heading">{{ collectionName }}</h2>
+
+
         <div class="product-listing-wrapper" v-if="collectionProducts.length > 0">
           <ProductCard v-for="product in collectionProducts" :key="product?.id" :itemInfo="product" :isAffiliate="true" />
         </div>
+
+        <div v-else-if="loading" style="display: flex; justify-content: center">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <!-- empty data -->
+        <div class="no-products" v-else-if="!loading && collectionProducts?.length == 0">
+          <img src="@/assets/illustrations/no-orders.png" alt="">
+          No products found.
+        </div>
+
         <div class="pagination-target" ref="target"></div>
       </div>
     </div>
@@ -45,6 +63,8 @@ const target = ref(null);
 const observer = ref(null);
 const catalogsSent = ref(0);
 const totalNoOfLinks = ref(0);
+
+const loading = ref(true)
 
 const collectionName = computed(() => {
   return collectionInfo.value?.name || route.query.title;
@@ -101,6 +121,7 @@ function callback(entries) {
 }
 
 async function fetchCatalogInfo() {
+  loading.value = true
   try {
     var ids = [];
     var maxLimit = 20;
@@ -128,8 +149,10 @@ async function fetchCatalogInfo() {
     if (totalNoOfLinks.value < 1) {
       observer.value.unobserve(target.value);
     };
+    loading.value = false
   }
   catch (error) {
+    loading.value = false
     console.log("Error fetching catalog info", error);
   }
 }
@@ -164,10 +187,11 @@ onMounted(() => {
   z-index: 52;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }
+
 .journey-path {
   cursor: pointer;
   max-width: 1024px;

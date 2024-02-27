@@ -234,16 +234,6 @@ useSeoMeta({
 </script>
 
 <style scoped>
-.no-products {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
-  font-family: Urbanist-Medium;
-  font-size: 18px;
-  height: 50vh;
-}
 
 section {
   padding: 0 16px;

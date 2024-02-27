@@ -174,16 +174,6 @@ onMounted(() => {
 
 
 <style scoped>
-.no-products {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  gap: 20px;
-  font-family: Urbanist-Medium;
-  font-size: 18px;
-  height: 50vh;
-}
 
 @media only screen and (max-width: 520px) {
   .sub-header {
