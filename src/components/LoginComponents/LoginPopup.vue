@@ -8,7 +8,7 @@
       </div>
 
       <div class="input-container">
-        <label for="phoneNo"> Phone No BRO </label>
+        <label for="phoneNo"> Phone No </label>
         <div class="input-wrapper">
           <input style="width: 28px" value="+91" readonly />
           <input type="tel" maxlength="10" placeholder="Enter Phone No" v-model="phoneNumber" @input="updatePhoneNumber"
@@ -49,9 +49,9 @@ onMounted(() => {
   }
 });
 function updatePhoneNumber(event) {
+  phoneNumber.value = phoneNumber.value.replace(/\s/g, "")
   phoneNumber.value = returnMaxLength(event, 10);
   phoneNumber.value = returnNumber(event);
-  phoneNumber.value = phoneNumber.value.replace(/\s/g, "")
 }
 
 function validatePhoneNumber() {
