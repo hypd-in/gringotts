@@ -81,6 +81,14 @@ if (route.params.collectionId) {
     collectionInfo.value = { ...response.value.payload }
     if (collectionInfo.value?.catalog_ids?.length > 0) {
       totalNoOfProducts.value = collectionInfo.value?.catalog_ids?.length;
+
+
+      if (creatorStore.creatorCollectionInfo.products.length > 0) {
+        collectionProducts.value = [...creatorStore.creatorCollectionInfo.products],
+          catalogsSent.value = creatorStore.creatorCollectionInfo.catalogSent
+        totalNoOfProducts.value = totalNoOfProducts.value - creatorStore.creatorCollectionInfo.catalogSent
+      }
+
       fetchCatalogInfo();
     }
   } else if (error) {
@@ -140,6 +148,7 @@ async function fetchCatalogInfo() {
     if (response.payload) {
       collectionProducts.value = [...collectionProducts.value, ...response.payload];
       catalogsSent.value += maxLimit;
+      creatorStore.saveCreatorCollection({ products: [...collectionProducts.value], catalogSent: catalogsSent.value })
     }
     loadingProducts.value = false;
   }).catch((error) => {
@@ -161,6 +170,7 @@ function callback(entries) {
 }
 
 onMounted(() => {
+
   if (target.value) {
     observer.value = addingObserver(target.value, callback)
   }
@@ -174,7 +184,6 @@ onMounted(() => {
 
 
 <style scoped>
-
 @media only screen and (max-width: 520px) {
   .sub-header {
     display: none;

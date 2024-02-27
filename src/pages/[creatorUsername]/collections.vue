@@ -93,6 +93,8 @@ async function callback(entries) {
 
 onMounted(() => {
 
+  creatorStore.saveCreatorCollection({ products: [], catalogsSent: 0 })
+
   target.value = document.querySelector('.target')
 
   if (creatorStore.collectionInfo.collections) {
