@@ -31,7 +31,7 @@
   </section>
   <section style="margin-bottom: 40px">
     <div style="border-top: 2px solid #0000001a">
-      <div v-if="brandStore?.products?.length > 0 && !fetchingProducts">
+      <div v-if="brandStore?.products?.length > 0">
         <h3>All Products</h3>
         <div class="product-listing-wrapper">
           <Product v-for="product in brandStore.products" :key="product?.id" :itemInfo="product" :src="'brandPage'" />
@@ -108,6 +108,7 @@ const callback = (entries) => {
       !fetchingProducts.value &&
       !receivedAllInfo.value
     ) {
+      console.log("FFFJFJFJ")
       if (brandStore.products?.length > 0) {
         brandStore.addPage();
         await fetchProducts();

@@ -21,6 +21,21 @@
           <ProductCard src="creator-collection-product" v-for="product in collectionProducts" :key="product?.id"
             :itemInfo="product" />
         </div>
+
+        <div v-else-if="loadingProducts" style="display: flex; justify-content: center">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div v-else-if="!loadingProducts && collectionProducts.length == 0" class="no-products">
+          <img src="@/assets/illustrations/no-orders.png" alt="">
+          No products found.
+        </div>
+
         <div class="pagination-target" ref="target"></div>
       </div>
     </div>
@@ -44,7 +59,7 @@ const catalogsSent = ref(0);
 const totalNoOfProducts = ref(0);
 const observer = ref(null);
 const target = ref(null);
-const loadingProducts = ref(false);
+const loadingProducts = ref(true);
 const collectionName = computed(() => {
   return collectionInfo.value?.name || route.query.title;
 })
@@ -66,7 +81,7 @@ if (route.params.collectionId) {
     collectionInfo.value = { ...response.value.payload }
     if (collectionInfo.value?.catalog_ids?.length > 0) {
       totalNoOfProducts.value = collectionInfo.value?.catalog_ids?.length;
-      // fetchCatalogInfo(collectionInfo.value.catalog_ids);
+      fetchCatalogInfo();
     }
   } else if (error) {
     console.log("Error fetching collection info", err);
@@ -103,6 +118,7 @@ async function fetchCatalogInfo() {
   } else {
     maxLimit = totalNoOfProducts.value;
   }
+
   for (let i = catalogsSent.value; i < catalogsSent.value + maxLimit; i++) {
     params.append("id", catalogIds[i]);
     totalNoOfProducts.value -= 1;
@@ -110,9 +126,8 @@ async function fetchCatalogInfo() {
   if (params.size <= 0) {
     return;
   }
-
   if (totalNoOfProducts.value == catalogsSent.value) {
-    observer.value.unobserve(target.value);
+    observer?.value?.unobserve(target.value);
   }
 
   await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${params.toString()}`, {
@@ -159,6 +174,17 @@ onMounted(() => {
 
 
 <style scoped>
+.no-products {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 20px;
+  font-family: Urbanist-Medium;
+  font-size: 18px;
+  height: 50vh;
+}
+
 @media only screen and (max-width: 520px) {
   .sub-header {
     display: none;
@@ -180,10 +206,11 @@ onMounted(() => {
   z-index: 52;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }
+
 .journey-path {
   cursor: pointer;
   max-width: 1024px;
