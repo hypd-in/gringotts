@@ -51,6 +51,7 @@ onMounted(() => {
 function updatePhoneNumber(event) {
   phoneNumber.value = returnMaxLength(event, 10);
   phoneNumber.value = returnNumber(event);
+  phoneNumber.value = phoneNumber.value.trim()
 }
 
 function validatePhoneNumber() {
