@@ -36,7 +36,7 @@ const collectionPage = ref(0)
 const collections = ref([])
 const target = ref();
 
-const loading = ref(false)
+const loading = ref(true)
 
 const observer = ref()
 
@@ -96,6 +96,7 @@ onMounted(() => {
   target.value = document.querySelector('.target')
 
   if (creatorStore.collectionInfo.collections) {
+    loading.value=false
     collectionPage.value = creatorStore.collectionInfo.page
     collections.value = [...creatorStore.collectionInfo.collections]
   }
