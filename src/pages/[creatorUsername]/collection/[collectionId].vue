@@ -121,18 +121,18 @@ function drawImages() {
   const ctx = canvas.getContext("2d");
 
   // Define image sources and positions
-  const images = [
-    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550",
-    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550",
-    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550",
-    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550"
-  ];
+  let images = []
+  for (let i of collectionInfo.value.default_image) {
+    images.push(i.src)
+  }
 
   const imagePromises = []; // Array to store image loading promises
   images.forEach((imageSrc) => {
     const img = new Image();
     img.src = imageSrc;
     img.crossOrigin = "anonymous"
+    img.style.height = '142px'
+    img.style.width = '142px'
 
     // Use promises to handle image loading asynchronously
     imagePromises.push(new Promise((resolve, reject) => {
@@ -144,19 +144,21 @@ function drawImages() {
   Promise.all(imagePromises)
     .then((loadedImages) => {
       loadedImages.forEach((img, index) => {
-        // Calculate scaling factor and image size with gap
-        const gap = 3;
-        const quadrantSize = (canvas.width - 3 * gap) / 2;
-        const scaleFactor = Math.min(quadrantSize / img.width, quadrantSize / img.height);
-        const scaledWidth = img.width * scaleFactor;
-        const scaledHeight = img.height * scaleFactor;
+        // Calculate quadrant dimensions
+        const quadrantWidth = canvas.width / 2;
+        const quadrantHeight = canvas.height / 2;
 
-        // Calculate quadrant coordinates with gap
-        const quadrantX = (index % 2) * (quadrantSize + gap);
-        const quadrantY = Math.floor(index / 2) * (quadrantSize + gap);
+        // Stretch the image to fill the quadrant dimensions
+        const scaledWidth = quadrantWidth;
+        const scaledHeight = quadrantHeight;
 
-        // Draw the scaled image within its quadrant
+        // Calculate quadrant coordinates
+        const quadrantX = (index % 2) * quadrantWidth;
+        const quadrantY = Math.floor(index / 2) * quadrantHeight;
+
+        // Draw the stretched image
         ctx.drawImage(img, 0, 0, img.width, img.height, quadrantX, quadrantY, scaledWidth, scaledHeight);
+
       });
 
       // Ensure images are drawn before converting (replace ... with your drawing logic)
