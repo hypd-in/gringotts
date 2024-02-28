@@ -1,10 +1,9 @@
 <template>
   <div class="explore-wrapper">
     <div>
-      <CurationComponent v-for="curation in store.exploreCurations.curations" :key="curation.id" :curation="curation"
-        :categoryCuration="store.exploreCurations.categoryCurations" />
+      <CurationComponent v-for="curation in store.saleCurations.curations" :key="curation.id" :curation="curation"
+        :categoryCuration="store.saleCurations.categoryCurations" />
     </div>
-
     <div class="target" ref="target"></div>
   </div>
 </template>
@@ -12,7 +11,6 @@
 <script setup>
 import CurationComponent from "~/components/ExploreComponents/CurationComponent.vue";
 import { addingObserver } from "~/utils/helperMethods";
-import track from "~/utils/tracking-posthog";
 
 definePageMeta({
   name: "HypdSale",
@@ -35,46 +33,23 @@ const fetchingSearchResults = ref(false);
 // const oosItems = ref([]);
 
 onMounted(() => {
-  if (route.query.query == "") {
-    store.resetSearchProducts();
-  } else if (route.query.query !== "") {
-    searchQuery.value = route.query.query;
-  }
   if (target.value) {
     observer.value = addingObserver(target.value, callback);
   }
 });
 
 useSeoMeta({
-  title: `HYPD Explore • ${creatorStore.info?.name} `,
-  ogTitle: `HYPD Explore • ${creatorStore.info?.name} `,
-  twitterTitle: `HYPD Explore • ${creatorStore.info?.name} `,
+  title: `HYPD Sale • ${creatorStore.info?.name} `,
+  ogTitle: `HYPD Sale • ${creatorStore.info?.name} `,
+  twitterTitle: `HYPD Sale • ${creatorStore.info?.name} `,
   ogImage: `${creatorStore.info?.profile_image?.src || defaultProfileImage()}`,
   twitterImage: `${creatorStore.info?.profile_image?.src || defaultProfileImage()}`
 })
-onBeforeRouteLeave(async (to, from) => {
-  if (
-    from.query.query?.length > 0 &&
-    !["CreatorProduct", "HypdExplore", "CartItems", "CartPayment"].includes(to.name)
-  ) {
-    searchQuery.value = "";
-    store.resetSearchProducts();
-    return {
-      name: "HypdExplore",
-      params: { ...from.params },
-      query: {
-        query: "",
-      },
-    };
-  } else {
-    return true;
-  }
-});
 
 async function callback(entries) {
   entries.forEach(async (entry) => {
     if (entry.isIntersecting) {
-      if (store.exploreCurations.curations?.length == 0) {
+      if (store.saleCurations.curations?.length == 0) {
         await fetchExploreCurations();
       }
     }
@@ -98,7 +73,7 @@ async function getCategoryInfoById(subCollection, collectionId) {
   }).then((response) => {
     if (response.payload) {
       categoryCatalogCuration.value[collectionId] = response.payload;
-      store.saveExploreCategoryCurations(categoryCatalogCuration.value);
+      store.saveSaleCategoryCurations(categoryCatalogCuration.value);
     }
   }).catch((err) => {
     console.log("Error fetching category info", err);
@@ -114,7 +89,7 @@ async function fetchExploreCurations() {
   var params = {};
   params = {
     "show_on": "black_friday_sale",
-    "page": store.exploreCurations.page,
+    "page": store.saleCurations.page,
   }
 
   await $fetch(`${config.public.catalogURL}/api/v2/app/collections`, {
@@ -135,8 +110,8 @@ async function fetchExploreCurations() {
         ...exploreCurations.value,
         ...response.payload,
       ];
-      store.saveExploreCurations(response.payload);
-      store.updateExplorePageCount(store.exploreCurations.page + 1);
+      store.saveSaleCurations(response.payload);
+      store.updateSalePageCount(store.saleCurations.page + 1);
     } else {
       if (observer.value && target.value) {
         unobserveTarget();

@@ -11,7 +11,14 @@ export const useStore = defineStore("store", () => {
     page: 0,
   });
   const orderDetails = ref({});
+
   const exploreCurations = ref({
+    curations: [],
+    categoryCurations: {},
+    page: 0,
+  });
+
+  const saleCurations = ref({
     curations: [],
     categoryCurations: {},
     page: 0,
@@ -150,8 +157,24 @@ export const useStore = defineStore("store", () => {
     ];
   }
 
+
+  // sale
+  function saveSaleCurations(newCurations) {
+    saleCurations.value.curations = [
+      ...saleCurations.value.curations,
+      ...newCurations,
+    ];
+  }
+
   function saveExploreCategoryCurations(curations) {
     exploreCurations.value.categoryCurations = {
+      ...curations,
+    };
+  }
+
+  // sale
+  function saveSaleCategoryCurations(curations) {
+    saleCurations.value.categoryCurations = {
       ...curations,
     };
   }
@@ -160,8 +183,22 @@ export const useStore = defineStore("store", () => {
     exploreCurations.value.page = pageNo;
   }
 
+  // sale
+  function updateSalePageCount(pageNo) {
+    saleCurations.value.page = pageNo;
+  }
+
   function resetExploreCurations() {
     exploreCurations.value = {
+      curations: [],
+      categoryCurations: {},
+      page: 0,
+    };
+  }
+
+  // sale
+  function resetSaleCurations() {
+    saleCurations.value = {
       curations: [],
       categoryCurations: {},
       page: 0,
@@ -221,6 +258,7 @@ export const useStore = defineStore("store", () => {
     giftsEligibleForCart,
     cartItemsFailSuccess,
     cartDataToTrack,
+    saleCurations,
 
     saveCartDataToTrack,
     saveCartItemsFailSuccess,
@@ -249,6 +287,12 @@ export const useStore = defineStore("store", () => {
     saveExploreCategoryCurations,
     updateExplorePageCount,
     resetExploreCurations,
+
+    saveSaleCurations,
+    saveSaleCategoryCurations,
+    updateSalePageCount,
+    resetSaleCurations,
+
     saveSearchProducts,
     updateSearchPageCount,
     resetSearchProducts,
