@@ -1,5 +1,8 @@
 <template>
   <div class="curation-wrapper">
+    <div class="canvas-container">
+      <canvas id="myCanvas" width="283" height="283"></canvas>
+    </div>
     <div class="sub-header">
       <div class="journey-path">
         <span @click="gotoStore">
@@ -66,6 +69,8 @@ const collectionName = computed(() => {
 const collectionProducts = ref([]);
 
 
+const defaultSrc = ref('')
+
 if (route.params.collectionId) {
   const { data: response, error } = await useFetch(`${useRuntimeConfig().public.catalogURL}/api/app/influencer/collection`, {
     method: "GET",
@@ -104,11 +109,67 @@ useSeoMeta({
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogImage: collectionInfo.value?.image?.src,
-  twitterImage: collectionInfo.value?.image?.src,
+  twitterImage: collectionInfo.value?.image?.src ?? defaultSrc,
   twitterCard: "summary",
   lang: "en-IN",
   ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/collection/${route.params.collectionId}`,
 })
+
+// Function to load and draw images
+function drawImages() {
+  const canvas = document.getElementById("myCanvas");
+  const ctx = canvas.getContext("2d");
+
+  // Define image sources and positions
+  const images = [
+    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550",
+    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550",
+    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550",
+    "https://cdn.getshitdone.in/assets/img/6077profile_pic?height=350?height=550"
+  ];
+
+  const imagePromises = []; // Array to store image loading promises
+  images.forEach((imageSrc) => {
+    const img = new Image();
+    img.src = imageSrc;
+    img.crossOrigin = "anonymous"
+
+    // Use promises to handle image loading asynchronously
+    imagePromises.push(new Promise((resolve, reject) => {
+      img.onload = () => resolve(img);
+      img.onerror = reject;
+    }));
+  });
+
+  Promise.all(imagePromises)
+    .then((loadedImages) => {
+      loadedImages.forEach((img, index) => {
+        // Calculate scaling factor and image size with gap
+        const gap = 3;
+        const quadrantSize = (canvas.width - 3 * gap) / 2;
+        const scaleFactor = Math.min(quadrantSize / img.width, quadrantSize / img.height);
+        const scaledWidth = img.width * scaleFactor;
+        const scaledHeight = img.height * scaleFactor;
+
+        // Calculate quadrant coordinates with gap
+        const quadrantX = (index % 2) * (quadrantSize + gap);
+        const quadrantY = Math.floor(index / 2) * (quadrantSize + gap);
+
+        // Draw the scaled image within its quadrant
+        ctx.drawImage(img, 0, 0, img.width, img.height, quadrantX, quadrantY, scaledWidth, scaledHeight);
+      });
+
+      // Ensure images are drawn before converting (replace ... with your drawing logic)
+      const imageData = canvas.toDataURL("image/png");
+      defaultSrc.value = imageData;
+    })
+    .catch((error) => {
+      console.error("Error loading images:", error);
+    });
+
+}
+
+
 
 function gotoStore() {
   router.replace({
@@ -171,6 +232,9 @@ function callback(entries) {
 }
 
 onMounted(() => {
+  if (collectionInfo.value.default_image.length > 0) {
+    drawImages()
+  }
 
   if (target.value) {
     observer.value = addingObserver(target.value, callback)
@@ -185,6 +249,14 @@ onMounted(() => {
 
 
 <style scoped>
+.canvas-container {
+  border-radius: 16px;
+  overflow: hidden;
+  height: 273px;
+  width: 273px;
+  display: none;
+}
+
 @media only screen and (max-width: 520px) {
   .sub-header {
     display: none;
