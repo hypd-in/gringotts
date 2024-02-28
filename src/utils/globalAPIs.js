@@ -462,9 +462,11 @@ export async function fetchCartInfo(bypass) {
     (router.currentRoute.value.query.isExpress || !store.user?.id) &&
     !bypass
   ) {
+    store.setCartloader(false)
     return null;
   }
   try {
+    store.setCartloader(true)
     var response = await $fetch(
       useRuntimeConfig().public.entityURL +
       "/api/app/v2/cart/" +
@@ -510,8 +512,10 @@ export async function fetchCartInfo(bypass) {
         store.saveCartItems({});
       }
     }
+    store.setCartloader(false)
     return response.payload;
   } catch (error) {
+    store.setCartloader(false)
     console.log(error);
     return null;
   }

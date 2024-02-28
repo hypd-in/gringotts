@@ -59,7 +59,8 @@ useSeoMeta({
   twitterDescription: `Buy ${product.info?.name} from ${creatorStore.info.name}'s store`,
   twitterImage: `${product.info?.featured_image?.src}`,
   twitterCard: "summary_large_image",
-  lang: "en-IN"
+  lang: "en-IN",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/product/${route.params.id}`,
 });
 
 onMounted(() => {

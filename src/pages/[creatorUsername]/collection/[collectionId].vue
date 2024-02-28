@@ -21,6 +21,21 @@
           <ProductCard src="creator-collection-product" v-for="product in collectionProducts" :key="product?.id"
             :itemInfo="product" />
         </div>
+
+        <div v-else-if="loadingProducts" style="display: flex; justify-content: center">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div v-else-if="!loadingProducts && collectionProducts.length == 0" class="no-products">
+          <img src="@/assets/illustrations/no-orders.png" alt="">
+          No products found.
+        </div>
+
         <div class="pagination-target" ref="target"></div>
       </div>
     </div>
@@ -44,7 +59,7 @@ const catalogsSent = ref(0);
 const totalNoOfProducts = ref(0);
 const observer = ref(null);
 const target = ref(null);
-const loadingProducts = ref(false);
+const loadingProducts = ref(true);
 const collectionName = computed(() => {
   return collectionInfo.value?.name || route.query.title;
 })
@@ -66,7 +81,15 @@ if (route.params.collectionId) {
     collectionInfo.value = { ...response.value.payload }
     if (collectionInfo.value?.catalog_ids?.length > 0) {
       totalNoOfProducts.value = collectionInfo.value?.catalog_ids?.length;
-      // fetchCatalogInfo(collectionInfo.value.catalog_ids);
+
+
+      if (creatorStore.creatorCollectionInfo.products.length > 0) {
+        collectionProducts.value = [...creatorStore.creatorCollectionInfo.products],
+          catalogsSent.value = creatorStore.creatorCollectionInfo.catalogSent
+        totalNoOfProducts.value = totalNoOfProducts.value - creatorStore.creatorCollectionInfo.catalogSent
+      }
+
+      fetchCatalogInfo();
     }
   } else if (error) {
     console.log("Error fetching collection info", err);
@@ -83,7 +106,8 @@ useSeoMeta({
   ogImage: collectionInfo.value?.image?.src || creatorStore.info?.profile_image?.src || defaultProfileImage(),
   twitterImage: collectionInfo.value?.image?.src || creatorStore.info?.profile_image?.src || defaultProfileImage(),
   twitterCard: "summary",
-  lang: "en-IN"
+  lang: "en-IN",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/collection/${route.params.collectionId}`,
 })
 
 function gotoStore() {
@@ -103,6 +127,7 @@ async function fetchCatalogInfo() {
   } else {
     maxLimit = totalNoOfProducts.value;
   }
+
   for (let i = catalogsSent.value; i < catalogsSent.value + maxLimit; i++) {
     params.append("id", catalogIds[i]);
     totalNoOfProducts.value -= 1;
@@ -110,9 +135,8 @@ async function fetchCatalogInfo() {
   if (params.size <= 0) {
     return;
   }
-
   if (totalNoOfProducts.value == catalogsSent.value) {
-    observer.value.unobserve(target.value);
+    observer?.value?.unobserve(target.value);
   }
 
   await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${params.toString()}`, {
@@ -125,6 +149,7 @@ async function fetchCatalogInfo() {
     if (response.payload) {
       collectionProducts.value = [...collectionProducts.value, ...response.payload];
       catalogsSent.value += maxLimit;
+      creatorStore.saveCreatorCollection({ products: [...collectionProducts.value], catalogSent: catalogsSent.value })
     }
     loadingProducts.value = false;
   }).catch((error) => {
@@ -146,6 +171,7 @@ function callback(entries) {
 }
 
 onMounted(() => {
+
   if (target.value) {
     observer.value = addingObserver(target.value, callback)
   }
@@ -180,10 +206,11 @@ onMounted(() => {
   z-index: 52;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }
+
 .journey-path {
   cursor: pointer;
   max-width: 1024px;

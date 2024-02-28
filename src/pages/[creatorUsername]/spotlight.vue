@@ -35,7 +35,7 @@ const catalogIds = ref(0)
 const catalogs = ref([])
 const catalogs_sent = ref(0)
 
-const loading = ref(false)
+const loading = ref(true)
 
 async function getCatalogIds() {
     loading.value = true
@@ -132,6 +132,7 @@ useSeoMeta({
 
 onMounted(() => {
     if (creatorStore.spotlight.length > 0) {
+        loading.value = false
         catalogs.value = [...creatorStore.spotlight]
     }
     else {

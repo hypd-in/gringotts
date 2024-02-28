@@ -54,7 +54,18 @@
             </div>
         </div>
 
-        <EmptyCart v-if="noOfCartItems == 0" />
+
+        <div v-else-if="store.cartLoader" style="display: flex; justify-content: center; ">
+            <div class="lds-ellipsis">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
+            </div>
+        </div>
+
+
+        <EmptyCart v-else-if="!store.cartLoader && noOfCartItems == 0" />
         <transition name="">
             <AddressComponent @close="toggleAddressComponent" v-if="showAddress" />
         </transition>

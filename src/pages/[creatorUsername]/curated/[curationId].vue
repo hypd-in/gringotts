@@ -16,9 +16,29 @@
     <div class="curation-container">
       <div class="curation-products">
         <h2 class="heading">{{ curationInfo.title }}</h2>
+
+
         <div class="product-listing-wrapper" v-if="products.length > 0">
           <ProductCard v-for="product in products" :key="product?.id" :itemInfo="product" />
         </div>
+
+
+        <div v-else-if="loading" style="display: flex; justify-content: center">
+          <div class="lds-ellipsis">
+            <div></div>
+            <div></div>
+            <div></div>
+            <div></div>
+          </div>
+        </div>
+
+        <div class="no-products" v-else-if="!loading && products?.length == 0">
+          <img src="@/assets/illustrations/no-orders.png" alt="">
+          No products found.
+        </div>
+
+
+
       </div>
       <div class="pagination-target" ref="target"></div>
     </div>
@@ -43,6 +63,8 @@ const catalogsSent = ref(0);
 const observer = ref(null);
 const target = ref(null);
 const products = ref([]);
+
+const loading = ref(true)
 
 const router = useRouter()
 
@@ -69,6 +91,7 @@ if (route.params.curationId) {
 }
 
 async function getCatalogInfo() {
+  loading.value = true
   try {
     var params = new URLSearchParams();
     var maxLimit = 20;
@@ -96,8 +119,10 @@ async function getCatalogInfo() {
     if (totalNoOfCatalogs.value < 1) {
       observer.value.unobserve(target.value);
     }
+    loading.value = false
   }
   catch (err) {
+    loading.value = false
     console.log("Errro fetching product Info", err);
   }
 }
@@ -120,7 +145,8 @@ useSeoMeta({
   twitterTitle: `${curationInfo.value.title} • ${creatorStore.info?.name} • HYPD`,
   twitterDescription: `Shop from ${creatorStore.info?.name}'s collection, curated by HYPD`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
-  twitterCard: 'summary'
+  twitterCard: 'summary',
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/curated/${route.params.curationId}`,
 })
 
 function gotoStore() {
@@ -165,7 +191,7 @@ onMounted(async () => {
   z-index: 52;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }

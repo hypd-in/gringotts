@@ -14,10 +14,21 @@
 
       <div class="wishlisted-products" v-if="noOfWishlistedProducts > 0">
         <div class="product-listing-wrapper">
-          <ProductCard v-for="product in wishlistedProducts" :itemInfo="product" :key="product?.id" src="wishlist" @closeWishlist="close"/>
+          <ProductCard v-for="product in wishlistedProducts" :itemInfo="product" :key="product?.id" src="wishlist"
+            @closeWishlist="close" />
         </div>
       </div>
-      <div v-else class="empty-cart">
+
+      <div v-else-if="loading" style="display: flex; justify-content: center">
+        <div class="lds-ellipsis">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+      </div>
+
+      <div v-else-if="!loading && noOfWishlistedProducts == 0" class="empty-cart">
         <h5>Looks Like you haven't wishlisted any products...</h5>
         <p>Use the heart icon to wishlist a product</p>
       </div>
@@ -35,6 +46,8 @@ const emit = defineEmits(["close"]);
 const store = useStore();
 // const fetchingWishlistProducts = ref(false);
 const wishlistedProducts = ref([]);
+
+const loading = ref(true)
 
 const wishlistedItems = computed(() => {
   return store.wishlistedItems;
@@ -56,6 +69,8 @@ onUnmounted(() => {
 onMounted(async () => {
   if (getObjectLength(wishlistedItems) > 0) {
     await fetchWishlistedProductsInfo();
+  } else {
+    loading.value = false
   }
   setTimeout(() => {
     let wishlisted = []
@@ -81,6 +96,7 @@ function close() {
 }
 
 async function fetchWishlistedProductsInfo() {
+  loading.value = true
   // fetchingWishlistProducts.value = true;
   var ids = '';
   Object.keys(wishlistedItems.value).forEach((id, index) => {
@@ -93,10 +109,12 @@ async function fetchWishlistedProductsInfo() {
       "Content-Type": "application/json",
     },
   }).then((response) => {
+    loading.value = false
     if (response.payload && response.payload.length > 0) {
       wishlistedProducts.value = [...response.payload];
     }
   }).catch((error) => {
+    loading.value = false
     console.log("Error fetching Wishlisted Products Info", error);
   })
 }

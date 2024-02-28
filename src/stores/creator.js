@@ -9,8 +9,17 @@ export const useCreatorStore = defineStore("creator", () => {
   });
   const spotlight = ref([]);
 
+  const creatorCollectionInfo = ref({
+    catalogSent:0,
+    products:[]
+  });
+
+  function saveCreatorCollection(info) {
+    creatorCollectionInfo.value = {...info};
+  }
+
   function saveCreatorInfo(creatorInfo) {
-    if (creatorInfo && !creatorInfo?.profile_image ) {
+    if (creatorInfo && !creatorInfo?.profile_image) {
       creatorInfo["profile_image"] = { src: defaultProfileImage() };
     }
 
@@ -70,6 +79,9 @@ export const useCreatorStore = defineStore("creator", () => {
     info,
     collectionInfo,
     spotlight,
+    creatorCollectionInfo,
+
+    saveCreatorCollection,
     saveCollections,
     saveCollectionPage,
     saveSpotlight,

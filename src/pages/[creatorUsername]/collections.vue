@@ -36,7 +36,7 @@ const collectionPage = ref(0)
 const collections = ref([])
 const target = ref();
 
-const loading = ref(false)
+const loading = ref(true)
 
 const observer = ref()
 
@@ -93,9 +93,12 @@ async function callback(entries) {
 
 onMounted(() => {
 
+  creatorStore.saveCreatorCollection({ products: [], catalogsSent: 0 })
+
   target.value = document.querySelector('.target')
 
   if (creatorStore.collectionInfo.collections) {
+    loading.value=false
     collectionPage.value = creatorStore.collectionInfo.page
     collections.value = [...creatorStore.collectionInfo.collections]
   }
@@ -120,6 +123,7 @@ useSeoMeta({
   ogImage: `${creatorStore.info?.profile_image?.src}`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
   twitterCard: "summary",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}`,
 });
 
 </script>
