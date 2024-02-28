@@ -106,7 +106,8 @@ useSeoMeta({
   ogImage: collectionInfo.value?.image?.src,
   twitterImage: collectionInfo.value?.image?.src,
   twitterCard: "summary",
-  lang: "en-IN"
+  lang: "en-IN",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/collection/${route.params.collectionId}`,
 })
 
 function gotoStore() {

@@ -195,6 +195,7 @@ useSeoMeta({
     ogImage: `${creatorStore.info?.profile_image?.src}`,
     twitterImage: `${creatorStore.info?.profile_image?.src}`,
     twitterCard: "summary",
+    ogUrl: `https://www.hypd.store/${creatorStore.info?.username}`,
 });
 
 const isLoading = ref(false);

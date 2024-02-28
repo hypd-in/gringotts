@@ -121,6 +121,8 @@ useSeoMeta({
   twitterCard: "summary",
   lang: "en-IN",
   icon: "/public/favicon.ico",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/category/${route.params.categoryId}`,
+
 })
 
 function callback(entries) {

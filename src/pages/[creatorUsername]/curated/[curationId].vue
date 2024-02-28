@@ -145,7 +145,8 @@ useSeoMeta({
   twitterTitle: `${curationInfo.value.title} | ${creatorStore.info?.name}`,
   twitterDescription: `Shop from ${creatorStore.info?.name}'s collection, curated by HYPD`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
-  twitterCard: 'summary'
+  twitterCard: 'summary',
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/curated/${route.params.curationId}`,
 })
 
 function gotoStore() {

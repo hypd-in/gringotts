@@ -64,7 +64,8 @@ useSeoMeta({
   ogImage: creatorStore.info?.profile_image?.src,
   twitterImage: creatorStore.info?.profile_image?.src,
   twitterCard: "summary",
-  lang: "en-IN"
+  lang: "en-IN",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/afflink/${route.params.afflinkId}`,
 })
 
 // async function routeToAfflink() {

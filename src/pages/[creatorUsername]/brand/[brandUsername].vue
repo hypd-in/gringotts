@@ -230,6 +230,7 @@ useSeoMeta({
   twitterDescription: brandInfo.value?.payload?.bio,
   twitterImage: brandInfo.value?.payload?.cover_img?.src,
   twitterCard: "summary",
+  ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/brand/${brandStore.brandInfo.username}`,
 });
 </script>
 

@@ -117,6 +117,7 @@ useSeoMeta({
   ogDescription: `Get a list of your orders ordered from your favorite creatorpreneurs' store on HYPD`,
   twitterDescription: `Get a list of your orders ordered from your favorite creatorpreneurs' store on HYPD`,
   twitterCard: "summary",
+  ogUrl: `https://www.hypd.store/orders`,
 })
 </script>
 
