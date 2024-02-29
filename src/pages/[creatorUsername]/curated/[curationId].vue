@@ -51,7 +51,7 @@ if (route.params.curationId) {
     method: "GET",
     credentials: "include",
     params: {
-      id: route.params.curationId
+      id: route.params.curationId == '65df305afda2f7948bc1aa61' ? '65e04c3bfda2f7948bc1ab12': route.params.curationId 
     },
     headers: {
       "Content-Type": "application/json",
