@@ -1,5 +1,6 @@
 <template>
   <div class="curation-wrapper">
+    <img :src="defaultSrc" alt="">
     <div class="canvas-container">
       <canvas id="myCanvas" width="283" height="283"></canvas>
     </div>
@@ -108,7 +109,7 @@ useSeoMeta({
   description: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
-  ogImage: collectionInfo.value?.image?.src ?? defaultSrc,
+  ogImage: defaultSrc && defaultSrc,
   twitterImage: collectionInfo.value?.image?.src ?? defaultSrc,
   twitterCard: "summary",
   lang: "en-IN",
