@@ -110,11 +110,12 @@ useSeoMeta({
   twitterDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogDescription: `Shop from your favourite Creator's recommendations directly from their collection! | #ItsAFullTimeJob | #getHYPD`,
   ogImage: defaultSrc && defaultSrc,
-  twitterImage: collectionInfo.value?.image?.src ?? defaultSrc,
+  twitterImage: defaultSrc && defaultSrc,
   twitterCard: "summary",
   lang: "en-IN",
   ogUrl: `https://www.hypd.store/${creatorStore.info?.username}/collection/${route.params.collectionId}`,
 })
+// collectionInfo.value?.image?.src ??
 
 // Function to load and draw images
 function drawImages() {
