@@ -170,7 +170,6 @@ const fetchProducts = async () => {
     }
     if (oosProducts?.length == 20) {
       observer.value = addingObserver(target.value, callback);
-      return;
     }
   } else {
     brandStore.addProducts(brandStore.oosProducts);
