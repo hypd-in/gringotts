@@ -213,7 +213,7 @@ onMounted(() => {
     brand_id: brandInfo.value?.payload?.id || "",
     creator_username: route?.params?.creatorUsername || "",
   });
-  if (brandStore.brandInfo?.username !== route.params.username) {
+  if (brandStore.brandInfo?.username !== route.params.brandUsername) {
     brandStore.clearProducts();
     brandStore.resetPage();
   }
