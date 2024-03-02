@@ -168,6 +168,9 @@ const fetchProducts = async () => {
       receivedAllInfo.value = true;
       brandStore.clearOosProducts();
     }
+    if (oosProducts.length == 20) {
+      observer.value = addingObserver(target.value, callback);
+    }
   } else {
     brandStore.addProducts(brandStore.oosProducts);
     receivedAllInfo.value = true;
