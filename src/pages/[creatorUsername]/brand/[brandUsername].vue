@@ -213,9 +213,11 @@ onMounted(() => {
     brand_id: brandInfo.value?.payload?.id || "",
     creator_username: route?.params?.creatorUsername || "",
   });
-  if (brandStore.brandInfo?.username !== route.params.brandUsername) {
-    brandStore.clearProducts();
-    brandStore.resetPage();
+  if (brandStore.products?.length > 0) {
+    if (brandInfo.value.payload?.id !== brandStore?.products[0]?.brand_id) {
+      brandStore.clearProducts();
+      brandStore.resetPage();
+    }
   }
   observer.value = addingObserver(target.value, callback);
 });
