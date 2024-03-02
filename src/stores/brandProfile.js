@@ -15,6 +15,9 @@ export const useBrandProfileStore = defineStore('brandProfile', () => {
     const addOosProducts = (items) => {
         oosProducts.value = [...oosProducts.value, ...items];
     }
+    const clearOosProducts = () => {
+        oosProducts.value = [];
+    }
     const clearProducts = () => {
         products.value = [];
         oosProducts.value = [];
@@ -26,5 +29,5 @@ export const useBrandProfileStore = defineStore('brandProfile', () => {
         page.value += 1
     }
 
-    return { brandInfo, saveBrand, products, oosProducts, addProducts, addOosProducts, page, resetPage, clearProducts, addPage }
+    return { brandInfo, saveBrand, products, oosProducts, addProducts, addOosProducts, page, resetPage, clearProducts, clearOosProducts, addPage }
 })

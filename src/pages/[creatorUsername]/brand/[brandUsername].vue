@@ -1,56 +1,63 @@
 <template>
-  <section>
-    <div class="brand-profile">
-      <div class="display-picture" @click="trackClickBrandImg()">
-        <img :src="getReplacedSource(brandStore?.brandInfo?.cover_img?.src)" :alt="brandStore.brandInfo.name" />
-      </div>
-      <div class="name">
-        {{ brandStore.brandInfo.name }}
-      </div>
-      <div class="follow-section">
-        <span @click="trackClickFollowers()">
-          <b style="font-family: Urbanist-Bold">{{
-        !is_following
-          ? brandStore.brandInfo.followers_count || 0
-          : brandStore.brandInfo.followers_count || 0 + 1
-      }}</b>
-          Followers</span>
-        <button @click="follow()" class="follow-btn" :class="{ active: is_following }">
-          {{ is_following ? "Following" : "Follow" }}
-        </button>
-      </div>
+  <div class="brand-wrapper">
+    <ClientOnly>
+      <section>
+        <div class="brand-profile">
+          <div class="display-picture" @click="trackClickBrandImg">
+            <img :src="getReplacedSource(brandStore?.brandInfo?.cover_img?.src, 200)"
+              :alt="brandStore?.brandInfo?.name" />
+          </div>
+          <div class="name">
+            {{ brandStore?.brandInfo?.name }}
+          </div>
+          <div class="follow-section">
+            <span @click="trackClickFollowers">
+              <b style="font-family: Urbanist-Bold">{{
+            !is_following
+              ? brandStore.brandInfo?.followers_count || 0
+              : brandStore.brandInfo?.followers_count || 0 + 1
+          }}</b>
+              Followers</span>
+            <button @click="follow()" class="follow-btn" :class="{ active: is_following }">
+              {{ is_following ? "Following" : "Follow" }}
+            </button>
+          </div>
 
-      <p class="bio" v-if="brandStore.brandInfo?.bio">
-        {{ brandBio }}
-        <span style="color: #fb6c23; cursor: pointer" @click="toggleBio"
-          v-show="bioLength == 120 && brandStore.brandInfo.bio.length > 120">
-          View More
-        </span>
-      </p>
-    </div>
-  </section>
-  <section style="margin-bottom: 40px">
-    <div style="border-top: 2px solid #0000001a">
-      <h3>All Products</h3>
-      <div class="product-listing-wrapper" v-if="brandStore?.products?.length > 0">
-        <Product v-for="product in brandStore.products" :key="product?.id" :itemInfo="product" :src="'brandPage'" />
-      </div>
-      <div v-if="fetchingProducts" style="display: flex; justify-content: center">
-        <div class="lds-ellipsis">
-          <div></div>
-          <div></div>
-          <div></div>
-          <div></div>
+          <p class="bio" v-if="brandStore.brandInfo?.bio">
+            {{ brandBio }}
+            <span style="color: #fb6c23; cursor: pointer" @click="toggleBio"
+              v-show="bioLength == 120 && brandStore.brandInfo?.bio?.length > 120">
+              View More
+            </span>
+          </p>
         </div>
-      </div>
-      <div id="pagination-footer"></div>
-    </div>
-  </section>
-  <FilterSortChip v-if="brandStore?.brandInfo" :source="true" :brand_id="brandStore.brandInfo.id"
-    @openSorting="openSortFilter" @openFilters="openSortFilter" />
+      </section>
 
-  <FilterSort v-if="showFilter" :filter_type="filter_type" :brand_id="brandStore.brandInfo.id"
-    @applyFilterAndFetch="applyFilterAndFetch" @closeFilter="closeFilter" :filter="filters" />
+      <section style="margin-bottom: 40px">
+        <div style="border-top: 2px solid #0000001a">
+          <h3>All Products</h3>
+          <div class="product-listing-wrapper" v-if="brandStore?.products?.length > 0">
+            <Product v-for="product in brandStore.products" :key="product?.id" :itemInfo="product" src="brandPage" />
+          </div>
+          <div v-if="fetchingProducts" style="display: flex; justify-content: center">
+            <div class="lds-ellipsis">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <FilterSortChip v-if="brandStore?.brandInfo" :source="true" :brand_id="brandStore.brandInfo.id"
+        @openSorting="openSortFilter" @openFilters="openSortFilter" />
+
+      <FilterSort v-if="showFilter" :filter_type="filter_type" :brand_id="brandStore.brandInfo.id"
+        @applyFilterAndFetch="applyFilterAndFetch" @closeFilter="closeFilter" :filter="filters" />
+    </ClientOnly>
+    <div id="pagination-footer" ref="target"></div>
+  </div>
 </template>
 
 <script setup>
@@ -101,10 +108,9 @@ const callback = (entries) => {
       !fetchingProducts.value &&
       !receivedAllInfo.value
     ) {
-      if (brandStore.products?.length > 0) {
-        brandStore.addPage();
-        await fetchProducts();
-      }
+      // if (brandStore.products?.length > 0) {
+      await fetchProducts();
+      // }
     }
   });
 };
@@ -144,6 +150,7 @@ const fetchProducts = async () => {
     ...filters.value,
   };
   let response = await getBrandPageProducts(body);
+  brandStore.addPage();
   if (response?.data?.length > 0) {
     var oosProducts = [];
     var inStockProducts = [];
@@ -156,25 +163,19 @@ const fetchProducts = async () => {
     });
     brandStore.addOosProducts(oosProducts);
     brandStore.addProducts(inStockProducts);
-  } else if (response?.data?.length < 20) {
-    brandStore.addProducts(brandStore.oosProducts);
-    receivedAllInfo.value = true;
+    if (response.data.length < 20) {
+      brandStore.addProducts(brandStore.oosProducts);
+      receivedAllInfo.value = true;
+      brandStore.clearOosProducts();
+    }
   } else {
     brandStore.addProducts(brandStore.oosProducts);
     receivedAllInfo.value = true;
+    brandStore.clearOosProducts();
   }
   fetchingProducts.value = false;
 };
 
-const addingObserver = (target_ele, callbackFn) => {
-  let options = {
-    root: null,
-    rootMargin: "0px",
-    threshold: 0.1,
-  };
-  observer.value = new IntersectionObserver(callbackFn, options);
-  return observer.value.observe(target_ele);
-};
 const trackClickBrandImg = () => {
   track("brand:profile_image_click", {
     brand_id: brandInfo.value.payload?.id,
@@ -203,26 +204,17 @@ const applyFilterAndFetch = (filter) => {
   fetchProducts();
   showFilter.value = false;
 };
-onBeforeMount(() => {
-  if (
-    route.params.brandUsername == brandStore.brandInfo.username &&
-    brandStore.products.length == 0
-  ) {
-    fetchProducts();
-  }
-  nextTick(() => {
-    target.value = document.getElementById("pagination-footer");
-    if (target.value) {
-      observer.value = addingObserver(target.value, callback);
-    }
-  });
-});
 
 onMounted(() => {
   track("brand:visit", {
     brand_id: brandInfo.value?.payload?.id || "",
     creator_username: route?.params?.creatorUsername || "",
   });
+  if (brandStore.brandInfo?.username !== route.params.username) {
+    brandStore.clearProducts();
+    brandStore.resetPage();
+  }
+  observer.value = addingObserver(target.value, callback);
 });
 
 useSeoMeta({
@@ -313,6 +305,7 @@ h3 {
   font-size: 12px;
   font-family: Urbanist-Bold;
   border-radius: 8px;
+  color: #13141b !important;
 }
 
 .follow-btn.active {
