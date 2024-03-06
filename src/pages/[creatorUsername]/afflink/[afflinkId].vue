@@ -88,7 +88,7 @@ if (route.params.afflinkId) {
     posthog.capture({
       distinctId: my_uuid,
       event: "afflink:redirect",
-      value: {
+      properties: {
         afflink_url: "https://www.hypd.store/" + route.fullPath,
         redirection_url: data.value.payload,
         creator_id: creatorStore.info.id,
