@@ -2,8 +2,12 @@
   <div class="afflink-wrapper">
     <div class="redirection">
       <div class="creator-image">
-        <img class="profile" v-if="creatorStore.info" :src="getReplacedSource(creatorStore.info.profile_image.src)"
-          alt="" />
+        <img
+          class="profile"
+          v-if="creatorStore.info?.profile_image"
+          :src="getReplacedSource(creatorStore.info.profile_image.src)"
+          alt=""
+        />
       </div>
       <div class="outer-circle circle">
         <div class="inner-circle circle">
@@ -16,7 +20,7 @@
       </div>
     </div>
     <div class="text">
-      <h2 class="you"> You are being redirected </h2>
+      <h2 class="you">You are being redirected</h2>
       <p class="from" v-if="creatorStore.info">
         From {{ creatorStore.info.name }}'s store
       </p>
@@ -28,21 +32,28 @@
 </template>
 
 <script setup>
-
 definePageMeta({
   name: "AfflinkRedirection",
-  layout: "standalone"
-})
-
+  layout: "standalone",
+});
+import { PostHog } from "posthog-node";
+const runtimeConfig = useRuntimeConfig();
+const posthog = new PostHog(runtimeConfig.public.posthogPublicKey, {
+  host: runtimeConfig.public.posthogHost,
+});
 const route = useRoute();
 const creatorStore = useCreatorStore();
 const config = useRuntimeConfig();
 
 if (route.params.creatorUsername) {
-  const { data, pending: loadingCreatorInfo, error } = await useFetch(
+  const {
+    data,
+    pending: loadingCreatorInfo,
+    error,
+  } = await useFetch(
     config.public.entityURL +
-    "/api/app/influencer/username/" +
-    route.params.creatorUsername,
+      "/api/app/influencer/username/" +
+      route.params.creatorUsername,
     {
       key: "influencer_info_store",
       methods: "GET",
@@ -53,27 +64,44 @@ if (route.params.creatorUsername) {
   );
   if (data.value.payload) {
     creatorStore.saveCreatorInfo(data?.value?.payload);
-  }
-  else if (error) {
+  } else if (error) {
     errorHandler(error);
   }
 }
 
-// if (route.params.afflinkId) {
-//   const { data, error } = await useFetch(`${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`, {
-//     method: "GET",
-//     credentails: "include",
-//     headers: {
-//       "Content-Type": "application/json",
-//     }
-//   })
-//   if (data) {
-//     navigateTo(data.value.payload, { external: true })
-//   } else if (error) {
-//     alert("Sorry! there was an error routing to the partner website")
-//     console.log("Error fetching afflink redirection", error);
-//   }
-// }
+if (route.params.afflinkId) {
+  const { data, error } = await useFetch(
+    `${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`,
+    {
+      method: "GET",
+      credentails: "include",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }
+  );
+  if (data) {
+    const my_uuid = Date.now().toString(36) +
+      Math.floor(
+        Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
+      ).toString(36);
+    posthog.capture({
+      distinctId: my_uuid,
+      event: "afflink:redirect",
+      value: {
+        afflink_url: "https://www.hypd.store/" + route.fullPath,
+        redirection_url: data.value.payload,
+        creator_id: creatorStore.info.id,
+        creator_username: creatorStore.info.username,
+      },
+    });
+    await posthog.shutdownAsync()
+    navigateTo(data.value.payload, { external: true });
+  } else if (error) {
+    alert("Sorry! there was an error routing to the partner website");
+    console.log("Error fetching afflink redirection", error);
+  }
+}
 
 useSeoMeta({
   title: `Afflink • ${creatorStore.info?.name} • HYPD • #getHYPD`,
@@ -85,34 +113,35 @@ useSeoMeta({
   ogImage: creatorStore.info?.profile_image?.src,
   twitterImage: creatorStore.info?.profile_image?.src,
   twitterCard: "summary",
-  lang: "en-IN"
-})
+  lang: "en-IN",
+});
 
-async function routeToAfflink() {
-  await $fetch(`${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`, {
-    method: "GET",
-    credentails: "include",
-    headers: {
-      "Content-Type": "application/json",
-    }
-  }).then((response) => {
-    if (response.payload) {
-      navigateTo(response.payload, {
-        external: true,
-      });
-    }
-  }).catch((error) => {
-    alert("Sorry! there was an error routing to the partner website ")
-    console.log("Error fetching afflink redirection", error);
-  })
-}
+// async function routeToAfflink() {
+//   await $fetch(`${config.public.catalogURL}/api/app/influencer/deeplink/${route.params.afflinkId}`, {
+//     method: "GET",
+//     credentails: "include",
+//     headers: {
+//       "Content-Type": "application/json",
+//     }
+//   }).then((response) => {
+//     if (response.payload) {
+//       navigateTo(response.payload, {
+//         external: true,
+//       })
+
+//       ;
+//     }
+//   }).catch((error) => {
+//     alert("Sorry! there was an error routing to the partner website ")
+//     console.log("Error fetching afflink redirection", error);
+//   })
+// }
 
 onMounted(async () => {
   if (route.params.afflinkId) {
-    await routeToAfflink();
+    // await routeToAfflink();
   }
-})
-
+});
 </script>
 
 <style scoped>

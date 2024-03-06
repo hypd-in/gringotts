@@ -1,12 +1,18 @@
 <template>
   <div class="curation-wrapper">
     <div class="sub-header">
-
       <div class="journey-path">
         <span @click="gotoStore">
-          <ImageFrame :alt="creatorStore.info.name"
-            style="width: 32px; height: 32px; border-radius: 50%; margin-right: 6px"
-            :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)" />
+          <ImageFrame
+            :alt="creatorStore.info.name"
+            style="
+              width: 32px;
+              height: 32px;
+              border-radius: 50%;
+              margin-right: 6px;
+            "
+            :src="getReplacedSource(creatorStore.info?.profile_image?.src, 100)"
+          />
           {{ creatorStore.info.name }} / Explore / &nbsp;
         </span>
         <span style="color: #000">{{ curationInfo.title }}</span>
@@ -17,7 +23,11 @@
       <div class="curation-products">
         <h2 class="heading">{{ curationInfo.title }}</h2>
         <div class="product-listing-wrapper" v-if="products.length > 0">
-          <ProductCard v-for="product in products" :key="product?.id" :itemInfo="product" />
+          <ProductCard
+            v-for="product in products"
+            :key="product?.id"
+            :itemInfo="product"
+          />
         </div>
       </div>
       <div class="pagination-target" ref="target"></div>
@@ -26,13 +36,13 @@
 </template>
 
 <script setup>
-import ProductCard from '~/components/ProductComponents/ProductCard.vue';
-import ImageFrame from '~/components/ImageFrame.vue';
+import ProductCard from "~/components/ProductComponents/ProductCard.vue";
+import ImageFrame from "~/components/ImageFrame.vue";
 
 definePageMeta({
   name: "CuratedCollection",
   layout: "default",
-})
+});
 const config = useRuntimeConfig();
 const creatorStore = useCreatorStore();
 const route = useRoute();
@@ -44,26 +54,46 @@ const observer = ref(null);
 const target = ref(null);
 const products = ref([]);
 
-const router = useRouter()
+const router = useRouter();
 
 if (route.params.curationId) {
-  let tempID = route.params.curationId == '65df305afda2f7948bc1aa61' ? '65e04c3bfda2f7948bc1ab12': route.params.curationId
-  console.log("tempID",tempID);
-  const { data: info, error } = await useFetch(`${config.public.catalogURL}/api/app/subcollection`, {
-    method: "GET",
-    credentials: "include",
-    params: {
-      id: tempID
-    },
-    headers: {
-      "Content-Type": "application/json",
+  let tempID =
+    route.params.curationId == "65df305afda2f7948bc1aa61"
+      ? "65e04c3bfda2f7948bc1ab12"
+      : route.params.curationId;
+  console.log("tempID", tempID);
+  const { data: info, error } = await useFetch(
+    `${config.public.catalogURL}/api/app/subcollection`,
+    {
+      method: "GET",
+      credentials: "include",
+      params: {
+        id: tempID,
+      },
+      headers: {
+        "Content-Type": "application/json",
+      },
     }
-  })
+  );
   if (info.value) {
     curationInfo.value = { ...info.value.payload };
     if (curationInfo.value.sub_collections[0]?.catalog_ids.length > 0) {
-      totalNoOfCatalogs.value = curationInfo.value.sub_collections[0]?.catalog_ids.length;
-      catalogIds.value = [...curationInfo.value.sub_collections[0]?.catalog_ids];
+      if (curationInfo.value.sub_collections[0]?.featured_catalog_ids) {
+        totalNoOfCatalogs.value = [
+          ...curationInfo.value.sub_collections[0]?.featured_catalog_ids,
+          ...curationInfo.value.sub_collections[0]?.catalog_ids,
+        ].length;
+        catalogIds.value = [
+          ...curationInfo.value.sub_collections[0]?.featured_catalog_ids,
+          ...curationInfo.value.sub_collections[0]?.catalog_ids,
+        ];
+      } else {
+        totalNoOfCatalogs.value =
+          curationInfo.value.sub_collections[0]?.catalog_ids.length;
+        catalogIds.value = [
+          ...curationInfo.value.sub_collections[0]?.catalog_ids,
+        ];
+      }
     }
   } else if (error) {
     console.log("Error fetching curation info");
@@ -75,7 +105,7 @@ async function getCatalogInfo() {
     var params = new URLSearchParams();
     var maxLimit = 20;
     if (totalNoOfCatalogs.value < 20) {
-      maxLimit = totalNoOfCatalogs.value
+      maxLimit = totalNoOfCatalogs.value;
     }
     for (let i = catalogsSent.value; i < catalogsSent.value + maxLimit; i++) {
       params.append("id", catalogIds.value[i]);
@@ -84,22 +114,26 @@ async function getCatalogInfo() {
     if (params.size <= 0) {
       return;
     }
-    var response = await $fetch(`${useRuntimeConfig().public.catalogURL}/api/app/catalog/basic?${params.toString()}`, {
-      method: "GET",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
+    var response = await $fetch(
+      `${
+        useRuntimeConfig().public.catalogURL
+      }/api/app/catalog/basic?${params.toString()}`,
+      {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
     if (response.payload) {
-      products.value = [...products.value, ...response.payload]
+      products.value = [...products.value, ...response.payload];
       catalogsSent.value += maxLimit;
     }
     if (totalNoOfCatalogs.value < 1) {
       observer.value.unobserve(target.value);
     }
-  }
-  catch (err) {
+  } catch (err) {
     console.log("Errro fetching product Info", err);
   }
 }
@@ -109,7 +143,7 @@ function callback(entries) {
     if (entry.isIntersecting) {
       getCatalogInfo();
     }
-  })
+  });
 }
 
 useSeoMeta({
@@ -122,16 +156,15 @@ useSeoMeta({
   twitterTitle: `${curationInfo.value.title} • ${creatorStore.info?.name} • HYPD`,
   twitterDescription: `Shop from ${creatorStore.info?.name}'s collection, curated by HYPD`,
   twitterImage: `${creatorStore.info?.profile_image?.src}`,
-  twitterCard: 'summary'
-})
+  twitterCard: "summary",
+});
 
 function gotoStore() {
   router.replace({
     name: "CreatorStore",
-    creatorUsername: creatorStore.info.username
-  })
+    creatorUsername: creatorStore.info.username,
+  });
 }
-
 
 onMounted(async () => {
   if (target.value) {
@@ -167,7 +200,7 @@ onMounted(async () => {
   z-index: 52;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }
@@ -181,7 +214,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
 
-  font-family: 'Urbanist-Medium';
+  font-family: "Urbanist-Medium";
   font-size: 12px;
   color: #a9a9a9;
 }
