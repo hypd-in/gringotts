@@ -81,7 +81,8 @@ if (route.params.afflinkId) {
     }
   );
   if (data) {
-    const my_uuid = Date.now().toString(36) +
+    const my_uuid =
+      Date.now().toString(36) +
       Math.floor(
         Math.pow(10, 12) + Math.random() * 9 * Math.pow(10, 12)
       ).toString(36);
@@ -89,13 +90,14 @@ if (route.params.afflinkId) {
       distinctId: my_uuid,
       event: "afflink:redirect",
       properties: {
-        afflink_url: "https://www.hypd.store/" + route.fullPath,
+        afflink_url: config.public.base + route.fullPath,
         redirection_url: data.value.payload,
         creator_id: creatorStore.info.id,
         creator_username: creatorStore.info.username,
       },
+      groups: { "store": creatorStore.info.username },
     });
-    await posthog.shutdownAsync()
+    await posthog.shutdownAsync();
     navigateTo(data.value.payload, { external: true });
   } else if (error) {
     alert("Sorry! there was an error routing to the partner website");
