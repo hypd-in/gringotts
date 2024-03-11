@@ -39,7 +39,7 @@ export default defineNuxtConfig({
             gokwick_mid: "3mt5u7iijbky068wbs",
 
             sentry: {
-              dsn: "https://6b14ff42cfead1578923e8ce23ab7936@sentry.hypd.store/11",
+              dsn: "https://b943863bcfdb031487af06a028cd405e@sentry.hypd.store/4",
               environment: "development",
             },
           }
