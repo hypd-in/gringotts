@@ -1,14 +1,15 @@
 <template>
   <figure class="image-holder">
     <img :style="{
+      'background': bgColor,
       'border-radius': border_radius ? border_radius : '0',
       'object-fit': objectFit ? objectFit : 'cover',
     }" :class="{
-  'blur-fade-in': !loading,
-  'padding-left': firstChild,
-  'padding-right': lastChild,
-  'blur-img-effect': loading,
-}" ref="target" style="height: 100%; width: 100%;" :alt="alt" />
+      'blur-fade-in': !loading,
+      'padding-left': firstChild,
+      'padding-right': lastChild,
+      'blur-img-effect': loading,
+    }" ref="target" style="height: 100%; width: 100%;" :alt="alt" />
   </figure>
 </template>
 
@@ -24,10 +25,20 @@ const props = defineProps({
 
 const observer = ref(null);
 const target = ref(null);
-const loading = ref(true);
+const loading = ref(false);
 const src = ref("");
 const src_details = ref(null);
 const config = useRuntimeConfig();
+
+const bgColor = ref('')
+
+const colors = [
+  '#edf2fb',
+  '#dbfdd8',
+  '#fadde1',
+  '#d0bef2',
+  '#F7DED0',
+]
 
 const source = computed(() => {
   return props.src || "";
@@ -57,9 +68,14 @@ onBeforeMount(() => {
   } else if (source.value?.includes(config.public.cdn)) {
     src_details.value = source.value + "?height=8";
   } else {
-    return source.value;
+    src_details.value = source.value;
   }
 })
+
+function getRandomInt() {
+  return Math.floor(Math.random() * 3);
+}
+
 function loadImage() {
   var newImg = new Image();
   newImg.onload = () => {
@@ -68,6 +84,9 @@ function loadImage() {
     }
     loading.value = false;
   };
+  newImg.onerror = () => {
+    loading.value = false;
+  }
   newImg.src = source.value;
   if (newImg.complete) {
     if (target.value) {
@@ -88,6 +107,10 @@ function callback(entries) {
 }
 
 onMounted(() => {
+  let index = getRandomInt()
+  bgColor.value = colors[index]
+
+  loading.value = true
   if (target.value) {
     target.value.setAttribute("src", src_details.value);
   }
@@ -97,6 +120,27 @@ onMounted(() => {
 </script>
 
 <style scoped>
+img {
+  position: relative;
+}
+
+/* style this to fit your needs */
+img:after {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  font-family: 'Helvetica';
+  font-weight: 300;
+  line-height: 2;
+  text-align: center;
+  content: attr(alt);
+  background: v-bind(bgColor);
+}
+
+
 .circle {
   border-radius: 50%;
 }
