@@ -33,11 +33,13 @@ const config = useRuntimeConfig();
 const bgColor = ref('')
 
 const colors = [
-  '#edf2fb',
-  '#dbfdd8',
-  '#fadde1',
-  '#d0bef2',
-  '#F7DED0',
+'#e8d1c5',
+'#ffe45e',
+'#dbfdd8',
+'#fcd5ce',
+'#d0bef2',
+'#83b0e1',
+'#fd9951',
 ]
 
 const source = computed(() => {
@@ -73,7 +75,7 @@ onBeforeMount(() => {
 })
 
 function getRandomInt() {
-  return Math.floor(Math.random() * 3);
+  return Math.floor(Math.random() * colors.length);
 }
 
 function loadImage() {
