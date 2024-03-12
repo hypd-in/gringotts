@@ -23,7 +23,8 @@
       ></div>
       <NuxtLink @click="trackProductNavigation" :to="goToProduct">
         <ImageFrame
-          class="featured-image"
+          class="featured-image-general"
+          :class="{'featured-image': !isAffiliate}"
           :src="getReplacedSource(productImage, 450)"
         />
       </NuxtLink>
@@ -375,7 +376,7 @@ async function toggleWishlist() {
   z-index: 0;
 }
 
-.featured-image {
+.featured-image-general{
   width: 100%;
   min-width: 160px;
   height: 240px !important;
