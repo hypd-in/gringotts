@@ -65,7 +65,10 @@ if (route.params.collectionId) {
   if (response) {
     collectionInfo.value = { ...response.value.payload }
     if (collectionInfo.value?.catalog_ids?.length > 0) {
-      totalNoOfProducts.value = collectionInfo.value?.catalog_ids?.length + collectionInfo.value?.pinned_product_ids?.length ?? 0;
+      totalNoOfProducts.value = collectionInfo.value?.catalog_ids?.length;
+      if (collectionInfo.value?.pinned_product_ids) {
+        totalNoOfProducts.value += collectionInfo.value?.pinned_product_ids?.length
+      }
       // fetchCatalogInfo(collectionInfo.value.catalog_ids);
     }
   } else if (error) {
@@ -95,7 +98,10 @@ function gotoStore() {
 
 async function fetchCatalogInfo() {
   loadingProducts.value = true;
-  let catalogIds = [...collectionInfo.value?.pinned_product_ids , ...collectionInfo.value?.catalog_ids];
+  let catalogIds = [...collectionInfo.value?.catalog_ids];
+  if (collectionInfo.value?.pinned_product_ids) {
+    catalogIds = [...collectionInfo.value?.pinned_product_ids, ...catalogIds]
+  }
   var params = new URLSearchParams();
   var maxLimit = 0;
   if (totalNoOfProducts.value > 20) {
@@ -180,7 +186,7 @@ onMounted(() => {
   z-index: 52;
 }
 
-.journey-path span{
+.journey-path span {
   display: flex;
   align-items: center;
 }
