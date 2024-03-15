@@ -151,7 +151,7 @@ export async function addLocalStorageItemsToCart() {
   }
   var cartItems = JSON.parse(localCartItems);
   if (cartItems && cartItems.length > 0) {
-    for (var item of cartItems) {
+    for await (var item of cartItems) {
       if (!Object.keys(store.cartItems)?.includes(item.variant_id)) {
         item = {
           ...item,
