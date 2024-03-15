@@ -96,7 +96,7 @@ onBeforeMount(async () => {
     }
     if (
       document.visibilityState == "visible" &&
-      route.query.isExpress
+      !route.query.isExpress
     ) {
       await fetchCartInfo();
     }
