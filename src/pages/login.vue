@@ -209,6 +209,9 @@ const confirmOTP = async (otpValue) => {
     if (response.payload) {
       submittingOTP.value = false;
       await fetchUserInfo();
+      if (localStorage.getItem("cart_items")) {
+        await addLocalStorageItemsToCart();
+      }
       await fetchCartInfo();
 
       track('user_login_success', { user_id: store.user.id })
@@ -219,7 +222,6 @@ const confirmOTP = async (otpValue) => {
       );
 
       if (redirect.value) {
-        console.log(redirect.value);
         navigateTo({
           path: `${redirect.value}`,
           replace: true,
