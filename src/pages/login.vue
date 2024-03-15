@@ -209,6 +209,9 @@ const confirmOTP = async (otpValue) => {
     if (response.payload) {
       submittingOTP.value = false;
       await fetchUserInfo();
+      if (localStorage.getItem("cart_items")) {
+        await addLocalStorageItemsToCart();
+      }
       await fetchCartInfo();
       if (localStorage.getItem("cart_items")) {
         await addLocalStorageItemsToCart();
