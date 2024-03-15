@@ -209,10 +209,10 @@ const confirmOTP = async (otpValue) => {
     if (response.payload) {
       submittingOTP.value = false;
       await fetchUserInfo();
+      await fetchCartInfo();
       if (localStorage.getItem("cart_items")) {
         await addLocalStorageItemsToCart();
       }
-      await fetchCartInfo();
 
       track('user_login_success', { user_id: store.user.id })
       trackingUserLogin();
