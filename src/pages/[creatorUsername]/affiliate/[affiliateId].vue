@@ -15,6 +15,9 @@ onMounted(() => {
         creatorUsername: route.params.creatorUsername,
         afflinkId: route.params.affiliateId,
       },
+      query: {
+        ...route.query,
+      }
     })
   }
 })
