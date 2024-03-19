@@ -2,12 +2,8 @@
   <div class="afflink-wrapper">
     <div class="redirection">
       <div class="creator-image">
-        <img
-          class="profile"
-          v-if="creatorStore.info?.profile_image"
-          :src="getReplacedSource(creatorStore.info.profile_image.src)"
-          alt=""
-        />
+        <img class="profile" v-if="creatorStore.info?.profile_image"
+          :src="getReplacedSource(creatorStore.info.profile_image.src)" alt="" />
       </div>
       <div class="outer-circle circle">
         <div class="inner-circle circle">
@@ -52,8 +48,8 @@ if (route.params.creatorUsername) {
     error,
   } = await useFetch(
     config.public.entityURL +
-      "/api/app/influencer/username/" +
-      route.params.creatorUsername,
+    "/api/app/influencer/username/" +
+    route.params.creatorUsername,
     {
       key: "influencer_info_store",
       methods: "GET",
@@ -98,7 +94,14 @@ if (route.params.afflinkId) {
       groups: { "store": creatorStore.info.username },
     });
     await posthog.shutdownAsync();
-    navigateTo(data.value.payload, { external: true });
+    let url = data.value.payload
+    if (route.query.dm_id) {
+      url = `${url}&dm_id=${route.query.dm_id}`
+    }
+    if (route.query.dm_source) {
+      url = `${url}&dm_source=${route.query.dm_source}`
+    }
+    navigateTo(url, { external: true });
   } else if (error) {
     alert("Sorry! there was an error routing to the partner website");
     console.log("Error fetching afflink redirection", error);
