@@ -8,7 +8,7 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
-  modules: ["@pinia/nuxt", "@nuxt/image"],
+  modules: ["@pinia/nuxt", "@nuxt/image", "@nuxt/test-utils/module"],
   ssr: true,
   devServer: {
     port: 8080,
